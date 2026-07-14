@@ -8,13 +8,13 @@
   "doc_level": "completo",
   "output_folder": "_reversa_sdd",
   "forward_folder": "_reversa_forward",
-  "phase": "interpretacao",
+  "phase": "geracao",
   "completed": [
     "reconhecimento",
-    "escavacao"
+    "escavacao",
+    "interpretacao"
   ],
   "pending": [
-    "interpretacao",
     "geracao",
     "revisao"
   ],
@@ -111,6 +111,40 @@
         "gaps": [
           "equivalencia runtime dos filtros externos nao exercitada",
           "configuracoes reais dos hosts e endpoint de telemetria nao exercitados"
+        ]
+      }
+    },
+    "architect": {
+      "completed_at": "2026-07-14T22:27:28Z",
+      "files": [
+        "_reversa_sdd/architecture.md",
+        "_reversa_sdd/c4-context.md",
+        "_reversa_sdd/c4-containers.md",
+        "_reversa_sdd/c4-components.md",
+        "_reversa_sdd/erd-complete.md",
+        "_reversa_sdd/traceability/spec-impact-matrix.md"
+      ],
+      "summary": {
+        "containers": [
+          "CLI RTK",
+          "motor de execucao e filtros",
+          "integracao de hooks",
+          "analytics e aprendizado",
+          "SQLite local",
+          "plugin OpenClaw"
+        ],
+        "integrations": [
+          "hosts de agentes via JSON/configuracao",
+          "ferramentas externas via processos filhos",
+          "OpenClaw via plugin e subprocesso",
+          "telemetria HTTP opt-in"
+        ],
+        "database": "SQLite local com tabelas commands e parse_failures, sem FKs",
+        "technical_debt": [
+          "acoplamento core para hooks",
+          "lexer shell parcial",
+          "plugin OpenClaw sem testes e com tipos manuais",
+          "compatibilidade runtime externa nao validada"
         ]
       }
     }
