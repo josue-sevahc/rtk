@@ -1325,6 +1325,480 @@
         "Geracao de relatorio console/JSON/Markdown"
       ],
       "complexity": "medium"
+    },
+    {
+      "name": "parser",
+      "path": "src/parser",
+      "purpose": "Infraestrutura canonica de parsing e formatacao token-efficient para outputs de ferramentas, com degradacao explicita em tres tiers para evitar dados falsos silenciosos.",
+      "primary_files": [
+        "src/parser/README.md",
+        "src/parser/mod.rs",
+        "src/parser/formatter.rs",
+        "src/parser/types.rs"
+      ],
+      "functions": [
+        {
+          "name": "ParseResult::unwrap",
+          "file": "src/parser/mod.rs",
+          "params": [],
+          "returns": "T",
+          "confidence": "confirmed"
+        },
+        {
+          "name": "ParseResult::tier",
+          "file": "src/parser/mod.rs",
+          "params": [],
+          "returns": "u8",
+          "confidence": "confirmed"
+        },
+        {
+          "name": "ParseResult::is_ok",
+          "file": "src/parser/mod.rs",
+          "params": [],
+          "returns": "bool",
+          "confidence": "confirmed"
+        },
+        {
+          "name": "ParseResult::map",
+          "file": "src/parser/mod.rs",
+          "params": [
+            "self",
+            "f: FnOnce(T) -> U"
+          ],
+          "returns": "ParseResult<U>",
+          "confidence": "confirmed"
+        },
+        {
+          "name": "ParseResult::warnings",
+          "file": "src/parser/mod.rs",
+          "params": [],
+          "returns": "Vec<String>",
+          "confidence": "confirmed"
+        },
+        {
+          "name": "OutputParser::parse",
+          "file": "src/parser/mod.rs",
+          "params": [
+            "input: &str"
+          ],
+          "returns": "ParseResult<Self::Output>",
+          "confidence": "confirmed"
+        },
+        {
+          "name": "OutputParser::parse_with_tier",
+          "file": "src/parser/mod.rs",
+          "params": [
+            "input: &str",
+            "max_tier: u8"
+          ],
+          "returns": "ParseResult<Self::Output>",
+          "confidence": "confirmed"
+        },
+        {
+          "name": "truncate_passthrough",
+          "file": "src/parser/mod.rs",
+          "params": [
+            "output: &str"
+          ],
+          "returns": "String",
+          "confidence": "confirmed"
+        },
+        {
+          "name": "truncate_output",
+          "file": "src/parser/mod.rs",
+          "params": [
+            "output: &str",
+            "max_chars: usize"
+          ],
+          "returns": "String",
+          "confidence": "confirmed"
+        },
+        {
+          "name": "extract_json_object",
+          "file": "src/parser/mod.rs",
+          "params": [
+            "input: &str"
+          ],
+          "returns": "Option<&str>",
+          "confidence": "confirmed"
+        },
+        {
+          "name": "FormatMode::from_verbosity",
+          "file": "src/parser/formatter.rs",
+          "params": [
+            "verbosity: u8"
+          ],
+          "returns": "FormatMode",
+          "confidence": "confirmed"
+        },
+        {
+          "name": "TokenFormatter::format",
+          "file": "src/parser/formatter.rs",
+          "params": [
+            "mode: FormatMode"
+          ],
+          "returns": "String",
+          "confidence": "confirmed"
+        }
+      ],
+      "entities": [
+        {
+          "name": "ParseResult<T>",
+          "fields": [
+            { "name": "Full", "type": "variant(T)", "required": true },
+            { "name": "Degraded", "type": "variant(T, Vec<String>)", "required": true },
+            { "name": "Passthrough", "type": "variant(String)", "required": true }
+          ],
+          "confidence": "confirmed"
+        },
+        {
+          "name": "FormatMode",
+          "fields": [
+            { "name": "Compact", "type": "variant", "required": true },
+            { "name": "Verbose", "type": "variant", "required": true },
+            { "name": "Ultra", "type": "variant", "required": true }
+          ],
+          "confidence": "confirmed"
+        },
+        {
+          "name": "TestResult",
+          "fields": [
+            { "name": "total", "type": "usize", "required": true },
+            { "name": "passed", "type": "usize", "required": true },
+            { "name": "failed", "type": "usize", "required": true },
+            { "name": "skipped", "type": "usize", "required": true },
+            { "name": "duration_ms", "type": "Option<u64>", "required": false },
+            { "name": "failures", "type": "Vec<TestFailure>", "required": true }
+          ],
+          "confidence": "confirmed"
+        },
+        {
+          "name": "TestFailure",
+          "fields": [
+            { "name": "test_name", "type": "String", "required": true },
+            { "name": "file_path", "type": "String", "required": true },
+            { "name": "error_message", "type": "String", "required": true },
+            { "name": "stack_trace", "type": "Option<String>", "required": false }
+          ],
+          "confidence": "confirmed"
+        },
+        {
+          "name": "DependencyState",
+          "fields": [
+            { "name": "total_packages", "type": "usize", "required": true },
+            { "name": "outdated_count", "type": "usize", "required": true },
+            { "name": "dependencies", "type": "Vec<Dependency>", "required": true }
+          ],
+          "confidence": "confirmed"
+        },
+        {
+          "name": "Dependency",
+          "fields": [
+            { "name": "name", "type": "String", "required": true },
+            { "name": "current_version", "type": "String", "required": true },
+            { "name": "latest_version", "type": "Option<String>", "required": false },
+            { "name": "wanted_version", "type": "Option<String>", "required": false },
+            { "name": "dev_dependency", "type": "bool", "required": true }
+          ],
+          "confidence": "confirmed"
+        }
+      ],
+      "business_rules": [
+        {
+          "description": "RTK nunca deve retornar dados falsos silenciosamente; falhas de parse degradam para dado parcial com warning ou passthrough marcado.",
+          "location": "src/parser/mod.rs:3",
+          "confidence": "confirmed"
+        },
+        {
+          "description": "parse_with_tier forca passthrough quando o tier real excede o limite permitido.",
+          "location": "src/parser/mod.rs:93",
+          "confidence": "confirmed"
+        },
+        {
+          "description": "Truncamento de passthrough usa limite configurado globalmente.",
+          "location": "src/parser/mod.rs:104",
+          "confidence": "confirmed"
+        },
+        {
+          "description": "Listagem simples de dependencias nao deve ser reportada como up-to-date quando nao ha latest_version.",
+          "location": "src/parser/formatter.rs:122",
+          "confidence": "confirmed"
+        },
+        {
+          "description": "Skipped/pending tests devem aparecer mesmo no modo compacto.",
+          "location": "src/parser/formatter.rs:49",
+          "confidence": "confirmed"
+        }
+      ],
+      "dependencies": [
+        "core::config",
+        "core::truncate",
+        "serde"
+      ],
+      "algorithms": [
+        "Sistema de degradacao em tres tiers para parse de outputs",
+        "Truncamento Unicode-safe por caracteres",
+        "Extracao de objeto JSON por marcador Vitest ou primeira linha JSON",
+        "Balanceamento de braces com controle de strings e escapes",
+        "Formatacao compacta/verbose/ultra para resultados de teste",
+        "Formatacao de dependencias distinguindo listagem simples de outdated"
+      ],
+      "complexity": "medium"
+    },
+    {
+      "name": "filters",
+      "path": "src/filters",
+      "purpose": "Catalogo declarativo de filtros TOML built-in para compactar outputs textuais previsiveis, concatenado no build e aplicado em runtime pelo motor core::toml_filter.",
+      "primary_files": [
+        "src/filters/README.md",
+        "src/filters/*.toml",
+        ".rtk/filters.toml",
+        "build.rs",
+        "src/core/toml_filter.rs"
+      ],
+      "functions": [
+        {
+          "name": "build.rs::main",
+          "file": "build.rs",
+          "params": [],
+          "returns": "()",
+          "confidence": "confirmed"
+        },
+        {
+          "name": "TomlFilterRegistry::load",
+          "file": "src/core/toml_filter.rs",
+          "params": [],
+          "returns": "TomlFilterRegistry",
+          "confidence": "confirmed"
+        },
+        {
+          "name": "TomlFilterRegistry::parse_and_compile",
+          "file": "src/core/toml_filter.rs",
+          "params": [
+            "content: &str",
+            "source: &str"
+          ],
+          "returns": "Result<Vec<CompiledFilter>, String>",
+          "confidence": "confirmed"
+        },
+        {
+          "name": "apply_filter_with_info",
+          "file": "src/core/toml_filter.rs",
+          "params": [
+            "filter: &CompiledFilter",
+            "stdout: &str"
+          ],
+          "returns": "(String, Lossiness)",
+          "confidence": "confirmed"
+        },
+        {
+          "name": "find_filter_in",
+          "file": "src/core/toml_filter.rs",
+          "params": [
+            "command: &str",
+            "filters: &[CompiledFilter]"
+          ],
+          "returns": "Option<&CompiledFilter>",
+          "confidence": "confirmed"
+        }
+      ],
+      "entities": [
+        {
+          "name": "TomlFilterDef",
+          "fields": [
+            { "name": "match_command", "type": "String", "required": true },
+            { "name": "description", "type": "Option<String>", "required": false },
+            { "name": "strip_ansi", "type": "bool", "required": false },
+            { "name": "replace", "type": "Vec<ReplaceRule>", "required": false },
+            { "name": "match_output", "type": "Vec<MatchOutputRule>", "required": false },
+            { "name": "strip_lines_matching", "type": "Vec<String>", "required": false },
+            { "name": "keep_lines_matching", "type": "Vec<String>", "required": false },
+            { "name": "truncate_lines_at", "type": "Option<usize>", "required": false },
+            { "name": "head_lines", "type": "Option<usize>", "required": false },
+            { "name": "tail_lines", "type": "Option<usize>", "required": false },
+            { "name": "max_lines", "type": "Option<usize>", "required": false },
+            { "name": "on_empty", "type": "Option<String>", "required": false },
+            { "name": "filter_stderr", "type": "bool", "required": false }
+          ],
+          "confidence": "confirmed"
+        },
+        {
+          "name": "CompiledFilter",
+          "fields": [
+            { "name": "name", "type": "String", "required": true },
+            { "name": "match_regex", "type": "Regex", "required": true },
+            { "name": "line_filter", "type": "LineFilter", "required": true },
+            { "name": "max_lines", "type": "Option<usize>", "required": false },
+            { "name": "filter_stderr", "type": "bool", "required": false }
+          ],
+          "confidence": "confirmed"
+        },
+        {
+          "name": "LineFilter",
+          "fields": [
+            { "name": "None", "type": "variant", "required": true },
+            { "name": "Strip", "type": "variant(RegexSet)", "required": true },
+            { "name": "Keep", "type": "variant(RegexSet)", "required": true }
+          ],
+          "confidence": "confirmed"
+        },
+        {
+          "name": "Lossiness",
+          "fields": [
+            { "name": "None", "type": "variant", "required": true },
+            { "name": "Tail", "type": "variant { tee_payload, tail_offset }", "required": true },
+            { "name": "Whole", "type": "variant", "required": true }
+          ],
+          "confidence": "confirmed"
+        }
+      ],
+      "business_rules": [
+        {
+          "description": "Built-in filters sao concatenados alfabeticamente para ordem deterministica.",
+          "location": "build.rs:28",
+          "confidence": "confirmed"
+        },
+        {
+          "description": "Lookup de filtros e first-match-wins: project-local, user-global, built-in, depois passthrough.",
+          "location": "src/core/toml_filter.rs:4",
+          "confidence": "confirmed"
+        },
+        {
+          "description": "Custom filters untrusted ou com conteudo alterado sao ignorados no hot path.",
+          "location": "src/core/toml_filter.rs:203",
+          "confidence": "confirmed"
+        },
+        {
+          "description": "match_output short-circuita o blob inteiro, salvo quando unless tambem casa.",
+          "location": "src/core/toml_filter.rs:542",
+          "confidence": "confirmed"
+        },
+        {
+          "description": "Todo filtro built-in deve ter ao menos um teste inline.",
+          "location": "src/core/toml_filter.rs:1906",
+          "confidence": "confirmed"
+        }
+      ],
+      "dependencies": [
+        "build.rs",
+        "core::toml_filter",
+        "hooks::trust",
+        "regex",
+        "toml",
+        "serde"
+      ],
+      "algorithms": [
+        "Concatenacao alfabetica de filtros TOML no build",
+        "Validacao de schema TOML e nomes duplicados",
+        "Registro first-match-wins com gate de trust para custom filters",
+        "Pipeline de oito estagios para compactacao de output",
+        "Short-circuit de output inteiro com regra unless",
+        "Testes inline por filtro e verificacao de cobertura minima"
+      ],
+      "complexity": "medium-high"
+    },
+    {
+      "name": "openclaw",
+      "path": "openclaw",
+      "purpose": "Plugin TypeScript para OpenClaw que intercepta exec tool calls e delega reescrita de comandos ao binario rtk rewrite.",
+      "primary_files": [
+        "openclaw/index.ts",
+        "openclaw/openclaw.plugin.json",
+        "openclaw/package.json",
+        "openclaw/README.md"
+      ],
+      "functions": [
+        {
+          "name": "checkRtk",
+          "file": "openclaw/index.ts",
+          "params": [],
+          "returns": "boolean",
+          "confidence": "confirmed"
+        },
+        {
+          "name": "tryRewrite",
+          "file": "openclaw/index.ts",
+          "params": [
+            "command: string"
+          ],
+          "returns": "[string | null, RewriteVerdict?]",
+          "confidence": "confirmed"
+        },
+        {
+          "name": "register",
+          "file": "openclaw/index.ts",
+          "params": [
+            "api: any"
+          ],
+          "returns": "void",
+          "confidence": "confirmed"
+        }
+      ],
+      "entities": [
+        {
+          "name": "RewriteVerdict",
+          "fields": [
+            { "name": "ask", "type": "literal", "required": true },
+            { "name": "deny", "type": "literal", "required": true }
+          ],
+          "confidence": "confirmed"
+        },
+        {
+          "name": "OpenClawPluginConfig",
+          "fields": [
+            { "name": "enabled", "type": "boolean", "required": false },
+            { "name": "verbose", "type": "boolean", "required": false }
+          ],
+          "confidence": "confirmed"
+        },
+        {
+          "name": "ApprovalRequest",
+          "fields": [
+            { "name": "title", "type": "string", "required": true },
+            { "name": "description", "type": "string", "required": true },
+            { "name": "severity", "type": "info", "required": true },
+            { "name": "timeoutBehavior", "type": "deny", "required": true },
+            { "name": "allowedDecisions", "type": "allow-once | deny", "required": true }
+          ],
+          "confidence": "confirmed"
+        }
+      ],
+      "business_rules": [
+        {
+          "description": "O plugin e um delegate fino; mudancas de regras devem ocorrer no registry Rust, nao no TypeScript.",
+          "location": "openclaw/index.ts:7",
+          "confidence": "confirmed"
+        },
+        {
+          "description": "Apenas tool calls exec com command string sao elegiveis para rewrite.",
+          "location": "openclaw/index.ts:87",
+          "confidence": "confirmed"
+        },
+        {
+          "description": "Exit code 2 de rtk rewrite bloqueia completamente a chamada.",
+          "location": "openclaw/index.ts:66",
+          "confidence": "confirmed"
+        },
+        {
+          "description": "Exit code 3 exige aprovacao allow-once/deny com timeout deny.",
+          "location": "openclaw/index.ts:130",
+          "confidence": "confirmed"
+        }
+      ],
+      "dependencies": [
+        "node:child_process",
+        "rtk binary",
+        "rtk rewrite",
+        "OpenClaw plugin API"
+      ],
+      "algorithms": [
+        "Cache de disponibilidade do binario rtk",
+        "Delegacao sincrona para rtk rewrite com timeout de 2s",
+        "Mapeamento de exit codes para auto-apply, passthrough, deny e ask",
+        "Mutacao de params.command preservando demais parametros",
+        "Solicitacao de aprovacao para rewrites classificados como ask"
+      ],
+      "complexity": "low"
     }
   ]
 }

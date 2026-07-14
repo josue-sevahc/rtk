@@ -942,3 +942,298 @@ Entidades/enums principais:
 - 🔴 **LACUNA** — A analise estatica nao validou a qualidade das heuristicas em historico real.
 - 🔴 **LACUNA** — `MIN_CONFIDENCE` interno e filtro CLI podem causar dupla filtragem com semantica pouco obvia.
 - 🔴 **LACUNA** — A escrita de `.claude/rules/cli-corrections.md` sobrescreve o arquivo alvo quando usada pelo produto; isso deve ser avaliado no contexto da regra Reversa, embora esta analise nao execute `--write-rules`.
+
+## Modulo `parser`
+
+### Proposito
+
+🟢 **CONFIRMADO** — `src/parser/` fornece a infraestrutura canonica de parsing e formatacao token-efficient para saidas de ferramentas, com degradacao explicita em tres niveis para evitar dados falsos silenciosos.
+
+### Arquivos analisados
+
+- `src/parser/README.md`
+- `src/parser/mod.rs`
+- `src/parser/formatter.rs`
+- `src/parser/types.rs`
+
+### Responsabilidades principais
+
+- 🟢 **CONFIRMADO** — Definir `ParseResult<T>` com tiers `Full`, `Degraded` e `Passthrough`.
+- 🟢 **CONFIRMADO** — Definir o trait `OutputParser`, que padroniza parsers de ferramentas em `parse(input) -> ParseResult<Self::Output>`.
+- 🟢 **CONFIRMADO** — Truncar passthrough por limite configurado em `core::config::limits().passthrough_max_chars`.
+- 🟢 **CONFIRMADO** — Extrair objeto JSON completo de saidas com prefixos nao JSON, preservando strings, escapes e braces aninhados.
+- 🟢 **CONFIRMADO** — Definir tipos canonicos para resultados de teste e estado de dependencias.
+- 🟢 **CONFIRMADO** — Formatar `TestResult` e `DependencyState` em modos `Compact`, `Verbose` e `Ultra`.
+
+### Fluxo de controle
+
+#### Parsing de ferramenta
+
+1. 🟢 **CONFIRMADO** — Implementadores de `OutputParser` recebem output bruto e tentam produzir dado estruturado.
+2. 🟢 **CONFIRMADO** — O contrato documentado prioriza JSON completo como Tier 1, fallback parcial como Tier 2 e passthrough truncado como Tier 3.
+3. 🟢 **CONFIRMADO** — `parse_with_tier(input, max_tier)` chama `parse()` e, se o tier real exceder o limite permitido, forca `ParseResult::Passthrough(truncate_passthrough(input))`.
+4. 🟢 **CONFIRMADO** — Consumidores podem usar `tier()`, `is_ok()`, `warnings()` e `map()` para preservar a semantica de degradacao ao transformar o dado.
+
+#### Truncamento e warnings
+
+🟢 **CONFIRMADO** — `truncate_output()` conta por `char`, nao por byte, evitando cortar UTF-8 no meio. Quando excede o limite, anexa marcador `[RTK:PASSTHROUGH] Output truncated (...)`.
+
+🟢 **CONFIRMADO** — `emit_degradation_warning()` e `emit_passthrough_warning()` escrevem marcadores padronizados em stderr.
+
+#### Extracao JSON tolerante a prefixos
+
+🟢 **CONFIRMADO** — `extract_json_object()` procura primeiro `"numTotalTests"` como marcador Vitest e retrocede ate `{`. Sem esse marcador, procura uma linha cujo `trim()` comece com `{`.
+
+🟢 **CONFIRMADO** — Depois do ponto inicial, a funcao balanceia braces com offsets de byte, controlando `in_string` e `escape_next`, e retorna o slice ate o fechamento do objeto completo.
+
+### Algoritmos e regras relevantes
+
+#### Formatacao de testes
+
+🟢 **CONFIRMADO** — `TestResult::format_compact()` sempre mostra pass/fail, inclui skipped quando maior que zero, lista ate 5 falhas e preserva todas as linhas da mensagem de erro de cada falha listada.
+
+🟢 **CONFIRMADO** — `format_verbose()` lista todas as falhas com arquivo e ate 3 linhas de stack trace.
+
+🟢 **CONFIRMADO** — `format_ultra()` usa representacao simbolica curta `[ok]N [x]N [skip]N (Nms)`.
+
+#### Formatacao de dependencias
+
+🟢 **CONFIRMADO** — `DependencyState::format_compact()` diferencia listagem simples de pacotes de consulta de outdated. Quando todas as dependencias nao tem `latest_version`, ele lista pacotes em vez de afirmar "All packages up-to-date".
+
+🟢 **CONFIRMADO** — Listagens simples sao limitadas por `CAP_INVENTORY`; outdated compact mostra ate 10 dependencias com `current -> latest`.
+
+### Estruturas de dados
+
+Ver detalhes em `data-dictionary.md`.
+
+Entidades/enums principais:
+
+- `ParseResult<T>`
+- `OutputParser`
+- `FormatMode`
+- `TokenFormatter`
+- `TestResult`
+- `TestFailure`
+- `DependencyState`
+- `Dependency`
+
+### Dependencias internas
+
+🟢 **CONFIRMADO** — `parser` depende de `core::config` para limite de passthrough e de `core::truncate::CAP_INVENTORY` para limite de listagem de dependencias. Ele e consumido por comandos/filtros que precisam normalizar output de ferramentas em formatos compactos.
+
+### Tratamento de erros
+
+- 🟢 **CONFIRMADO** — Falha de parse pode ser expressa como `Passthrough`, preservando output bruto truncado com marcador explicito.
+- 🟢 **CONFIRMADO** — Parse parcial carrega warnings em `Degraded(T, Vec<String>)`.
+- 🟢 **CONFIRMADO** — `unwrap()` panica quando chamado em `Passthrough`, deixando claro que o consumidor nao deve tratar passthrough como dado estruturado.
+
+### Testes embutidos no modulo
+
+🟢 **CONFIRMADO** — `parser` testa tiers de `ParseResult`, `map()`, truncamento com ASCII, Thai e emoji, extracao JSON limpa, com prefixos pnpm/dotenv/CJK, braces aninhados, strings com braces e valores CJK/emoji.
+
+🟢 **CONFIRMADO** — `formatter` testa que listagem simples de dependencias nao vira falso "up-to-date" e que `format_compact()` preserva detalhes importantes de erro de testes.
+
+### Complexidade
+
+🟢 **CONFIRMADO** — Complexidade media. O modulo e pequeno, mas concentra contratos transversais sensiveis: degradacao sem falsos positivos, truncamento Unicode-safe e compressao de saida para diferentes ferramentas.
+
+### Lacunas
+
+- 🔴 **LACUNA** — O README cita tipos planejados como `LintResult` e `BuildOutput`, mas `types.rs` atualmente define apenas `TestResult` e `DependencyState`.
+- 🔴 **LACUNA** — `OutputParser` define contrato, mas nao ha implementadores concretos dentro de `src/parser/`; a migracao de parsers por ferramenta aparece como roadmap.
+- 🔴 **LACUNA** — `extract_json_object()` privilegia marcador Vitest (`numTotalTests`), portanto outros JSONs embutidos dependem da heuristica de linha iniciando com `{`.
+
+## Modulo `filters`
+
+### Proposito
+
+🟢 **CONFIRMADO** — `src/filters/` e o catalogo declarativo de filtros TOML embutidos do RTK. Cada arquivo define um filtro por comando/subcomando e seus testes inline, que sao concatenados por `build.rs` e consumidos em runtime por `core::toml_filter`.
+
+### Arquivos analisados
+
+- `src/filters/README.md`
+- `src/filters/*.toml` (63 filtros embutidos)
+- `.rtk/filters.toml` (template project-local sem filtros ativos)
+- `build.rs` (pipeline de concatenacao/validacao)
+- `src/core/toml_filter.rs` (runtime consumidor do catalogo)
+
+### Responsabilidades principais
+
+- 🟢 **CONFIRMADO** — Declarar filtros para comandos com output textual previsivel, removendo ruido linha-a-linha sem reformatar a saida para algo que deixe de parecer output real.
+- 🟢 **CONFIRMADO** — Cobrir install/update logs, monorepos, linters/typecheckers, infra/IaC, build tools, sistema operacional, cloud/devops e utilitarios.
+- 🟢 **CONFIRMADO** — Fornecer testes inline por filtro via `[[tests.<filter-name>]]`; foram encontrados 154 blocos de teste.
+- 🟢 **CONFIRMADO** — Permitir overrides project-local/user-global, mas custom filters so entram no runtime quando passam pelo gate de trust.
+- 🟢 **CONFIRMADO** — Manter filtros built-in sempre trusted por estarem embutidos no binario.
+
+### Fluxo de controle
+
+#### Build dos filtros built-in
+
+1. 🟢 **CONFIRMADO** — `build.rs` le `src/filters`, coleta arquivos `.toml` e ordena alfabeticamente.
+2. 🟢 **CONFIRMADO** — O build injeta `schema_version = 1`, concatena cada arquivo com comentario de origem e valida o TOML combinado.
+3. 🟢 **CONFIRMADO** — O build verifica duplicidade de nomes sob `[filters]`.
+4. 🟢 **CONFIRMADO** — O resultado e escrito em `OUT_DIR/builtin_filters.toml` e embutido por `include_str!`.
+
+#### Lookup em runtime
+
+🟢 **CONFIRMADO** — A prioridade documentada e first-match-wins: `.rtk/filters.toml`, `~/.config/rtk/filters.toml`, built-ins e, sem match, passthrough pelo caller.
+
+🟢 **CONFIRMADO** — Caminhos project/global sao carregados por `hooks::trust::gated_filter_paths()` e so sao parseados quando `check_trust_with_content()` retorna trusted/env override.
+
+🟢 **CONFIRMADO** — `RTK_NO_TOML=1` desabilita o motor TOML e `RTK_TOML_DEBUG=1` habilita logs de match/contagem de linhas.
+
+#### Pipeline de aplicacao
+
+🟢 **CONFIRMADO** — `apply_filter_with_info()` aplica oito estagios em ordem: `strip_ansi`, `replace`, `match_output`, `strip/keep_lines`, `truncate_lines_at`, `head/tail_lines`, `max_lines`, `on_empty`.
+
+🟢 **CONFIRMADO** — `match_output` e short-circuit de blob inteiro; a regra pode ter `unless` para nao engolir erros/warnings.
+
+🟢 **CONFIRMADO** — `strip_lines_matching` e `keep_lines_matching` sao mutuamente exclusivos no modelo compilado via `LineFilter`.
+
+### Catalogo observado
+
+🟢 **CONFIRMADO** — Foram encontrados 63 filtros built-in. Exemplos por familia:
+
+- Build/test/dev tools: `dotnet-build`, `gcc`, `gradle`, `make`, `swift-build`, `trunk-build`, `xcodebuild`, `pio-run`, `spring-boot`.
+- JS/monorepo/task runners: `biome`, `nx`, `turbo`, `just`, `task`, `mise`, `oxlint`.
+- Package managers/installers: `brew-install`, `bundle-install`, `composer-install`, `poetry-install`, `uv-sync`.
+- IaC/cloud/devops: `terraform-plan`, `tofu-*`, `pulumi-*`, `helm`, `gcloud`, `skopeo`, `rsync`, `ssh`.
+- Linters/typecheckers: `basedpyright`, `ty`, `shellcheck`, `yamllint`, `hadolint`, `markdownlint`.
+- Sistema/utilitarios: `df`, `du`, `ps`, `stat`, `systemctl-status`, `ping`, `iptables`, `fail2ban-client`, `jq`.
+
+🟢 **CONFIRMADO** — `.rtk/filters.toml` contem apenas template comentado e `schema_version = 1`; nao ha filtros project-local ativos neste repositorio no momento da analise.
+
+### Estruturas de dados
+
+Ver detalhes em `data-dictionary.md`.
+
+Entidades/configuracoes principais:
+
+- `TomlFilterFile`
+- `TomlFilterDef`
+- `MatchOutputRule`
+- `ReplaceRule`
+- `TomlFilterTestDef`
+- `CompiledFilter`
+- `LineFilter`
+- `TestOutcome`
+- `VerifyResults`
+
+### Dependencias internas
+
+🟢 **CONFIRMADO** — `filters` e um modulo declarativo consumido por `core::toml_filter` e empacotado por `build.rs`. Trust de filtros customizados depende de `hooks::trust`. O runtime usa `regex`, `RegexSet`, `toml`, `serde` e utilitarios de `core::utils`.
+
+### Tratamento de erros
+
+- 🟢 **CONFIRMADO** — TOML invalido em built-ins falha no build; TOML invalido em runtime emite warning e nao derruba o processo.
+- 🟢 **CONFIRMADO** — `schema_version` diferente de 1 e rejeitado.
+- 🟢 **CONFIRMADO** — Regex invalida em filtro individual gera warning daquele filtro.
+- 🟢 **CONFIRMADO** — Filtros customizados untrusted ou com conteudo alterado sao ignorados no hot path.
+
+### Testes embutidos/guardrails
+
+🟢 **CONFIRMADO** — `core::toml_filter` testa que os built-ins compilam, que ha exatamente 63 filtros embutidos e que todo filtro built-in tem pelo menos um teste inline.
+
+🟢 **CONFIRMADO** — Ha teste de prioridade project-local sobre built-in e teste de descobribilidade de novos filtros apos concatenacao.
+
+### Complexidade
+
+🟢 **CONFIRMADO** — Complexidade media-alta. Os arquivos TOML sao simples individualmente, mas o conjunto e grande e tem semantica de seguranca/trust, prioridade de override, short-circuit de output inteiro e politicas de perda de informacao.
+
+### Lacunas
+
+- 🔴 **LACUNA** — A analise nao executou `cargo test`; a validacao aqui e estatica e por contagem/estrutura.
+- 🔴 **LACUNA** — O teste `test_builtin_all_expected_filters_present` lista apenas um subconjunto historico dos 63 filtros, embora `test_builtin_filter_count` cubra a contagem total.
+- 🔴 **LACUNA** — A qualidade semantica de economia de tokens por filtro depende dos fixtures inline; nao foi medida contra outputs reais recentes de cada ferramenta.
+
+## Modulo `openclaw`
+
+### Proposito
+
+🟢 **CONFIRMADO** — `openclaw/` implementa um plugin TypeScript fino para OpenClaw que intercepta chamadas da ferramenta `exec` e delega a decisao de rewrite para o binario `rtk rewrite`.
+
+### Arquivos analisados
+
+- `openclaw/index.ts`
+- `openclaw/openclaw.plugin.json`
+- `openclaw/package.json`
+- `openclaw/README.md`
+
+### Responsabilidades principais
+
+- 🟢 **CONFIRMADO** — Registrar hook `before_tool_call` com prioridade 10.
+- 🟢 **CONFIRMADO** — Interceptar apenas tool calls cujo `toolName` e `exec` e cujo `params.command` e string.
+- 🟢 **CONFIRMADO** — Verificar uma vez se `rtk` esta disponivel no `PATH` via `which rtk`, cacheando o resultado.
+- 🟢 **CONFIRMADO** — Executar `rtk rewrite <command>` com timeout de 2000 ms.
+- 🟢 **CONFIRMADO** — Aplicar rewrite automatico, bloquear comando ou exigir aprovacao conforme exit code do `rtk rewrite`.
+- 🟢 **CONFIRMADO** — Expor configuracao `enabled` e `verbose` no manifesto OpenClaw.
+
+### Fluxo de controle
+
+#### Registro do plugin
+
+1. 🟢 **CONFIRMADO** — `register(api)` le `api.config`.
+2. 🟢 **CONFIRMADO** — Se `enabled === false`, retorna sem registrar hook.
+3. 🟢 **CONFIRMADO** — Se `checkRtk()` falha, emite warning e desativa o plugin.
+4. 🟢 **CONFIRMADO** — Registra `api.on("before_tool_call", handler, { priority: 10 })`.
+
+#### Handler de ferramenta
+
+🟢 **CONFIRMADO** — O handler ignora tudo que nao seja `exec` ou que nao tenha `params.command` string.
+
+🟢 **CONFIRMADO** — Para comando elegivel, chama `tryRewrite(command)`.
+
+🟢 **CONFIRMADO** — Se o verdict for `deny`, retorna `{ block: true, blockReason: "RTK deny rule matched" }`.
+
+🟢 **CONFIRMADO** — Se nao houver rewrite, retorna `undefined`, preservando o comando original.
+
+🟢 **CONFIRMADO** — Se houver rewrite, retorna `params` clonado com `command` substituido.
+
+🟢 **CONFIRMADO** — Para verdict `ask`, adiciona `requireApproval` com titulo, descricao, severidade `info`, `timeoutBehavior: "deny"` e decisoes `allow-once`/`deny`.
+
+### Protocolo de exit code
+
+🟢 **CONFIRMADO** — O protocolo documentado em `index.ts` e:
+
+- `0 + stdout`: rewrite permitido e aplicado automaticamente.
+- `1`: sem equivalente RTK; passthrough.
+- `2`: deny rule; bloqueia a tool call.
+- `3 + stdout`: rewrite disponivel, mas exige aprovacao humana.
+
+🟢 **CONFIRMADO** — Exit code desconhecido, exit `1` ou exit `3` sem stdout util sao tratados como passthrough.
+
+### Estruturas de dados
+
+Ver detalhes em `data-dictionary.md`.
+
+Entidades/configuracoes principais:
+
+- `RewriteVerdict`
+- Tupla de retorno de `tryRewrite`
+- `requireApproval`
+- `configSchema.enabled`
+- `configSchema.verbose`
+
+### Dependencias internas e externas
+
+🟢 **CONFIRMADO** — O plugin depende de `node:child_process` e do binario `rtk` no `PATH`. A logica real de rewrite permanece no Rust, em especial no fluxo `rtk rewrite`/`src/hooks/rewrite_cmd.rs`/`src/discover/registry.rs`.
+
+### Tratamento de erros
+
+- 🟢 **CONFIRMADO** — Ausencia do binario `rtk` desativa o plugin com warning.
+- 🟢 **CONFIRMADO** — Falhas de `execFileSync("rtk", ["rewrite", command])` sao interpretadas por status code; status nao reconhecido cai para passthrough.
+- 🟢 **CONFIRMADO** — Timeout de 2000 ms limita travamento do hook.
+
+### Testes embutidos no modulo
+
+🔴 **LACUNA** — Nao foram encontrados testes automatizados dentro de `openclaw/`.
+
+### Complexidade
+
+🟢 **CONFIRMADO** — Complexidade baixa. O modulo e intencionalmente fino, com maior risco concentrado na integracao com protocolo de exit code e API de aprovacao do OpenClaw.
+
+### Lacunas
+
+- 🔴 **LACUNA** — Nao ha tipos OpenClaw importados; `api` e `event` usam `any`/shape manual.
+- 🔴 **LACUNA** — A analise estatica nao validou o comportamento real da API OpenClaw nem o suporte a `requireApproval`.
+- 🔴 **LACUNA** — O plugin nao diferencia erro operacional do `rtk rewrite` de "sem rewrite"; ambos podem virar passthrough silencioso.

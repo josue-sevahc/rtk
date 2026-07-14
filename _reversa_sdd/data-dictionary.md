@@ -476,3 +476,139 @@ Projeto: `rtk`
 | `deduplicate_corrections` | `Vec<CorrectionPair>` -> `Vec<CorrectionRule>` | Agrupa pares por base/erro/diff token. |
 | `format_console_report` | rules + contadores -> `String` | Renderiza relatorio textual. |
 | `write_rules_file` | rules + path -> `Result<()>` | Gera Markdown de regras CLI. |
+
+## Modulo `parser`
+
+### Resultado de parse
+
+| Entidade | Tipo | Local | Campos/variantes principais |
+|---|---|---|---|
+| `ParseResult<T>` | enum generico | `src/parser/mod.rs` | `Full(T)`, `Degraded(T, Vec<String>)`, `Passthrough(String)`. |
+| `OutputParser` | trait | `src/parser/mod.rs` | Associated type `Output`; contrato `parse(input: &str) -> ParseResult<Self::Output>`. |
+
+### Tipos canonicos
+
+| Entidade | Tipo | Local | Campos principais |
+|---|---|---|---|
+| `TestResult` | struct | `src/parser/types.rs` | `total`, `passed`, `failed`, `skipped`, `duration_ms`, `failures`. |
+| `TestFailure` | struct | `src/parser/types.rs` | `test_name`, `file_path`, `error_message`, `stack_trace`. |
+| `DependencyState` | struct | `src/parser/types.rs` | `total_packages`, `outdated_count`, `dependencies`. |
+| `Dependency` | struct | `src/parser/types.rs` | `name`, `current_version`, `latest_version`, `wanted_version`, `dev_dependency`. |
+
+### Formatacao
+
+| Entidade | Tipo | Local | Campos/variantes principais |
+|---|---|---|---|
+| `FormatMode` | enum | `src/parser/formatter.rs` | `Compact`, `Verbose`, `Ultra`. |
+| `TokenFormatter` | trait | `src/parser/formatter.rs` | `format_compact`, `format_verbose`, `format_ultra`, `format`. |
+
+### Constantes e limites
+
+| Nome | Local | Valor/Papel |
+|---|---|---|
+| `MAX_DEPS_LISTING` | `src/parser/formatter.rs` | Alias local de `CAP_INVENTORY` para limitar listagens de dependencias. |
+| `passthrough_max_chars` | `src/core/config.rs` | Limite configuravel usado por `truncate_passthrough`; default observado: 2000. |
+
+### Contratos de funcao principais
+
+| Funcao | Assinatura resumida | Papel |
+|---|---|---|
+| `ParseResult::tier` | `&self` -> `u8` | Retorna 1, 2 ou 3 conforme degradacao. |
+| `ParseResult::is_ok` | `&self` -> `bool` | Verdadeiro para `Full` e `Degraded`. |
+| `ParseResult::map` | transforma `T` em `U` | Preserva tier e warnings ao mapear dado estruturado. |
+| `ParseResult::warnings` | `&self` -> `Vec<String>` | Retorna warnings apenas no tier degradado. |
+| `OutputParser::parse_with_tier` | input + max_tier -> `ParseResult<Output>` | Forca passthrough quando o parser excede o tier maximo. |
+| `truncate_passthrough` | `&str` -> `String` | Trunca pelo limite global de passthrough. |
+| `truncate_output` | output + max chars -> `String` | Trunca por caracteres e anexa marcador RTK. |
+| `extract_json_object` | `&str` -> `Option<&str>` | Extrai objeto JSON completo de output com prefixos. |
+| `FormatMode::from_verbosity` | `u8` -> `FormatMode` | Mapeia 0 compacto, 1 verbose, 2+ ultra. |
+
+## Modulo `filters`
+
+### Arquivo TOML e definicoes
+
+| Entidade | Tipo | Local | Campos principais |
+|---|---|---|---|
+| `TomlFilterFile` | struct deser | `src/core/toml_filter.rs` | `schema_version`, `filters`, `tests`. |
+| `TomlFilterDef` | struct deser | `src/core/toml_filter.rs` | `description`, `match_command`, `strip_ansi`, `replace`, `match_output`, `strip_lines_matching`, `keep_lines_matching`, `truncate_lines_at`, `head_lines`, `tail_lines`, `max_lines`, `on_empty`, `filter_stderr`. |
+| `MatchOutputRule` | struct deser | `src/core/toml_filter.rs` | `pattern`, `message`, `unless`. |
+| `ReplaceRule` | struct deser | `src/core/toml_filter.rs` | `pattern`, `replacement`. |
+| `TomlFilterTestDef` | struct deser | `src/core/toml_filter.rs` | `name`, `input`, `expected`. |
+
+### Tipos compilados
+
+| Entidade | Tipo | Local | Campos/variantes principais |
+|---|---|---|---|
+| `CompiledFilter` | struct | `src/core/toml_filter.rs` | `name`, `description`, `match_regex`, `strip_ansi`, `replace`, `match_output`, `line_filter`, limites, `on_empty`, `filter_stderr`. |
+| `CompiledMatchOutputRule` | struct | `src/core/toml_filter.rs` | `pattern`, `message`, `unless`. |
+| `CompiledReplaceRule` | struct | `src/core/toml_filter.rs` | `pattern`, `replacement`. |
+| `LineFilter` | enum | `src/core/toml_filter.rs` | `None`, `Strip(RegexSet)`, `Keep(RegexSet)`. |
+| `TomlFilterRegistry` | struct | `src/core/toml_filter.rs` | `filters: Vec<CompiledFilter>`. |
+| `Lossiness` | enum | `src/core/toml_filter.rs` | `None`, `Tail { tee_payload, tail_offset }`, `Whole`. |
+
+### Testes e verificacao
+
+| Entidade | Tipo | Local | Campos principais |
+|---|---|---|---|
+| `TestOutcome` | struct | `src/core/toml_filter.rs` | `filter_name`, `test_name`, `passed`, `actual`, `expected`. |
+| `VerifyResults` | struct | `src/core/toml_filter.rs` | `outcomes`, `filters_without_tests`. |
+
+### Catalogo built-in observado
+
+| Metricas | Valor | Fonte |
+|---|---:|---|
+| Arquivos TOML em `src/filters/` | 63 | `find src/filters -name '*.toml'` |
+| Blocos `[[tests.*]]` inline | 154 | `rg '^\\[\\[tests\\.' src/filters/*.toml` |
+| Filtros ativos em `.rtk/filters.toml` | 0 | arquivo contem apenas template comentado |
+
+### Contratos de funcao principais
+
+| Funcao | Assinatura resumida | Papel |
+|---|---|---|
+| `build.rs main` | cargo build script | Concatena `src/filters/*.toml`, valida TOML e nomes duplicados, grava `builtin_filters.toml`. |
+| `TomlFilterRegistry::load` | () -> registry | Carrega filtros trusted project/global e built-ins embutidos. |
+| `parse_and_compile` | content + source -> filters | Valida schema e compila filtros individuais. |
+| `compile_filter` | name + def -> `CompiledFilter` | Compila regexes e transforma TOML em runtime model. |
+| `apply_filter_with_info` | filter + stdout -> `(String, Lossiness)` | Executa pipeline de oito estagios e informa perda de informacao. |
+| `find_filter_in` | command + filters -> Option | Retorna primeiro filtro cujo `match_command` casa com o comando. |
+
+## Modulo `openclaw`
+
+### Manifestos
+
+| Entidade | Tipo | Local | Campos principais |
+|---|---|---|---|
+| `package.json` | manifest npm | `openclaw/package.json` | `name=@rtk-ai/rtk-rewrite`, `version=1.0.0`, `main=index.ts`, `license=Apache-2.0`, `files`. |
+| `openclaw.plugin.json` | manifest plugin | `openclaw/openclaw.plugin.json` | `id=rtk-rewrite`, `name=RTK Token Optimizer`, `version=1.0.0`, `configSchema`, `uiHints`. |
+
+### Configuracao
+
+| Campo | Tipo | Default | Papel |
+|---|---|---|---|
+| `enabled` | boolean | `true` | Habilita/desabilita rewrite automatico. |
+| `verbose` | boolean | `false` | Loga decisoes de rewrite/aprovacao no console. |
+
+### Tipos e contratos
+
+| Entidade | Tipo | Local | Campos/variantes principais |
+|---|---|---|---|
+| `RewriteVerdict` | union type | `openclaw/index.ts` | `"ask"`, `"deny"`. |
+| Retorno `tryRewrite` | tuple | `openclaw/index.ts` | `[string | null, RewriteVerdict?]`. |
+| `requireApproval` | objeto | `openclaw/index.ts` | `title`, `description`, `severity`, `timeoutBehavior`, `allowedDecisions`, `onResolution`. |
+
+### Contratos de funcao principais
+
+| Funcao | Assinatura resumida | Papel |
+|---|---|---|
+| `checkRtk` | () -> `boolean` | Verifica e cacheia disponibilidade de `rtk` no PATH. |
+| `tryRewrite` | `command: string` -> `[string | null, RewriteVerdict?]` | Executa `rtk rewrite` e interpreta exit codes. |
+| `register` | `api: any` -> void | Registra hook `before_tool_call` quando plugin esta habilitado e RTK existe. |
+
+### Protocolo `rtk rewrite`
+
+| Exit code | stdout | Efeito no plugin |
+|---:|---|---|
+| 0 | comando reescrito | Auto-aplica rewrite se stdout difere do comando original. |
+| 1 | irrelevante | Passthrough sem alteracao. |
+| 2 | irrelevante | Bloqueia a chamada `exec`. |
+| 3 | comando reescrito | Requer aprovacao humana antes de aplicar. |

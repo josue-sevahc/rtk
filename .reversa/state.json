@@ -58,16 +58,16 @@
         "hooks",
         "analytics",
         "discover",
-        "learn"
-      ],
-      "modules_pending": [
+        "learn",
         "parser",
         "filters",
-        "openclaw",
+        "openclaw"
+      ],
+      "modules_pending": [
         "docs",
         "scripts"
       ],
-      "last_completed_at": "2026-07-14T17:01:20Z",
+      "last_completed_at": "2026-07-14T17:27:29Z",
       "files": [
         "_reversa_sdd/code-analysis.md",
         "_reversa_sdd/data-dictionary.md",
@@ -78,6 +78,9 @@
         "_reversa_sdd/flowcharts/analytics.md",
         "_reversa_sdd/flowcharts/discover.md",
         "_reversa_sdd/flowcharts/learn.md",
+        "_reversa_sdd/flowcharts/parser.md",
+        "_reversa_sdd/flowcharts/filters.md",
+        "_reversa_sdd/flowcharts/openclaw.md",
         ".reversa/context/modules.json"
       ]
     }
