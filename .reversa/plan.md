@@ -30,8 +30,8 @@
 - ✅ **Archaeologist** — Análise do módulo `parser`
 - ✅ **Archaeologist** — Análise do módulo `filters`
 - ✅ **Archaeologist** — Análise do módulo `openclaw`
-- [ ] **Archaeologist** — Análise do módulo `docs`
-- [ ] **Archaeologist** — Análise do módulo `scripts`
+- ✅ **Archaeologist** — Análise do módulo `docs`
+- ✅ **Archaeologist** — Análise do módulo `scripts`
 
 ## Fase 3: Interpretação 🧠
 

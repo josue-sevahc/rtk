@@ -1799,6 +1799,319 @@
         "Solicitacao de aprovacao para rewrites classificados como ask"
       ],
       "complexity": "low"
+    },
+    {
+      "name": "docs",
+      "path": "docs",
+      "purpose": "Documentacao tecnica, funcional, de usuario, privacidade, analytics, troubleshooting e governanca que define contratos publicos do RTK.",
+      "primary_files": [
+        "docs/contributing/TECHNICAL.md",
+        "docs/contributing/ARCHITECTURE.md",
+        "docs/contributing/CODING_PRACTICES.md",
+        "docs/usage/FEATURES.md",
+        "docs/usage/TRACKING.md",
+        "docs/TELEMETRY.md",
+        "docs/guide/**",
+        "docs/maintainers/MAINTAINERS_APPLY.md"
+      ],
+      "functions": [
+        {
+          "name": "UserJourney",
+          "file": "docs/guide/getting-started/*.md",
+          "params": [
+            "installation",
+            "init",
+            "configuration",
+            "agent setup"
+          ],
+          "returns": "operational RTK setup",
+          "confidence": "confirmed"
+        },
+        {
+          "name": "TechnicalFlow",
+          "file": "docs/contributing/TECHNICAL.md",
+          "params": [
+            "agent command"
+          ],
+          "returns": "filtered output + tracking",
+          "confidence": "confirmed"
+        },
+        {
+          "name": "TelemetryContract",
+          "file": "docs/TELEMETRY.md",
+          "params": [
+            "explicit consent"
+          ],
+          "returns": "daily aggregate ping or no-op",
+          "confidence": "confirmed"
+        }
+      ],
+      "entities": [
+        {
+          "name": "ConfigToml",
+          "fields": [
+            { "name": "tracking", "type": "section", "required": false },
+            { "name": "display", "type": "section", "required": false },
+            { "name": "filters", "type": "section", "required": false },
+            { "name": "tee", "type": "section", "required": false },
+            { "name": "telemetry", "type": "section", "required": false },
+            { "name": "hooks", "type": "section", "required": false }
+          ],
+          "confidence": "confirmed"
+        },
+        {
+          "name": "TrackingDocumentationTypes",
+          "fields": [
+            { "name": "Tracker", "type": "struct", "required": true },
+            { "name": "GainSummary", "type": "struct", "required": true },
+            { "name": "DayStats", "type": "struct", "required": true },
+            { "name": "WeekStats", "type": "struct", "required": true },
+            { "name": "MonthStats", "type": "struct", "required": true },
+            { "name": "TimedExecution", "type": "struct", "required": true }
+          ],
+          "confidence": "confirmed"
+        },
+        {
+          "name": "TelemetryPayload",
+          "fields": [
+            { "name": "identity", "type": "anonymous aggregate", "required": true },
+            { "name": "environment", "type": "aggregate metadata", "required": true },
+            { "name": "usage_volume", "type": "aggregate counts", "required": true },
+            { "name": "quality", "type": "aggregate quality signals", "required": true },
+            { "name": "adoption", "type": "aggregate integration signals", "required": true }
+          ],
+          "confidence": "confirmed"
+        }
+      ],
+      "business_rules": [
+        {
+          "description": "RTK deve falhar aberto: erros de hook/filtro preservam comando bruto ou output bruto.",
+          "location": "docs/contributing/TECHNICAL.md:59",
+          "confidence": "confirmed"
+        },
+        {
+          "description": "Output filtrado deve ser uma versao menor do output real, sem formato artificial padrao.",
+          "location": "CONTRIBUTING.md:45",
+          "confidence": "confirmed"
+        },
+        {
+          "description": "Novos filtros devem demonstrar economia minima de 60% com fixture real.",
+          "location": "docs/contributing/TECHNICAL.md:398",
+          "confidence": "confirmed"
+        },
+        {
+          "description": "Telemetria requer opt-in explicito e nao coleta codigo, paths ou argumentos completos.",
+          "location": "docs/TELEMETRY.md:1",
+          "confidence": "confirmed"
+        },
+        {
+          "description": "Custom filters so sao aplicados apos trust explicito e mudanca de conteudo requer re-trust.",
+          "location": "docs/guide/getting-started/configuration.md:120",
+          "confidence": "confirmed"
+        }
+      ],
+      "dependencies": [
+        "src/core",
+        "src/hooks",
+        "src/analytics",
+        "src/cmds",
+        "src/discover",
+        "src/filters",
+        "hooks",
+        "openclaw",
+        "README.md",
+        "CONTRIBUTING.md"
+      ],
+      "algorithms": [
+        "Navegacao documental de usuario: instalar, inicializar, configurar, medir, diagnosticar",
+        "Fluxo tecnico documentado: hook/plugin, rewrite, routing, filtro, tracking, tee",
+        "Politica de telemetria com opt-in, ping 23h e payload agregado",
+        "Processo de contribuicao com fixtures reais, snapshot e savings assertion",
+        "Matriz de agentes por tiers de integracao"
+      ],
+      "complexity": "medium"
+    },
+    {
+      "name": "scripts",
+      "path": "scripts",
+      "purpose": "Automacoes auxiliares de instalacao, diagnostico, smoke tests, tracking, benchmarks locais/VM, validacoes de docs/testes e relatorios economicos.",
+      "primary_files": [
+        "install.sh",
+        "build.rs",
+        "scripts/install-local.sh",
+        "scripts/check-installation.sh",
+        "scripts/test-all.sh",
+        "scripts/test-tracking.sh",
+        "scripts/check-test-presence.sh",
+        "scripts/validate-docs.sh",
+        "scripts/benchmark.sh",
+        "scripts/benchmark/**",
+        "scripts/rtk-economics.sh"
+      ],
+      "functions": [
+        {
+          "name": "install.sh::detect_os",
+          "file": "install.sh",
+          "params": [],
+          "returns": "OS variable",
+          "confidence": "confirmed"
+        },
+        {
+          "name": "install.sh::get_latest_version",
+          "file": "install.sh",
+          "params": [],
+          "returns": "VERSION variable",
+          "confidence": "confirmed"
+        },
+        {
+          "name": "install.sh::install",
+          "file": "install.sh",
+          "params": [],
+          "returns": "installed binary or exit 1",
+          "confidence": "confirmed"
+        },
+        {
+          "name": "test-all.sh::assert_ok",
+          "file": "scripts/test-all.sh",
+          "params": [
+            "name",
+            "command..."
+          ],
+          "returns": "updates PASS/FAIL",
+          "confidence": "confirmed"
+        },
+        {
+          "name": "vmEnsureReady",
+          "file": "scripts/benchmark/lib/vm.ts",
+          "params": [],
+          "returns": "Promise<void>",
+          "confidence": "confirmed"
+        },
+        {
+          "name": "vmBuildRtk",
+          "file": "scripts/benchmark/lib/vm.ts",
+          "params": [
+            "projectRoot: string"
+          ],
+          "returns": "Promise<{ buildTime, binarySize, version }>",
+          "confidence": "confirmed"
+        },
+        {
+          "name": "testCmd",
+          "file": "scripts/benchmark/lib/test.ts",
+          "params": [
+            "name: string",
+            "cmd: string",
+            "expectedExit"
+          ],
+          "returns": "Promise<TestResult>",
+          "confidence": "confirmed"
+        },
+        {
+          "name": "testSavings",
+          "file": "scripts/benchmark/lib/test.ts",
+          "params": [
+            "name",
+            "rawCmd",
+            "rtkCmd",
+            "targetPct"
+          ],
+          "returns": "Promise<TestResult>",
+          "confidence": "confirmed"
+        },
+        {
+          "name": "generateReport",
+          "file": "scripts/benchmark/lib/report.ts",
+          "params": [
+            "buildInfo: BuildInfo"
+          ],
+          "returns": "string",
+          "confidence": "confirmed"
+        }
+      ],
+      "entities": [
+        {
+          "name": "InstallerState",
+          "fields": [
+            { "name": "OS", "type": "string", "required": true },
+            { "name": "ARCH", "type": "string", "required": true },
+            { "name": "TARGET", "type": "string", "required": true },
+            { "name": "VERSION", "type": "string", "required": true },
+            { "name": "INSTALL_DIR", "type": "path", "required": true }
+          ],
+          "confidence": "confirmed"
+        },
+        {
+          "name": "TestResult",
+          "fields": [
+            { "name": "name", "type": "string", "required": true },
+            { "name": "status", "type": "PASS | FAIL | SKIP", "required": true },
+            { "name": "detail", "type": "string", "required": true },
+            { "name": "exitCode", "type": "number", "required": false },
+            { "name": "outputSize", "type": "number", "required": false },
+            { "name": "savings", "type": "number", "required": false },
+            { "name": "duration", "type": "number", "required": false }
+          ],
+          "confidence": "confirmed"
+        },
+        {
+          "name": "BuildInfo",
+          "fields": [
+            { "name": "buildTime", "type": "number", "required": true },
+            { "name": "binarySize", "type": "number", "required": true },
+            { "name": "version", "type": "string", "required": true },
+            { "name": "branch", "type": "string", "required": true },
+            { "name": "commit", "type": "string", "required": true }
+          ],
+          "confidence": "confirmed"
+        }
+      ],
+      "business_rules": [
+        {
+          "description": "Instalador remoto recusa instalar binario sem checksum valido, salvo override explicito RTK_SKIP_CHECKSUM=1.",
+          "location": "install.sh:104",
+          "confidence": "confirmed"
+        },
+        {
+          "description": "Archive de release e rejeitado se contem caminho absoluto ou traversal com '..'.",
+          "location": "install.sh:131",
+          "confidence": "confirmed"
+        },
+        {
+          "description": "Novos *_cmd.rs modificados devem conter #[cfg(test)].",
+          "location": "scripts/check-test-presence.sh:31",
+          "confidence": "confirmed"
+        },
+        {
+          "description": "Benchmark de integracao so declara READY FOR RELEASE quando failed == 0.",
+          "location": "scripts/benchmark/run.ts:419",
+          "confidence": "confirmed"
+        }
+      ],
+      "dependencies": [
+        "curl",
+        "tar",
+        "sha256sum/shasum",
+        "cargo",
+        "git",
+        "rtk binary",
+        "bun",
+        "multipass",
+        "jq",
+        "bc",
+        "ccusage",
+        "hyperfine"
+      ],
+      "algorithms": [
+        "Instalacao segura por target triple, checksum e validacao de archive",
+        "Smoke test local com contadores PASS/FAIL/SKIP",
+        "Guard CI de presenca de testes inline em filtros Rust",
+        "Provisionamento/reuso de VM Multipass com cloud-init",
+        "Transferencia de source por tarball excluindo diretorios pesados",
+        "Suite faseada de integracao, rewrite, savings, pipes, performance e concorrencia",
+        "Relatorio economico combinando ccusage e rtk gain"
+      ],
+      "complexity": "high"
     }
   ]
 }

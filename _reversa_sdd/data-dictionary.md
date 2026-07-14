@@ -612,3 +612,126 @@ Projeto: `rtk`
 | 1 | irrelevante | Passthrough sem alteracao. |
 | 2 | irrelevante | Bloqueia a chamada `exec`. |
 | 3 | comando reescrito | Requer aprovacao humana antes de aplicar. |
+
+## Modulo `docs`
+
+### Arquivos principais
+
+| Documento | Papel |
+|---|---|
+| `docs/contributing/TECHNICAL.md` | Guia tecnico end-to-end: hook, rewrite, routing, filtros, tracking, tee, testes. |
+| `docs/contributing/ARCHITECTURE.md` | Referencia arquitetural extensa: lifecycle, estrategias, tracking, flags, erros, config, ADRs. |
+| `docs/contributing/CODING_PRACTICES.md` | Padroes de contribuicao, erro, testes, seguranca e dependencias. |
+| `docs/usage/FEATURES.md` | Catalogo funcional amplo de comandos e funcionalidades. |
+| `docs/usage/TRACKING.md` | API e schema conceitual do tracking local. |
+| `docs/usage/AUDIT_GUIDE.md` | Workflows de auditoria de economia e exportacao. |
+| `docs/TELEMETRY.md` | Politica de telemetria, consentimento, payload e direitos GDPR. |
+| `docs/guide/getting-started/*` | Instalacao, quick start, agentes suportados e configuracao. |
+| `docs/guide/analytics/*` | Guias de `gain`, `discover` e `session`. |
+| `docs/guide/resources/*` | Cobertura, troubleshooting e telemetria para usuario. |
+
+### Configuracao documentada
+
+| Secao | Campos principais | Papel |
+|---|---|---|
+| `[tracking]` | `enabled`, `history_days`, `database_path` | Tracking local e retencao. |
+| `[display]` | `colors`, `emoji`, `max_width` | Apresentacao de output. |
+| `[filters]` | `ignore_dirs`, `ignore_files` | Exclusoes para comandos de leitura/listagem. |
+| `[tee]` | `enabled`, `mode`, `max_files`, `directory` | Recuperacao de output bruto. |
+| `[telemetry]` | `enabled` | Consentimento/config de telemetria. |
+| `[hooks]` | `exclude_commands` | Comandos excluidos de auto-rewrite. |
+
+### Tracking API documentada
+
+| Entidade | Tipo | Campos principais |
+|---|---|---|
+| `Tracker` | struct | `new`, `record`, `get_summary`, `get_all_days`, `get_by_week`, `get_by_month`, `get_recent`. |
+| `GainSummary` | struct | `total_commands`, `total_input`, `total_output`, `total_saved`, `avg_savings_pct`, `total_time_ms`, `avg_time_ms`, `by_command`, `by_day`. |
+| `DayStats` | struct | `date`, `commands`, `input_tokens`, `output_tokens`, `saved_tokens`, `savings_pct`, `total_time_ms`, `avg_time_ms`. |
+| `WeekStats` | struct | `week_start`, `week_end`, `commands`, tokens e tempos agregados. |
+| `MonthStats` | struct | `month`, `commands`, tokens e tempos agregados. |
+| `CommandRecord` | struct | `timestamp`, `rtk_cmd`, `saved_tokens`, `savings_pct`. |
+| `TimedExecution` | struct | `start`, `track`, `track_passthrough`. |
+
+### Telemetria documentada
+
+| Categoria | Campos exemplos | Restricao |
+|---|---|---|
+| Identity | `device_hash` | Hash anonimo, sem hostname/username. |
+| Environment | `version`, `os`, `arch`, `install_method` | Metadados de ambiente. |
+| Usage volume | `commands_24h`, `top_commands`, `tokens_saved_*` | Nomes de ferramentas, nao argumentos completos. |
+| Quality | `passthrough_top`, `parse_failures_24h`, `low_savings_commands` | Agregado para priorizar filtros. |
+| Adoption | `hook_type`, `custom_toml_filters` | Mede integracoes e DSL. |
+
+### Agentes suportados documentados
+
+| Tier | Agentes exemplos | Mecanismo |
+|---|---|---|
+| Full hook | Claude Code, Copilot, Cursor, Gemini, Factory Droid | Intercepta API/evento do agente e chama `rtk rewrite`. |
+| Plugin | OpenCode, OpenClaw, Pi, Hermes | Mutacao via plugin/extensao do host. |
+| Rules file | Cline/Roo, Windsurf, Codex, Kilo Code, Antigravity | Instrucao prompt-level, sem interceptacao garantida. |
+
+### Contratos documentais principais
+
+| Contrato | Fonte |
+|---|---|
+| Falha de hook/filtro deve cair para raw output. | `TECHNICAL.md`, `supported-agents.md`, `CODING_PRACTICES.md` |
+| Exit code do comando deve ser preservado. | `TECHNICAL.md`, `ARCHITECTURE.md` |
+| Startup alvo menor que 10ms. | `TECHNICAL.md`, `CODING_PRACTICES.md` |
+| Novos filtros devem usar fixtures reais e demonstrar >=60% savings. | `TECHNICAL.md`, `CODING_PRACTICES.md` |
+| Telemetria exige opt-in e nao coleta codigo/caminhos/argumentos completos. | `TELEMETRY.md`, `guide/resources/telemetry.md` |
+
+## Modulo `scripts`
+
+### Instalacao
+
+| Entidade | Tipo | Local | Campos/variaveis principais |
+|---|---|---|---|
+| `install.sh` | shell script | `install.sh` | `REPO`, `BINARY_NAME`, `INSTALL_DIR`, `OS`, `ARCH`, `TARGET`, `VERSION`, URLs de download/checksum. |
+| `install-local.sh` | shell script | `scripts/install-local.sh` | `INSTALL_DIR`, `INSTALL_PATH`, `BINARY_PATH`. |
+| `check-installation.sh` | shell script | `scripts/check-installation.sh` | `RTK_VERSION`, `CORRECT_RTK`, arrays `FEATURES`, `MISSING_FEATURES`. |
+
+### Testes shell
+
+| Entidade | Tipo | Local | Papel |
+|---|---|---|---|
+| `assert_ok` | function | `scripts/test-all.sh` | Espera comando com exit 0 e incrementa PASS/FAIL. |
+| `assert_contains` | function | `scripts/test-all.sh` | Espera output contendo substring. |
+| `assert_exit_ok` | function | `scripts/test-all.sh` | Espera sucesso silencioso. |
+| `assert_fails` | function | `scripts/test-all.sh` | Espera falha. |
+| `skip_test` | function | `scripts/test-all.sh` | Registra SKIP com razao. |
+| `check` | function | `scripts/test-tracking.sh` | Verifica que historico contem substring esperada. |
+
+### Benchmark VM
+
+| Entidade | Tipo | Local | Campos principais |
+|---|---|---|---|
+| `VmInfo` | interface TS | `scripts/benchmark/lib/vm.ts` | `name`, `state`, `ipv4`. |
+| `TestStatus` | union type | `scripts/benchmark/lib/test.ts` | `PASS`, `FAIL`, `SKIP`. |
+| `TestResult` | interface TS | `scripts/benchmark/lib/test.ts` | `name`, `status`, `detail`, `exitCode`, `outputSize`, `savings`, `duration`. |
+| `BuildInfo` | interface TS | `scripts/benchmark/lib/report.ts` | `buildTime`, `binarySize`, `version`, `branch`, `commit`. |
+
+### Constantes e limites
+
+| Nome | Local | Valor/Papel |
+|---|---|---|
+| `VM_NAME` | `scripts/benchmark/lib/vm.ts` | `rtk-test`. |
+| `CLOUD_INIT` | `scripts/benchmark/lib/vm.ts` | `scripts/benchmark/cloud-init.yaml`. |
+| `RTK_BIN` | `scripts/benchmark/lib/vm.ts` | `/home/ubuntu/rtk/target/release/rtk`. |
+| `sizeLimit` | `scripts/benchmark/run.ts` | 8 MiB para binario ARM Linux em VM. |
+| `timeoutMs` | `vmExec` | 60s por comando por default. |
+
+### Contratos de funcao principais
+
+| Funcao | Assinatura resumida | Papel |
+|---|---|---|
+| `detect_os` / `detect_arch` | shell -> vars | Determina plataforma suportada para release asset. |
+| `get_latest_version` | shell -> `VERSION` | Resolve release latest via redirect ou API. |
+| `get_target` | OS/ARCH -> `TARGET` | Mapeia para target triple do asset. |
+| `install` | shell | Baixa, valida checksum, valida tar e instala binario. |
+| `vmEnsureReady` | async -> void | Cria/reusa VM Multipass e aguarda cloud-init. |
+| `vmBuildRtk` | projectRoot -> build info | Transfere source e compila release na VM. |
+| `testCmd` | name/cmd/expectedExit -> `TestResult` | Executa comando na VM e valida exit code. |
+| `testSavings` | raw/rtk/target -> `TestResult` | Compara output bruto vs filtrado e valida percentual. |
+| `testRewrite` | input/expected -> `TestResult` | Valida `rtk rewrite` contra string esperada. |
+| `generateReport` | `BuildInfo` -> string | Agrupa resultados por fase e emite veredito. |

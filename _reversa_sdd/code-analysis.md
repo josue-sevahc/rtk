@@ -1237,3 +1237,206 @@ Entidades/configuracoes principais:
 - 🔴 **LACUNA** — Nao ha tipos OpenClaw importados; `api` e `event` usam `any`/shape manual.
 - 🔴 **LACUNA** — A analise estatica nao validou o comportamento real da API OpenClaw nem o suporte a `requireApproval`.
 - 🔴 **LACUNA** — O plugin nao diferencia erro operacional do `rtk rewrite` de "sem rewrite"; ambos podem virar passthrough silencioso.
+
+## Modulo `docs`
+
+### Proposito
+
+🟢 **CONFIRMADO** — `docs/` concentra a documentacao tecnica, funcional, de usuario, privacidade, analytics, troubleshooting e governanca do RTK. Ela estabelece contratos publicos importantes para comportamento do produto e para contribuidores.
+
+### Arquivos analisados
+
+- `docs/contributing/TECHNICAL.md`
+- `docs/contributing/ARCHITECTURE.md`
+- `docs/contributing/CODING_PRACTICES.md`
+- `docs/usage/FEATURES.md`
+- `docs/usage/TRACKING.md`
+- `docs/usage/AUDIT_GUIDE.md`
+- `docs/TELEMETRY.md`
+- `docs/guide/**`
+- `docs/maintainers/MAINTAINERS_APPLY.md`
+
+### Responsabilidades principais
+
+- 🟢 **CONFIRMADO** — Documentar a visao do RTK como proxy CLI que reduz output consumido por LLMs em 60-90%.
+- 🟢 **CONFIRMADO** — Explicar o fluxo end-to-end: hook/agent, `rtk rewrite`, parser Clap, roteamento, filtros Rust/TOML, tracking SQLite e tee recovery.
+- 🟢 **CONFIRMADO** — Definir a matriz de agentes suportados e os tres tiers de integracao: hook completo, plugin e rules file.
+- 🟢 **CONFIRMADO** — Documentar instalacao, configuracao, telemetria, comandos otimizados, analytics (`gain`, `discover`, `session`) e troubleshooting.
+- 🟢 **CONFIRMADO** — Definir praticas de contribuicao: baixo overhead, fallback seguro, testes no mesmo arquivo, fixtures reais e savings >= 60%.
+- 🟢 **CONFIRMADO** — Documentar responsabilidades de maintainers por ecossistema e core.
+
+### Fluxo documental do produto
+
+#### Usuario final
+
+1. 🟢 **CONFIRMADO** — `installation.md` alerta para colisao de nome com outro `rtk` e recomenda verificar com `rtk gain`.
+2. 🟢 **CONFIRMADO** — `quick-start`/`index` encaminham instalacao, inicializacao do hook e medicao de savings.
+3. 🟢 **CONFIRMADO** — `supported-agents.md` detalha como cada agente intercepta ou apenas recebe instrucoes.
+4. 🟢 **CONFIRMADO** — `configuration.md` documenta `config.toml`, env vars, tee, exclusoes de rewrite, telemetria e trust de custom filters.
+5. 🟢 **CONFIRMADO** — `troubleshooting.md` cobre pacote errado, PATH, hooks sem efeito, Windows e diagnostico.
+
+#### Contribuidor
+
+🟢 **CONFIRMADO** — `TECHNICAL.md` e a porta de entrada tecnica, com mapa de pastas, rewrite pipeline, fallback path, tracking, tee, testes e restricoes de performance.
+
+🟢 **CONFIRMADO** — `CODING_PRACTICES.md` reforca portabilidade, extensibilidade, `anyhow::Result`, comentarios de "why", fixtures reais e evitar dependencias desnecessarias.
+
+🟢 **CONFIRMADO** — `ARCHITECTURE.md` aprofunda command lifecycle, filtering strategies, tracking SQLite, flags globais, error handling, config e ADRs.
+
+### Contratos e regras documentados
+
+- 🟢 **CONFIRMADO** — RTK deve degradar graciosamente: falha de filtro ou hook cai para output bruto/passthrough.
+- 🟢 **CONFIRMADO** — RTK deve preservar exit code dos comandos, especialmente para CI/CD.
+- 🟢 **CONFIRMADO** — Hooks e plugins sao delegates finos; a decisao real de rewrite vive no binario Rust (`rtk rewrite`).
+- 🟢 **CONFIRMADO** — Output filtrado deve parecer uma versao menor do output real, sem formato inventado que confunda o LLM.
+- 🟢 **CONFIRMADO** — Startup alvo e `<10ms`, sem async runtime e com minimo de I/O no caminho critico.
+- 🟢 **CONFIRMADO** — Tracking local usa SQLite com retencao padrao de 90 dias.
+- 🟢 **CONFIRMADO** — Telemetria e desabilitada por padrao e exige consentimento explicito; nao coleta codigo, caminhos, argumentos completos, secrets ou PII.
+- 🟢 **CONFIRMADO** — Custom filters sao trust-gated porque podem alterar o que o agente ve.
+
+### Dominios cobertos pela documentacao
+
+🟢 **CONFIRMADO** — `FEATURES.md` cataloga comandos de arquivos, Git, GitHub CLI, testes, build/lint, formatacao, package managers, containers/orquestracao, dados/rede, cloud/database, analytics, hooks, config, tee e telemetria.
+
+🟢 **CONFIRMADO** — `what-rtk-covers.md` resume savings tipicos por ecossistema: Git, GitHub, Graphite, Cargo/Rust, JS/TS, Python, Go, Ruby, .NET, Docker/Kubernetes, arquivos/search e cloud/data.
+
+🟢 **CONFIRMADO** — `gain.md` documenta daily/weekly/monthly breakdowns, JSON/CSV, quota estimates e token estimation por `text.len() / 4`.
+
+🟢 **CONFIRMADO** — `discover.md` documenta analise de historico Claude Code para encontrar oportunidades perdidas e `session` para medir cobertura de uso RTK.
+
+### Estruturas de dados
+
+Ver detalhes em `data-dictionary.md`.
+
+Entidades/contratos principais documentados:
+
+- Config TOML: `[tracking]`, `[display]`, `[filters]`, `[tee]`, `[telemetry]`, `[hooks]`
+- Tracking API: `Tracker`, `GainSummary`, `DayStats`, `WeekStats`, `MonthStats`, `CommandRecord`, `TimedExecution`
+- Telemetry payload: identity anonima, environment, usage volume, quality, ecosystem, retention, economics, adoption, config, feature adoption
+- Agent support matrix: full hook, plugin, rules file
+
+### Dependencias internas
+
+🟢 **CONFIRMADO** — `docs` referencia e sincroniza contratos com `src/core`, `src/hooks`, `src/analytics`, `src/cmds`, `src/discover`, `src/learn`, `src/parser`, `src/filters`, `hooks/` e `openclaw/`.
+
+### Tratamento de erros e privacidade documentados
+
+- 🟢 **CONFIRMADO** — Hooks devem falhar abertos: RTK ausente, JSON invalido, versao antiga ou erro de filtro preservam comando bruto.
+- 🟢 **CONFIRMADO** — Tee recovery salva output bruto apenas para permitir recuperacao sem reexecutar comando.
+- 🟢 **CONFIRMADO** — Telemetria usa ping diario em background, timeout de 2s, sem retries/fila, e respeita `RTK_TELEMETRY_DISABLED=1`.
+- 🟢 **CONFIRMADO** — `rtk telemetry forget` desabilita telemetria, apaga dados locais e solicita erasure server-side.
+
+### Testes/documentacao de qualidade
+
+🟢 **CONFIRMADO** — Docs de contribuicao exigem testes com fixtures reais, snapshots e assercao de economia minima de 60% para novos filtros.
+
+🟢 **CONFIRMADO** — Documentacao de contribuicao diz que docs devem ser atualizadas para novos filtros, features e mudancas que afetem comportamento documentado.
+
+### Complexidade
+
+🟢 **CONFIRMADO** — Complexidade media. O modulo nao executa codigo, mas e transversal e contem contratos publicos que precisam permanecer sincronizados com implementacao, guias e promessas de privacidade.
+
+### Lacunas
+
+- 🔴 **LACUNA** — Ha inconsistencias aparentes de caminho/nome do banco entre docs: alguns trechos citam `tracking.db`, outros `history.db`.
+- 🔴 **LACUNA** — `TECHNICAL.md` cita suporte a 7 agentes em uma secao, enquanto guias/README citam um conjunto maior de agentes.
+- 🔴 **LACUNA** — `FEATURES.md` esta em frances enquanto varios guias estao em ingles, indicando estrategia multilíngue parcial ou documento legado.
+
+## Modulo `scripts`
+
+### Proposito
+
+🟢 **CONFIRMADO** — `scripts/` e arquivos auxiliares da raiz automatizam instalacao local/remota, diagnostico, smoke tests, testes de tracking, benchmarks locais, benchmarks em VM Multipass, validacoes de docs/testes e analises economicas.
+
+### Arquivos analisados
+
+- `install.sh`
+- `build.rs`
+- `scripts/install-local.sh`
+- `scripts/check-installation.sh`
+- `scripts/test-all.sh`
+- `scripts/test-tracking.sh`
+- `scripts/check-test-presence.sh`
+- `scripts/validate-docs.sh`
+- `scripts/benchmark.sh`
+- `scripts/benchmark/**`
+- `scripts/benchmark-sessions/lib/runner.py`
+- `scripts/rtk-economics.sh`
+- `scripts/update-readme-metrics.sh`
+
+### Responsabilidades principais
+
+- 🟢 **CONFIRMADO** — Instalar binarios release por plataforma, com checksum SHA-256 e protecao contra path traversal no archive.
+- 🟢 **CONFIRMADO** — Instalar build local de `target/release/rtk` em diretorio escolhido, reconstruindo quando fonte/Cargo estiverem mais novos.
+- 🟢 **CONFIRMADO** — Diagnosticar instalacao local e distinguir Rust Token Killer de outro binario `rtk`.
+- 🟢 **CONFIRMADO** — Rodar smoke tests de comandos RTK em ambiente local.
+- 🟢 **CONFIRMADO** — Validar que novos `*_cmd.rs` modificados tenham `#[cfg(test)]`.
+- 🟢 **CONFIRMADO** — Executar suite de integracao em VM Multipass com fases para build, qualidade, comandos built-in, filtros TOML, rewrite, exit codes, savings, pipes, edge cases, performance e concorrencia.
+- 🟢 **CONFIRMADO** — Combinar dados de `ccusage` e `rtk gain` para relatorio economico.
+
+### Fluxo de controle
+
+#### Instalador remoto (`install.sh`)
+
+1. 🟢 **CONFIRMADO** — Detecta OS (`Linux`/`Darwin`) e arquitetura (`x86_64`/`aarch64`).
+2. 🟢 **CONFIRMADO** — Resolve versao pela redirect `/releases/latest`, com fallback para GitHub API; `RTK_VERSION` permite pin.
+3. 🟢 **CONFIRMADO** — Monta target triple e baixa `rtk-<target>.tar.gz` e `checksums.txt`.
+4. 🟢 **CONFIRMADO** — Verifica checksum com `sha256sum` ou `shasum -a 256`; `RTK_SKIP_CHECKSUM=1` permite bypass com warning.
+5. 🟢 **CONFIRMADO** — Lista archive antes de extrair e rejeita caminhos absolutos ou componentes `..`.
+6. 🟢 **CONFIRMADO** — Extrai em temp dir, move binario para `RTK_INSTALL_DIR` ou `~/.local/bin`, aplica `chmod +x` e alerta se PATH nao contem o diretorio.
+
+#### Smoke tests locais
+
+🟢 **CONFIRMADO** — `test-all.sh` exige `rtk` no PATH e execucao dentro de repo Git, contabiliza pass/fail/skip e cobre ajuda, arquivos, Git, GitHub CLI, Cargo, curl, npm/npx, pnpm, grep e muitos outros comandos.
+
+🟢 **CONFIRMADO** — `test-tracking.sh` executa comandos otimizados, passthrough, gh opcional e stdin, verificando presenca em `rtk gain --history`.
+
+#### Benchmark VM
+
+🟢 **CONFIRMADO** — `scripts/benchmark/run.ts` usa Bun e Multipass, cria/reusa VM `rtk-test`, transfere source excluindo `target`, `.git`, `node_modules` e builds release.
+
+🟢 **CONFIRMADO** — A suite gera relatorio e declara `READY FOR RELEASE` apenas quando nao ha falhas.
+
+🟢 **CONFIRMADO** — Fases incluem qualidade cargo, comandos Rust built-in, filtros TOML, rewrite engine, exit code preservation, token savings, pipe compatibility, edge cases, performance com hyperfine/memoria e concorrencia 10x.
+
+### Estruturas de dados
+
+Ver detalhes em `data-dictionary.md`.
+
+Entidades/contratos principais:
+
+- `install.sh`: `OS`, `ARCH`, `TARGET`, `VERSION`, `DOWNLOAD_URL`, `CHECKSUMS_URL`, `INSTALL_DIR`
+- Benchmark TS: `VmInfo`, `TestResult`, `TestStatus`, `BuildInfo`
+- Smoke shell: contadores `PASS`, `FAIL`, `SKIP`, lista `FAILURES`
+
+### Dependencias internas e externas
+
+🟢 **CONFIRMADO** — Scripts dependem de ferramentas como `curl`, `tar`, `sha256sum`/`shasum`, `cargo`, `git`, `rtk`, `gh`, `jq`, `bc`, `numfmt`, `bun`, `multipass`, `hyperfine`, `ccusage` e ferramentas de ecossistema opcionais.
+
+🟢 **CONFIRMADO** — `build.rs` tambem faz parte desta automacao: concatena `src/filters/*.toml`, valida TOML e nomes duplicados, e ajusta stack no Windows.
+
+### Tratamento de erros e seguranca
+
+- 🟢 **CONFIRMADO** — Instalador remoto usa `set -e`, falha para OS/arch desconhecidos, falha em checksum ausente/divergente e recusa archive inseguro.
+- 🟢 **CONFIRMADO** — `check-test-presence.sh` sai com codigo 1 quando um `*_cmd.rs` modificado nao tem testes inline.
+- 🟢 **CONFIRMADO** — Benchmark VM usa timeout por comando (`vmExec`) e timeout de cloud-init.
+- 🟢 **CONFIRMADO** — Smoke tests preservam contadores e retornam numero de falhas.
+
+### Testes embutidos/guardrails
+
+🟢 **CONFIRMADO** — `check-test-presence.sh --self-test` cria arquivo temporario sem testes e valida que o guard detecta a ausencia.
+
+🟢 **CONFIRMADO** — Benchmark TS possui helpers para expectativa de exit code exato ou `"any"`, medicao de savings e validacao de rewrite input -> expected output.
+
+🟢 **CONFIRMADO** — `validate-docs.sh` checa que comandos Python/Go estejam mencionados no README e faz verificacao simples do hook `.claude/hooks/rtk-rewrite.sh` quando presente.
+
+### Complexidade
+
+🟢 **CONFIRMADO** — Complexidade alta. O modulo mistura shell portable, release/install security, CI guardrails, smoke tests locais, automacao de VM, provisionamento de ecossistemas e medicao economica.
+
+### Lacunas
+
+- 🔴 **LACUNA** — `update-readme-metrics.sh` e explicitamente placeholder: so verifica markers, nao atualiza metricas.
+- 🔴 **LACUNA** — `check-installation.sh` contem referencias a "fork" e `feat/all-features`, possivelmente desatualizadas para o estado atual do produto.
+- 🔴 **LACUNA** — `validate-docs.sh` procura `.claude/hooks/rtk-rewrite.sh`, mas o projeto atual centraliza hooks em `hooks/`; isso pode gerar warning mesmo com instalacao moderna.
+- 🔴 **LACUNA** — A analise nao executou scripts pesados/destrutivos como instalador remoto, smoke suite completa ou benchmark VM.
