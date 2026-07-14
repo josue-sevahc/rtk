@@ -8,16 +8,75 @@
   "doc_level": "completo",
   "output_folder": "_reversa_sdd",
   "forward_folder": "_reversa_forward",
-  "phase": null,
-  "completed": [],
+  "phase": "escavacao",
+  "completed": [
+    "reconhecimento"
+  ],
   "pending": [
-    "reconhecimento",
     "escavacao",
     "interpretacao",
     "geracao",
     "revisao"
   ],
-  "checkpoints": {},
+  "checkpoints": {
+    "scout": {
+      "completed_at": "2026-07-14T14:23:54Z",
+      "files": [
+        "_reversa_sdd/inventory.md",
+        "_reversa_sdd/dependencies.md",
+        ".reversa/context/surface.json"
+      ],
+      "summary": {
+        "primary_language": "Rust",
+        "frameworks": [
+          "Clap",
+          "Serde",
+          "Rusqlite",
+          "OpenClaw plugin"
+        ],
+        "modules": [
+          "main",
+          "cmds",
+          "core",
+          "hooks",
+          "analytics",
+          "discover",
+          "learn",
+          "parser",
+          "filters",
+          "openclaw",
+          "docs",
+          "scripts"
+        ]
+      }
+    },
+    "archaeologist": {
+      "modules_analyzed": [
+        "main",
+        "cmds"
+      ],
+      "modules_pending": [
+        "core",
+        "hooks",
+        "analytics",
+        "discover",
+        "learn",
+        "parser",
+        "filters",
+        "openclaw",
+        "docs",
+        "scripts"
+      ],
+      "last_completed_at": "2026-07-14T16:29:54Z",
+      "files": [
+        "_reversa_sdd/code-analysis.md",
+        "_reversa_sdd/data-dictionary.md",
+        "_reversa_sdd/flowcharts/main.md",
+        "_reversa_sdd/flowcharts/cmds.md",
+        ".reversa/context/modules.json"
+      ]
+    }
+  },
   "engines": [
     "claude-code",
     "codex",

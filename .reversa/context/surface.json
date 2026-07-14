@@ -1,0 +1,185 @@
+{
+  "generated_at": "2026-07-14T14:23:54Z",
+  "project_root": "/home/sevahc/dev/ominara/rtk",
+  "languages": [
+    {
+      "name": "Rust",
+      "extensions": [".rs"],
+      "file_count": 126
+    },
+    {
+      "name": "Markdown",
+      "extensions": [".md"],
+      "file_count": 75
+    },
+    {
+      "name": "TOML",
+      "extensions": [".toml"],
+      "file_count": 65
+    },
+    {
+      "name": "Shell",
+      "extensions": [".sh"],
+      "file_count": 17
+    },
+    {
+      "name": "JSON",
+      "extensions": [".json"],
+      "file_count": 13
+    },
+    {
+      "name": "TypeScript",
+      "extensions": [".ts"],
+      "file_count": 9
+    },
+    {
+      "name": "YAML",
+      "extensions": [".yml", ".yaml"],
+      "file_count": 9
+    },
+    {
+      "name": "Python",
+      "extensions": [".py"],
+      "file_count": 4
+    },
+    {
+      "name": "Java",
+      "extensions": [".java"],
+      "file_count": 5
+    },
+    {
+      "name": "XML",
+      "extensions": [".xml"],
+      "file_count": 4
+    },
+    {
+      "name": "Ruby",
+      "extensions": [".rb"],
+      "file_count": 1
+    }
+  ],
+  "primary_language": "Rust",
+  "frameworks": [
+    {
+      "name": "Clap",
+      "version": "4",
+      "source": "Cargo.toml"
+    },
+    {
+      "name": "Serde",
+      "version": "1",
+      "source": "Cargo.toml"
+    },
+    {
+      "name": "Rusqlite",
+      "version": "0.31",
+      "source": "Cargo.toml"
+    },
+    {
+      "name": "OpenClaw plugin",
+      "version": "1.0.0",
+      "source": "openclaw/package.json"
+    }
+  ],
+  "package_manager": "cargo",
+  "entry_points": [
+    {
+      "path": "src/main.rs",
+      "type": "cli_entry"
+    },
+    {
+      "path": "build.rs",
+      "type": "build_script"
+    },
+    {
+      "path": "openclaw/index.ts",
+      "type": "plugin_entry"
+    },
+    {
+      "path": "install.sh",
+      "type": "installer"
+    },
+    {
+      "path": "Formula/rtk.rb",
+      "type": "package_formula"
+    }
+  ],
+  "config_files": [
+    "Cargo.toml",
+    "Cargo.lock",
+    ".semgrep.yml",
+    ".rtk/filters.toml",
+    "release-please-config.json",
+    ".release-please-manifest.json",
+    "openclaw/package.json",
+    "openclaw/openclaw.plugin.json"
+  ],
+  "ci_cd": [
+    ".github/workflows/ci.yml",
+    ".github/workflows/cd.yml",
+    ".github/workflows/release.yml",
+    ".github/workflows/next-release.yml",
+    ".github/workflows/pr-target-check.yml",
+    ".github/workflows/CICD.md"
+  ],
+  "docker": {},
+  "database_hints": [
+    {
+      "path": "Cargo.toml",
+      "type": "rusqlite_dependency"
+    },
+    {
+      "path": "src/core/tracking.rs",
+      "type": "sqlite_tracking_code"
+    },
+    {
+      "path": "src/analytics/",
+      "type": "tracking_database_readers"
+    }
+  ],
+  "test_framework": "cargo test",
+  "test_file_count": 6,
+  "modules": [
+    "main",
+    "cmds",
+    "core",
+    "hooks",
+    "analytics",
+    "discover",
+    "learn",
+    "parser",
+    "filters",
+    "openclaw",
+    "docs",
+    "scripts"
+  ],
+  "total_files": 359,
+  "organization_suggestion": {
+    "granularity": "module",
+    "rationale": "A estrutura principal esta organizada em modulos tecnicos claros sob src/ e em artefatos auxiliares por responsabilidade.",
+    "signals": [
+      {
+        "type": "top_level_domain_folders",
+        "evidence": [
+          "src/cmds/",
+          "src/core/",
+          "src/hooks/",
+          "src/analytics/",
+          "src/discover/",
+          "src/learn/",
+          "src/parser/",
+          "src/filters/",
+          "openclaw/",
+          "scripts/"
+        ]
+      },
+      {
+        "type": "central_cli_routing",
+        "evidence": [
+          "src/main.rs"
+        ]
+      }
+    ],
+    "features": []
+  }
+}

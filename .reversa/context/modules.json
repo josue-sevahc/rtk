@@ -1,0 +1,330 @@
+{
+  "generated_at": "2026-07-14T16:29:54Z",
+  "modules": [
+    {
+      "name": "main",
+      "path": "src/main.rs",
+      "purpose": "Entrypoint e roteador central do CLI RTK; define comandos, flags globais, fallback, verificacoes de integridade e dispatch para modulos especializados.",
+      "primary_files": [
+        "src/main.rs"
+      ],
+      "functions": [
+        {
+          "name": "main",
+          "file": "src/main.rs",
+          "params": [],
+          "returns": "()",
+          "confidence": "confirmed"
+        },
+        {
+          "name": "run_cli",
+          "file": "src/main.rs",
+          "params": [],
+          "returns": "Result<i32>",
+          "confidence": "confirmed"
+        },
+        {
+          "name": "run_fallback",
+          "file": "src/main.rs",
+          "params": [
+            "parse_error: clap::Error"
+          ],
+          "returns": "Result<i32>",
+          "confidence": "confirmed"
+        },
+        {
+          "name": "uninstall_init_dispatch",
+          "file": "src/main.rs",
+          "params": [
+            "agent: Option<AgentTarget>",
+            "global: bool",
+            "gemini: bool",
+            "codex: bool",
+            "ctx: hooks::init::InitContext",
+            "uninstall_hermes: FnOnce",
+            "uninstall_standard: FnOnce"
+          ],
+          "returns": "Result<()>",
+          "confidence": "confirmed"
+        },
+        {
+          "name": "shell_split",
+          "file": "src/main.rs",
+          "params": [
+            "input: &str"
+          ],
+          "returns": "Vec<String>",
+          "confidence": "confirmed"
+        },
+        {
+          "name": "build_k8s_namespace_args",
+          "file": "src/main.rs",
+          "params": [
+            "namespace: Option<String>",
+            "all: bool"
+          ],
+          "returns": "Vec<String>",
+          "confidence": "confirmed"
+        },
+        {
+          "name": "build_k8s_logs_args",
+          "file": "src/main.rs",
+          "params": [
+            "pod: String",
+            "container: Option<String>"
+          ],
+          "returns": "Vec<String>",
+          "confidence": "confirmed"
+        },
+        {
+          "name": "merge_pnpm_args",
+          "file": "src/main.rs",
+          "params": [
+            "filters: &[String]",
+            "args: &[String]"
+          ],
+          "returns": "Vec<String>",
+          "confidence": "confirmed"
+        },
+        {
+          "name": "merge_pnpm_args_os",
+          "file": "src/main.rs",
+          "params": [
+            "filters: &[String]",
+            "args: &[OsString]"
+          ],
+          "returns": "Vec<OsString>",
+          "confidence": "confirmed"
+        },
+        {
+          "name": "validate_pnpm_filters",
+          "file": "src/main.rs",
+          "params": [
+            "filters: &[String]",
+            "command: &PnpmCommands"
+          ],
+          "returns": "Option<String>",
+          "confidence": "confirmed"
+        },
+        {
+          "name": "is_operational_command",
+          "file": "src/main.rs",
+          "params": [
+            "cmd: &Commands"
+          ],
+          "returns": "bool",
+          "confidence": "confirmed"
+        }
+      ],
+      "entities": [
+        {
+          "name": "AgentTarget",
+          "fields": [
+            { "name": "Claude", "type": "variant", "required": true },
+            { "name": "Cursor", "type": "variant", "required": true },
+            { "name": "Windsurf", "type": "variant", "required": true },
+            { "name": "Cline", "type": "variant", "required": true },
+            { "name": "Kilocode", "type": "variant", "required": true },
+            { "name": "Antigravity", "type": "variant", "required": true },
+            { "name": "Pi", "type": "variant", "required": true },
+            { "name": "Hermes", "type": "variant", "required": true },
+            { "name": "Droid", "type": "variant", "required": true }
+          ],
+          "confidence": "confirmed"
+        },
+        {
+          "name": "Cli",
+          "fields": [
+            { "name": "command", "type": "Commands", "required": true },
+            { "name": "verbose", "type": "u8", "required": false },
+            { "name": "ultra_compact", "type": "bool", "required": false },
+            { "name": "skip_env", "type": "bool", "required": false }
+          ],
+          "confidence": "confirmed"
+        },
+        {
+          "name": "Commands",
+          "fields": [
+            { "name": "subcommands", "type": "enum variants", "required": true }
+          ],
+          "confidence": "confirmed"
+        }
+      ],
+      "business_rules": [
+        {
+          "description": "Meta-comandos RTK nunca fazem fallback para execucao crua quando o parse falha.",
+          "location": "src/main.rs:1257",
+          "confidence": "confirmed"
+        },
+        {
+          "description": "Comandos operacionais passam por verificacao de integridade antes do dispatch.",
+          "location": "src/main.rs:1565",
+          "confidence": "confirmed"
+        },
+        {
+          "description": "Filtros globais do pnpm sao ignorados para typecheck com aviso explicito.",
+          "location": "src/main.rs:1474",
+          "confidence": "confirmed"
+        },
+        {
+          "description": "Proxy captura no maximo 1 MiB por stream para tracking, enquanto espelha a saida integral em tempo real.",
+          "location": "src/main.rs:2554",
+          "confidence": "confirmed"
+        }
+      ],
+      "dependencies": [
+        "analytics",
+        "cmds",
+        "core",
+        "discover",
+        "hooks",
+        "learn",
+        "parser"
+      ],
+      "algorithms": [
+        "Fallback de parse para TOML filter ou passthrough",
+        "Dispatch hierarquico de subcomandos clap",
+        "Merge de filtros pnpm globais",
+        "Construcao de argumentos Kubernetes/OpenShift",
+        "Proxy com captura limitada e propagacao de sinais Unix"
+      ],
+      "complexity": "high"
+    },
+    {
+      "name": "cmds",
+      "path": "src/cmds",
+      "purpose": "Modulo de wrappers e filtros por ecossistema; executa ferramentas externas, compacta stdout/stderr, preserva exit codes e registra economia de tokens.",
+      "primary_files": [
+        "src/cmds/README.md",
+        "src/cmds/mod.rs",
+        "src/cmds/git/git.rs",
+        "src/cmds/rust/cargo_cmd.rs",
+        "src/cmds/cloud/aws_cmd.rs",
+        "src/cmds/dotnet/dotnet_cmd.rs",
+        "src/cmds/jvm/mvn_cmd.rs",
+        "src/cmds/system/search.rs"
+      ],
+      "functions": [
+        {
+          "name": "run",
+          "file": "src/cmds/*/*_cmd.rs",
+          "params": [
+            "args/subcommand",
+            "verbose: u8"
+          ],
+          "returns": "Result<i32>",
+          "confidence": "confirmed"
+        },
+        {
+          "name": "filter_*",
+          "file": "src/cmds/**/*.rs",
+          "params": [
+            "output/json_str: &str"
+          ],
+          "returns": "String ou Option<FilterResult>",
+          "confidence": "confirmed"
+        },
+        {
+          "name": "run_passthrough",
+          "file": "src/cmds/**/*.rs",
+          "params": [
+            "args: &[OsString]",
+            "verbose: u8"
+          ],
+          "returns": "Result<i32>",
+          "confidence": "confirmed"
+        },
+        {
+          "name": "run_filtered/run_streamed",
+          "file": "core::runner chamado por src/cmds",
+          "params": [
+            "Command",
+            "tool/label",
+            "filter"
+          ],
+          "returns": "Result<i32>",
+          "confidence": "confirmed"
+        }
+      ],
+      "entities": [
+        {
+          "name": "FilterResult",
+          "fields": [
+            { "name": "text", "type": "String", "required": true },
+            { "name": "metadata/hints", "type": "varies", "required": false }
+          ],
+          "confidence": "confirmed"
+        },
+        {
+          "name": "ContainerCmd",
+          "fields": [
+            { "name": "Docker/Kubectl/Oc operations", "type": "enum variants", "required": true }
+          ],
+          "confidence": "confirmed"
+        },
+        {
+          "name": "MvnPhase",
+          "fields": [
+            { "name": "Test", "type": "variant", "required": true },
+            { "name": "Compile", "type": "variant", "required": true },
+            { "name": "Package", "type": "variant", "required": true },
+            { "name": "Passthrough", "type": "variant", "required": true }
+          ],
+          "confidence": "confirmed"
+        },
+        {
+          "name": "CargoCommand",
+          "fields": [
+            { "name": "Build/Test/Clippy/Check/Install/Nextest/Other", "type": "enum variants", "required": true }
+          ],
+          "confidence": "confirmed"
+        },
+        {
+          "name": "Engine",
+          "fields": [
+            { "name": "Grep", "type": "variant", "required": true },
+            { "name": "Rg", "type": "variant", "required": true }
+          ],
+          "confidence": "confirmed"
+        }
+      ],
+      "business_rules": [
+        {
+          "description": "Rust modules em cmds sao usados quando a filtragem exige parsing estruturado, state machines, injecao de flags, roteamento cross-command ou filtragem sensivel a flags.",
+          "location": "src/cmds/README.md:13",
+          "confidence": "confirmed"
+        },
+        {
+          "description": "Exit codes devem ser propagados; wrappers de runner fazem isso automaticamente na maioria dos modulos.",
+          "location": "src/cmds/README.md:94",
+          "confidence": "confirmed"
+        },
+        {
+          "description": "Flags que pedem formato explicitamente raw/JSON/output em algumas ferramentas levam a passthrough para evitar dupla injecao ou formatacao incorreta.",
+          "location": "src/cmds/git/README.md:12",
+          "confidence": "confirmed"
+        },
+        {
+          "description": "Filtros que truncam ou omitem blocos importantes devem oferecer tee hints para recuperacao.",
+          "location": "src/cmds/README.md:43",
+          "confidence": "confirmed"
+        }
+      ],
+      "dependencies": [
+        "core",
+        "parser",
+        "discover"
+      ],
+      "algorithms": [
+        "Captura e filtragem buffered",
+        "Filtragem streaming linha a linha",
+        "Parsing JSON/XML/NDJSON/binlog/TRX",
+        "State machines de saida textual",
+        "Tee recovery para saida truncada",
+        "Passthrough por flags ou subcomandos desconhecidos",
+        "Roteamento cross-ecosystem"
+      ],
+      "complexity": "high"
+    }
+  ]
+}
