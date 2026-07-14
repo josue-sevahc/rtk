@@ -53,11 +53,11 @@
     "archaeologist": {
       "modules_analyzed": [
         "main",
-        "cmds"
+        "cmds",
+        "core",
+        "hooks"
       ],
       "modules_pending": [
-        "core",
-        "hooks",
         "analytics",
         "discover",
         "learn",
@@ -67,12 +67,14 @@
         "docs",
         "scripts"
       ],
-      "last_completed_at": "2026-07-14T16:29:54Z",
+      "last_completed_at": "2026-07-14T16:47:18Z",
       "files": [
         "_reversa_sdd/code-analysis.md",
         "_reversa_sdd/data-dictionary.md",
         "_reversa_sdd/flowcharts/main.md",
         "_reversa_sdd/flowcharts/cmds.md",
+        "_reversa_sdd/flowcharts/core.md",
+        "_reversa_sdd/flowcharts/hooks.md",
         ".reversa/context/modules.json"
       ]
     }

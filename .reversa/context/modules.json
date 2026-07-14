@@ -325,6 +325,488 @@
         "Roteamento cross-ecosystem"
       ],
       "complexity": "high"
+    },
+    {
+      "name": "core",
+      "path": "src/core",
+      "purpose": "Infraestrutura compartilhada e agnostica de dominio para execucao de comandos, streaming/captura, tracking SQLite, filtros TOML, tee recovery, configuracao, telemetria, truncamento e utilitarios.",
+      "primary_files": [
+        "src/core/README.md",
+        "src/core/mod.rs",
+        "src/core/runner.rs",
+        "src/core/stream.rs",
+        "src/core/tracking.rs",
+        "src/core/toml_filter.rs",
+        "src/core/config.rs",
+        "src/core/tee.rs",
+        "src/core/filter.rs",
+        "src/core/telemetry.rs",
+        "src/core/telemetry_cmd.rs",
+        "src/core/utils.rs"
+      ],
+      "functions": [
+        {
+          "name": "run",
+          "file": "src/core/runner.rs",
+          "params": [
+            "cmd: Command",
+            "tool_name: &str",
+            "args_display: &str",
+            "mode: RunMode",
+            "opts: RunOptions"
+          ],
+          "returns": "Result<i32>",
+          "confidence": "confirmed"
+        },
+        {
+          "name": "run_streaming",
+          "file": "src/core/stream.rs",
+          "params": [
+            "cmd: &mut Command",
+            "stdin_mode: StdinMode",
+            "stdout_mode: FilterMode"
+          ],
+          "returns": "Result<StreamResult>",
+          "confidence": "confirmed"
+        },
+        {
+          "name": "apply_filter_with_info",
+          "file": "src/core/toml_filter.rs",
+          "params": [
+            "filter: &CompiledFilter",
+            "stdout: &str"
+          ],
+          "returns": "(String, Lossiness)",
+          "confidence": "confirmed"
+        },
+        {
+          "name": "Tracker::new",
+          "file": "src/core/tracking.rs",
+          "params": [],
+          "returns": "Result<Tracker>",
+          "confidence": "confirmed"
+        },
+        {
+          "name": "Tracker::record",
+          "file": "src/core/tracking.rs",
+          "params": [
+            "original_cmd: &str",
+            "rtk_cmd: &str",
+            "input_tokens: usize",
+            "output_tokens: usize",
+            "exec_time_ms: u64"
+          ],
+          "returns": "Result<()>",
+          "confidence": "confirmed"
+        },
+        {
+          "name": "TimedExecution::track",
+          "file": "src/core/tracking.rs",
+          "params": [
+            "original_cmd: &str",
+            "rtk_cmd: &str",
+            "input: &str",
+            "output: &str"
+          ],
+          "returns": "()",
+          "confidence": "confirmed"
+        },
+        {
+          "name": "tee_and_hint",
+          "file": "src/core/tee.rs",
+          "params": [
+            "raw: &str",
+            "command_slug: &str",
+            "exit_code: i32"
+          ],
+          "returns": "Option<String>",
+          "confidence": "confirmed"
+        },
+        {
+          "name": "maybe_ping",
+          "file": "src/core/telemetry.rs",
+          "params": [],
+          "returns": "()",
+          "confidence": "confirmed"
+        },
+        {
+          "name": "restore_double_dash_with_raw",
+          "file": "src/core/args_utils.rs",
+          "params": [
+            "parsed_args: &[String]",
+            "raw_args: &[String]"
+          ],
+          "returns": "Vec<String>",
+          "confidence": "confirmed"
+        },
+        {
+          "name": "never_worse",
+          "file": "src/core/guard.rs",
+          "params": [
+            "raw: &str",
+            "filtered: &str"
+          ],
+          "returns": "&str",
+          "confidence": "confirmed"
+        }
+      ],
+      "entities": [
+        {
+          "name": "Config",
+          "fields": [
+            { "name": "tracking", "type": "TrackingConfig", "required": false },
+            { "name": "display", "type": "DisplayConfig", "required": false },
+            { "name": "filters", "type": "FilterConfig", "required": false },
+            { "name": "tee", "type": "TeeConfig", "required": false },
+            { "name": "telemetry", "type": "TelemetryConfig", "required": false },
+            { "name": "hooks", "type": "HooksConfig", "required": false },
+            { "name": "limits", "type": "LimitsConfig", "required": false }
+          ],
+          "confidence": "confirmed"
+        },
+        {
+          "name": "RunMode",
+          "fields": [
+            { "name": "Filtered", "type": "variant", "required": true },
+            { "name": "FilteredWithExit", "type": "variant", "required": true },
+            { "name": "Streamed", "type": "variant", "required": true },
+            { "name": "Passthrough", "type": "variant", "required": true }
+          ],
+          "confidence": "confirmed"
+        },
+        {
+          "name": "StreamResult",
+          "fields": [
+            { "name": "exit_code", "type": "i32", "required": true },
+            { "name": "raw", "type": "String", "required": true },
+            { "name": "raw_stdout", "type": "String", "required": true },
+            { "name": "raw_stderr", "type": "String", "required": true },
+            { "name": "filtered", "type": "String", "required": true }
+          ],
+          "confidence": "confirmed"
+        },
+        {
+          "name": "Tracker",
+          "fields": [
+            { "name": "conn", "type": "rusqlite::Connection", "required": true }
+          ],
+          "confidence": "confirmed"
+        },
+        {
+          "name": "Lossiness",
+          "fields": [
+            { "name": "None", "type": "variant", "required": true },
+            { "name": "Tail", "type": "variant { tee_payload, tail_offset }", "required": true },
+            { "name": "Whole", "type": "variant", "required": true }
+          ],
+          "confidence": "confirmed"
+        },
+        {
+          "name": "TeeMode",
+          "fields": [
+            { "name": "Failures", "type": "variant", "required": true },
+            { "name": "Always", "type": "variant", "required": true },
+            { "name": "Never", "type": "variant", "required": true }
+          ],
+          "confidence": "confirmed"
+        },
+        {
+          "name": "FilterLevel",
+          "fields": [
+            { "name": "None", "type": "variant", "required": true },
+            { "name": "Minimal", "type": "variant", "required": true },
+            { "name": "Aggressive", "type": "variant", "required": true }
+          ],
+          "confidence": "confirmed"
+        }
+      ],
+      "business_rules": [
+        {
+          "description": "Core deve conter apenas blocos agnosticos de dominio, sem conhecimento de comandos especificos, hooks ou agentes.",
+          "location": "src/core/README.md:5",
+          "confidence": "confirmed"
+        },
+        {
+          "description": "Saida filtrada nunca deve ter mais tokens estimados que a saida raw; nesse caso o guard retorna raw.",
+          "location": "src/core/guard.rs:6",
+          "confidence": "confirmed"
+        },
+        {
+          "description": "TOML filters locais so entram no registry quando passam pelo fluxo trust-gated.",
+          "location": "src/core/toml_filter.rs:185",
+          "confidence": "confirmed"
+        },
+        {
+          "description": "Telemetry exige endpoint compilado, consentimento explicito e ausencia de opt-out por env/config.",
+          "location": "src/core/telemetry.rs:22",
+          "confidence": "confirmed"
+        },
+        {
+          "description": "Tracking de projeto usa match exato ou GLOB com separador de path, nao LIKE.",
+          "location": "src/core/tracking.rs:54",
+          "confidence": "confirmed"
+        }
+      ],
+      "dependencies": [
+        "hooks",
+        "rusqlite",
+        "serde",
+        "toml",
+        "regex",
+        "ureq",
+        "which"
+      ],
+      "algorithms": [
+        "Runner compartilhado com modos filtered/streamed/passthrough",
+        "Captura concorrente de stdout/stderr com limite de 10 MiB",
+        "Never-worse guard por estimativa de tokens",
+        "Pipeline TOML de 8 estagios com classificacao de lossiness",
+        "SQLite tracking com migracoes idempotentes e filtro por projeto",
+        "Tee recovery com rotacao, truncamento UTF-8 safe e hints",
+        "Telemetria opt-in com salt local e ping nao bloqueante",
+        "Restauracao posicional de tokens -- consumidos pelo clap"
+      ],
+      "complexity": "high"
+    },
+    {
+      "name": "hooks",
+      "path": "src/hooks",
+      "purpose": "Camada de lifecycle e runtime de hooks para agentes LLM: instala, remove, verifica integridade, aplica trust, consulta permissoes e processa payloads de rewrite para Claude, Cursor, Gemini, Copilot e Droid.",
+      "primary_files": [
+        "src/hooks/README.md",
+        "src/hooks/mod.rs",
+        "src/hooks/init.rs",
+        "src/hooks/hook_cmd.rs",
+        "src/hooks/rewrite_cmd.rs",
+        "src/hooks/permissions.rs",
+        "src/hooks/integrity.rs",
+        "src/hooks/hook_check.rs",
+        "src/hooks/trust.rs",
+        "src/hooks/verify_cmd.rs",
+        "src/hooks/hook_audit_cmd.rs",
+        "src/hooks/constants.rs"
+      ],
+      "functions": [
+        {
+          "name": "init::run",
+          "file": "src/hooks/init.rs",
+          "params": [
+            "global/agent flags",
+            "patch_mode: PatchMode",
+            "ctx: InitContext"
+          ],
+          "returns": "Result<()>",
+          "confidence": "confirmed"
+        },
+        {
+          "name": "patch_settings_json_command",
+          "file": "src/hooks/init.rs",
+          "params": [
+            "hook_command: &str",
+            "mode: PatchMode",
+            "include_opencode: bool",
+            "ctx: InitContext"
+          ],
+          "returns": "Result<PatchResult>",
+          "confidence": "confirmed"
+        },
+        {
+          "name": "rewrite_cmd::run",
+          "file": "src/hooks/rewrite_cmd.rs",
+          "params": [
+            "cmd: &str"
+          ],
+          "returns": "Result<()> com exit-code protocol",
+          "confidence": "confirmed"
+        },
+        {
+          "name": "permissions::check_command_for",
+          "file": "src/hooks/permissions.rs",
+          "params": [
+            "cmd: &str",
+            "host: Host"
+          ],
+          "returns": "PermissionVerdict",
+          "confidence": "confirmed"
+        },
+        {
+          "name": "hook_cmd::run_claude",
+          "file": "src/hooks/hook_cmd.rs",
+          "params": [],
+          "returns": "Result<()>",
+          "confidence": "confirmed"
+        },
+        {
+          "name": "hook_cmd::run_cursor",
+          "file": "src/hooks/hook_cmd.rs",
+          "params": [],
+          "returns": "Result<()>",
+          "confidence": "confirmed"
+        },
+        {
+          "name": "hook_cmd::run_gemini",
+          "file": "src/hooks/hook_cmd.rs",
+          "params": [],
+          "returns": "Result<()>",
+          "confidence": "confirmed"
+        },
+        {
+          "name": "hook_cmd::run_copilot",
+          "file": "src/hooks/hook_cmd.rs",
+          "params": [],
+          "returns": "Result<()>",
+          "confidence": "confirmed"
+        },
+        {
+          "name": "hook_cmd::run_droid",
+          "file": "src/hooks/hook_cmd.rs",
+          "params": [],
+          "returns": "Result<()>",
+          "confidence": "confirmed"
+        },
+        {
+          "name": "integrity::verify_hook_at",
+          "file": "src/hooks/integrity.rs",
+          "params": [
+            "hook_path: &Path"
+          ],
+          "returns": "Result<IntegrityStatus>",
+          "confidence": "confirmed"
+        },
+        {
+          "name": "trust::check_trust_with_content",
+          "file": "src/hooks/trust.rs",
+          "params": [
+            "filter_path: &Path"
+          ],
+          "returns": "Result<(TrustStatus, Option<String>)>",
+          "confidence": "confirmed"
+        }
+      ],
+      "entities": [
+        {
+          "name": "PatchMode",
+          "fields": [
+            { "name": "Ask", "type": "variant", "required": true },
+            { "name": "Auto", "type": "variant", "required": true },
+            { "name": "Skip", "type": "variant", "required": true }
+          ],
+          "confidence": "confirmed"
+        },
+        {
+          "name": "PatchResult",
+          "fields": [
+            { "name": "Patched", "type": "variant", "required": true },
+            { "name": "AlreadyPresent", "type": "variant", "required": true },
+            { "name": "Declined", "type": "variant", "required": true },
+            { "name": "Skipped", "type": "variant", "required": true },
+            { "name": "WouldPatch", "type": "variant", "required": true }
+          ],
+          "confidence": "confirmed"
+        },
+        {
+          "name": "PermissionVerdict",
+          "fields": [
+            { "name": "Allow", "type": "variant", "required": true },
+            { "name": "Deny", "type": "variant", "required": true },
+            { "name": "Ask", "type": "variant", "required": true },
+            { "name": "Default", "type": "variant", "required": true }
+          ],
+          "confidence": "confirmed"
+        },
+        {
+          "name": "Host",
+          "fields": [
+            { "name": "Claude", "type": "variant", "required": true },
+            { "name": "Cursor", "type": "variant", "required": true },
+            { "name": "Gemini", "type": "variant", "required": true },
+            { "name": "Droid", "type": "variant", "required": true }
+          ],
+          "confidence": "confirmed"
+        },
+        {
+          "name": "HookDecision",
+          "fields": [
+            { "name": "AllowRewrite", "type": "variant", "required": true },
+            { "name": "AskRewrite", "type": "variant", "required": true },
+            { "name": "Defer", "type": "variant", "required": true },
+            { "name": "Deny", "type": "variant", "required": true }
+          ],
+          "confidence": "confirmed"
+        },
+        {
+          "name": "IntegrityStatus",
+          "fields": [
+            { "name": "Verified", "type": "variant", "required": true },
+            { "name": "Tampered", "type": "variant { expected, actual }", "required": true },
+            { "name": "NoBaseline", "type": "variant", "required": true },
+            { "name": "NotInstalled", "type": "variant", "required": true },
+            { "name": "OrphanedHash", "type": "variant", "required": true }
+          ],
+          "confidence": "confirmed"
+        },
+        {
+          "name": "TrustStatus",
+          "fields": [
+            { "name": "Trusted", "type": "variant", "required": true },
+            { "name": "Untrusted", "type": "variant", "required": true },
+            { "name": "ContentChanged", "type": "variant { expected, actual }", "required": true },
+            { "name": "EnvOverride", "type": "variant", "required": true }
+          ],
+          "confidence": "confirmed"
+        }
+      ],
+      "business_rules": [
+        {
+          "description": "Hooks gerenciam lifecycle e protocolos de host, mas nao possuem a logica de registry de rewrite.",
+          "location": "src/hooks/README.md:7",
+          "confidence": "confirmed"
+        },
+        {
+          "description": "Processadores em hook_cmd devem retornar Ok em sucesso, no-match, parse error e input inesperado para nao bloquear o agente.",
+          "location": "src/hooks/README.md:100",
+          "confidence": "confirmed"
+        },
+        {
+          "description": "Permissoes seguem precedencia Deny > Ask > Allow > Default, com Default tratado como ask.",
+          "location": "src/hooks/permissions.rs:23",
+          "confidence": "confirmed"
+        },
+        {
+          "description": "Allow em comando composto exige que todos os segmentos nao vazios casem independentemente com allow rules.",
+          "location": "src/hooks/permissions.rs:75",
+          "confidence": "confirmed"
+        },
+        {
+          "description": "rtk rewrite comunica allow/passthrough/deny/ask por exit codes 0/1/2/3.",
+          "location": "src/hooks/rewrite_cmd.rs:7",
+          "confidence": "confirmed"
+        },
+        {
+          "description": "Filtros TOML locais/globais so sao carregados quando trusted ou quando env override esta em CI.",
+          "location": "src/hooks/trust.rs:101",
+          "confidence": "confirmed"
+        }
+      ],
+      "dependencies": [
+        "core",
+        "discover",
+        "serde_json",
+        "sha2",
+        "tempfile",
+        "dirs"
+      ],
+      "algorithms": [
+        "Selecao de modo de instalacao por flags de init",
+        "Patch idempotente de settings JSON com backup e escrita atomica",
+        "Exit-code protocol para shell hook rewrite",
+        "Permission matching por host com deny/ask/allow/default",
+        "Processamento de payloads JSON para Claude/Cursor/Gemini/Copilot/Droid",
+        "SHA-256 sidecar integrity verification",
+        "Trust store por hash para filtros TOML",
+        "Audit log sanitizado e agregacao de hook activity"
+      ],
+      "complexity": "high"
     }
   ]
 }

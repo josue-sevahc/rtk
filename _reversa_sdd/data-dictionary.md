@@ -174,3 +174,151 @@ Projeto: `rtk`
 | Filtro JSON | `fn filter_*(json_str: &str) -> Option<FilterResult/String>` | Parseia JSON e cai para fallback em erro. |
 | Passthrough | `run_passthrough(args: &[OsString], verbose: u8)` | Executa ferramenta sem filtragem, preservando compatibilidade. |
 | Stream filter | `impl StreamFilter` ou `impl BlockHandler` | Processa linhas/blocos de saida longa. |
+
+## Modulo `core`
+
+### Configuracao
+
+| Entidade | Tipo | Local | Descricao |
+|---|---|---|---|
+| `Config` | struct | `src/core/config.rs` | Configuracao raiz carregada de `~/.config/rtk/config.toml`. |
+| `TrackingConfig` | struct | `src/core/config.rs` | Liga/desliga tracking, define retencao e caminho opcional do banco. |
+| `DisplayConfig` | struct | `src/core/config.rs` | Preferencias de cores, emoji e largura maxima. |
+| `FilterConfig` | struct | `src/core/config.rs` | Diretorios/arquivos ignorados por filtros. |
+| `TeeConfig` | struct | `src/core/tee.rs` | Configuracao de raw output recovery. |
+| `TelemetryConfig` | struct | `src/core/config.rs` | Consentimento e habilitacao de telemetria. |
+| `HooksConfig` | struct | `src/core/config.rs` | Exclusoes e prefixos transparentes para rewrite de hooks. |
+| `LimitsConfig` | struct | `src/core/config.rs` | Limites globais configuraveis para grep/status/passthrough. |
+
+### Execucao e streaming
+
+| Entidade | Tipo | Local | Campos/variantes principais |
+|---|---|---|---|
+| `RunOptions` | struct | `src/core/runner.rs` | `tee_label`, `filter_stdout_only`, `skip_filter_on_failure`, `no_trailing_newline`, `inherit_stdin`. |
+| `RunMode` | enum | `src/core/runner.rs` | `Filtered`, `FilteredWithExit`, `Streamed`, `Passthrough`. |
+| `StreamFilter` | trait | `src/core/stream.rs` | `feed_line`, `flush`, `on_exit`. |
+| `BlockHandler` | trait | `src/core/stream.rs` | Contrato para detectar e formatar blocos. |
+| `LineHandler` | trait | `src/core/stream.rs` | Contrato para filtros orientados a linha. |
+| `StdinFilter` | trait | `src/core/stream.rs` | Filtro opcional de stdin. |
+| `FilterMode` | enum | `src/core/stream.rs` | `Streaming`, `Buffered`, `CaptureOnly`, `Passthrough`. |
+| `StdinMode` | enum | `src/core/stream.rs` | `Inherit`, `Filter`, `Null`. |
+| `StreamResult` | struct | `src/core/stream.rs` | `exit_code`, `raw`, `raw_stdout`, `raw_stderr`, `filtered`. |
+| `CaptureResult` | struct | `src/core/stream.rs` | `stdout`, `stderr`, `exit_code`. |
+
+### Tracking
+
+| Entidade | Tipo | Local | Campos principais |
+|---|---|---|---|
+| `Tracker` | struct | `src/core/tracking.rs` | Wrapper de conexao SQLite. |
+| `CommandRecord` | struct | `src/core/tracking.rs` | `timestamp`, `rtk_cmd`, `saved_tokens`, `savings_pct`. |
+| `GainSummary` | struct | `src/core/tracking.rs` | Totais, medias, top comandos e serie por dia. |
+| `DayStats` | struct | `src/core/tracking.rs` | Estatisticas diarias serializaveis. |
+| `WeekStats` | struct | `src/core/tracking.rs` | Estatisticas semanais serializaveis. |
+| `MonthStats` | struct | `src/core/tracking.rs` | Estatisticas mensais serializaveis. |
+| `ParseFailureRecord` | struct | `src/core/tracking.rs` | Falha de parse individual. |
+| `ParseFailureSummary` | struct | `src/core/tracking.rs` | Total, taxa de recuperacao, top comandos e recentes. |
+| `TimedExecution` | struct | `src/core/tracking.rs` | Timer usado para registrar execucao e economia. |
+
+### TOML filters
+
+| Entidade | Tipo | Local | Descricao |
+|---|---|---|---|
+| `TomlFilterDef` | struct | `src/core/toml_filter.rs` | Definicao declarativa de filtro: match, replace, strip/keep, head/tail/max, on_empty. |
+| `CompiledFilter` | struct | `src/core/toml_filter.rs` | Filtro compilado com regexes prontas e flags de comportamento. |
+| `Lossiness` | enum | `src/core/toml_filter.rs` | `None`, `Tail { tee_payload, tail_offset }`, `Whole`. |
+| `TomlFilterTestDef` | struct | `src/core/toml_filter.rs` | Teste inline de filtro TOML. |
+| `TestOutcome` | struct | `src/core/toml_filter.rs` | Resultado de um teste inline. |
+| `VerifyResults` | struct | `src/core/toml_filter.rs` | Agregado de testes e filtros sem teste. |
+
+### Filtros de codigo e utilitarios
+
+| Entidade | Tipo | Local | Descricao |
+|---|---|---|---|
+| `FilterLevel` | enum | `src/core/filter.rs` | `None`, `Minimal`, `Aggressive`. |
+| `Language` | enum | `src/core/filter.rs` | Rust, Python, JS/TS, Go, C/C++, Java, Ruby, Shell, Data, Unknown. |
+| `FilterStrategy` | trait | `src/core/filter.rs` | Estrategia `filter(content, lang) -> String`. |
+| `NoFilter` / `MinimalFilter` / `AggressiveFilter` | structs | `src/core/filter.rs` | Implementacoes de reducao de codigo. |
+| `TeeMode` | enum | `src/core/tee.rs` | `Failures`, `Always`, `Never`. |
+| `TelemetrySubcommand` | enum | `src/core/telemetry_cmd.rs` | `Status`, `Enable`, `Disable`, `Forget`. |
+
+### Constantes
+
+| Nome | Local | Valor/Papel |
+|---|---|---|
+| `RTK_DATA_DIR` | `src/core/constants.rs` | Diretorio de dados `rtk`. |
+| `HISTORY_DB` | `src/core/constants.rs` | Nome do banco `history.db`. |
+| `CONFIG_TOML` | `src/core/constants.rs` | Nome do arquivo `config.toml`. |
+| `FILTERS_TOML` | `src/core/constants.rs` | Nome do arquivo `filters.toml`. |
+| `TRUSTED_FILTERS_JSON` | `src/core/constants.rs` | Registro de trust de filtros. |
+| `DEFAULT_HISTORY_DAYS` | `src/core/constants.rs` | Retencao padrao de 90 dias. |
+| `RTK_META_COMMANDS` | `src/core/constants.rs` | Subcomandos RTK que nao devem cair em fallback raw. |
+| `RAW_CAP` | `src/core/stream.rs` | Limite de captura raw: 10 MiB. |
+| `CAP_ERRORS` | `src/core/truncate.rs` | Limite global de erros: 20. |
+| `CAP_WARNINGS` | `src/core/truncate.rs` | Limite global de warnings/falhas: 10. |
+| `CAP_LIST` | `src/core/truncate.rs` | Limite global de listas: 20. |
+| `CAP_INVENTORY` | `src/core/truncate.rs` | Limite global de inventarios: 50. |
+
+## Modulo `hooks`
+
+### Instalacao e lifecycle
+
+| Entidade | Tipo | Local | Campos/variantes principais |
+|---|---|---|---|
+| `PatchMode` | enum | `src/hooks/init.rs` | `Ask`, `Auto`, `Skip`. |
+| `FilterTrust` | enum | `src/hooks/init.rs` | `Ask`, `Trust`, `Skip`. |
+| `PatchResult` | enum | `src/hooks/init.rs` | `Patched`, `AlreadyPresent`, `Declined`, `Skipped`, `WouldPatch`. |
+| `InitContext` | struct | `src/hooks/init.rs` | `verbose: u8`, `dry_run: bool`. |
+| `DroidLayout` | enum | `src/hooks/init.rs` | Layouts aceitos para hooks/settings do Factory Droid. |
+| `DroidHookFile` | struct | `src/hooks/init.rs` | Caminho e layout do arquivo de hook Droid alvo. |
+
+### Processamento de hooks
+
+| Entidade | Tipo | Local | Descricao |
+|---|---|---|---|
+| `HookFormat` | enum | `src/hooks/hook_cmd.rs` | Formato Copilot/VS Code detectado: `VsCode`, `CopilotCli`, `PassThrough`. |
+| `HookDecision` | enum | `src/hooks/hook_cmd.rs` | Decisao compartilhada: `AllowRewrite`, `AskRewrite`, `Defer`, `Deny`. |
+| `PayloadAction` | enum | `src/hooks/hook_cmd.rs` | Resultado do processamento Claude: `Rewrite`, `Skip`, `Ignore`. |
+| `PermissionVerdict` | enum | `src/hooks/permissions.rs` | `Allow`, `Deny`, `Ask`, `Default`. |
+| `Host` | enum | `src/hooks/permissions.rs` | `Claude`, `Cursor`, `Gemini`, `Droid`. |
+
+### Integridade e trust
+
+| Entidade | Tipo | Local | Campos/variantes principais |
+|---|---|---|---|
+| `IntegrityStatus` | enum | `src/hooks/integrity.rs` | `Verified`, `Tampered { expected, actual }`, `NoBaseline`, `NotInstalled`, `OrphanedHash`. |
+| `HookStatus` | enum | `src/hooks/hook_check.rs` | `Ok`, `Outdated`, `Missing`. |
+| `TrustStore` | struct | `src/hooks/trust.rs` | `version`, `trusted: HashMap<String, TrustEntry>`. |
+| `TrustEntry` | struct | `src/hooks/trust.rs` | `sha256`, `trusted_at`. |
+| `TrustStatus` | enum | `src/hooks/trust.rs` | `Trusted`, `Untrusted`, `ContentChanged`, `EnvOverride`. |
+| `AuditEntry` | struct | `src/hooks/hook_audit_cmd.rs` | `timestamp`, `action`, `original_cmd`, `_rewritten_cmd`. |
+
+### Constantes de integracao
+
+| Nome | Local | Valor/Papel |
+|---|---|---|
+| `REWRITE_HOOK_FILE` | `src/hooks/constants.rs` | Script legado `rtk-rewrite.sh`. |
+| `GEMINI_HOOK_FILE` | `src/hooks/constants.rs` | Script Gemini `rtk-hook-gemini.sh`. |
+| `CLAUDE_HOOK_COMMAND` | `src/hooks/constants.rs` | Comando nativo `rtk hook claude`. |
+| `CURSOR_HOOK_COMMAND` | `src/hooks/constants.rs` | Comando nativo `rtk hook cursor`. |
+| `DROID_HOOK_COMMAND` | `src/hooks/constants.rs` | Comando nativo `rtk hook droid`. |
+| `PRE_TOOL_USE_KEY` | `src/hooks/constants.rs` | Evento `PreToolUse`. |
+| `BEFORE_TOOL_KEY` | `src/hooks/constants.rs` | Evento `BeforeTool`. |
+| `STDIN_CAP` | `src/hooks/hook_cmd.rs` | Limite de stdin de hook: 1 MiB. |
+| `HASH_FILENAME` | `src/hooks/integrity.rs` | Sidecar `.rtk-hook.sha256`. |
+| `CURRENT_HOOK_VERSION` | `src/hooks/hook_check.rs` | Versao esperada do hook legado. |
+
+### Contratos de funcao principais
+
+| Funcao | Assinatura resumida | Papel |
+|---|---|---|
+| `init::run` | flags + `PatchMode` + `InitContext` -> `Result<()>` | Seleciona modo de instalacao. |
+| `patch_settings_json_command` | hook command + mode -> `Result<PatchResult>` | Insere hook em `settings.json`. |
+| `hook_cmd::run_claude` | stdin JSON -> `Result<()>` | Processa PreToolUse Claude. |
+| `hook_cmd::run_cursor` | stdin JSON -> `Result<()>` | Processa hook Cursor. |
+| `hook_cmd::run_gemini` | stdin JSON -> `Result<()>` | Processa BeforeTool Gemini. |
+| `hook_cmd::run_copilot` | stdin JSON -> `Result<()>` | Processa Copilot VS Code/CLI. |
+| `hook_cmd::run_droid` | stdin JSON -> `Result<()>` | Processa PreToolUse Droid. |
+| `rewrite_cmd::run` | `cmd: &str` -> `Result<()>`/exit code | Ponte shell para rewrite. |
+| `permissions::check_command_for` | cmd + host -> `PermissionVerdict` | Avalia regras do host. |
+| `integrity::verify_hook_at` | path -> `IntegrityStatus` | Verifica hash do hook. |
+| `trust::check_trust_with_content` | path -> status + conteudo opcional | Gate de filtros TOML. |

@@ -22,8 +22,8 @@
 
 - ✅ **Archaeologist** — Análise do módulo `main`
 - ✅ **Archaeologist** — Análise do módulo `cmds`
-- [ ] **Archaeologist** — Análise do módulo `core`
-- [ ] **Archaeologist** — Análise do módulo `hooks`
+- ✅ **Archaeologist** — Análise do módulo `core`
+- ✅ **Archaeologist** — Análise do módulo `hooks`
 - [ ] **Archaeologist** — Análise do módulo `analytics`
 - [ ] **Archaeologist** — Análise do módulo `discover`
 - [ ] **Archaeologist** — Análise do módulo `learn`
