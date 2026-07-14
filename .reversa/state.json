@@ -84,6 +84,35 @@
         "_reversa_sdd/flowcharts/scripts.md",
         ".reversa/context/modules.json"
       ]
+    },
+    "detective": {
+      "completed_at": "2026-07-14T22:10:33Z",
+      "files": [
+        "_reversa_sdd/domain.md",
+        "_reversa_sdd/state-machines.md",
+        "_reversa_sdd/permissions.md",
+        "_reversa_sdd/adrs/001-saida-filtrada-nunca-piora-a-saida-bruta.md",
+        "_reversa_sdd/adrs/002-filtros-customizados-exigem-confianca-por-hash.md",
+        "_reversa_sdd/adrs/003-permissoes-do-host-prevalecem-sobre-rewrite.md",
+        "_reversa_sdd/adrs/004-integridade-de-hook-e-gate-operacional.md",
+        "_reversa_sdd/adrs/005-telemetria-opt-in-e-assincrona.md",
+        "_reversa_sdd/adrs/006-fallback-distingue-meta-comandos-de-ferramentas-externas.md"
+      ],
+      "summary": {
+        "business_rules_identified": 13,
+        "state_machines": [
+          "confianca de filtros customizados",
+          "integridade do hook legado",
+          "decisao de permissao e rewrite",
+          "elegibilidade de telemetria"
+        ],
+        "adrs_reconstructed": 6,
+        "permission_model": "ACL de comandos delegada aos hosts; RTK nao possui RBAC proprio",
+        "gaps": [
+          "equivalencia runtime dos filtros externos nao exercitada",
+          "configuracoes reais dos hosts e endpoint de telemetria nao exercitados"
+        ]
+      }
     }
   },
   "engines": [
