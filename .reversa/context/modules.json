@@ -807,6 +807,524 @@
         "Audit log sanitizado e agregacao de hook activity"
       ],
       "complexity": "high"
+    },
+    {
+      "name": "analytics",
+      "path": "src/analytics",
+      "purpose": "Dashboards read-only de economia de tokens, custo Claude Code e adocao de RTK em sessoes; correlaciona tracking SQLite local, JSONL de sessoes e ccusage.",
+      "primary_files": [
+        "src/analytics/README.md",
+        "src/analytics/mod.rs",
+        "src/analytics/gain.rs",
+        "src/analytics/ccusage.rs",
+        "src/analytics/cc_economics.rs",
+        "src/analytics/session_cmd.rs"
+      ],
+      "functions": [
+        {
+          "name": "gain::run",
+          "file": "src/analytics/gain.rs",
+          "params": [
+            "project: bool",
+            "graph: bool",
+            "history: bool",
+            "quota: bool",
+            "tier: &str",
+            "daily/weekly/monthly/all: bool",
+            "format: &str",
+            "failures: bool",
+            "reset: bool",
+            "yes: bool",
+            "verbose: u8"
+          ],
+          "returns": "Result<()>",
+          "confidence": "confirmed"
+        },
+        {
+          "name": "ccusage::fetch",
+          "file": "src/analytics/ccusage.rs",
+          "params": [
+            "granularity: Granularity"
+          ],
+          "returns": "Result<Option<Vec<CcusagePeriod>>>",
+          "confidence": "confirmed"
+        },
+        {
+          "name": "cc_economics::run",
+          "file": "src/analytics/cc_economics.rs",
+          "params": [
+            "daily/weekly/monthly/all: bool",
+            "format: &str",
+            "verbose: u8"
+          ],
+          "returns": "Result<()>",
+          "confidence": "confirmed"
+        },
+        {
+          "name": "session_cmd::run",
+          "file": "src/analytics/session_cmd.rs",
+          "params": [
+            "verbose: u8"
+          ],
+          "returns": "Result<()>",
+          "confidence": "confirmed"
+        },
+        {
+          "name": "count_rtk_commands",
+          "file": "src/analytics/session_cmd.rs",
+          "params": [
+            "cmds: &[ExtractedCommand]"
+          ],
+          "returns": "(usize, usize, usize)",
+          "confidence": "confirmed"
+        }
+      ],
+      "entities": [
+        {
+          "name": "SessionSummary",
+          "fields": [
+            { "name": "id", "type": "String", "required": true },
+            { "name": "date", "type": "String", "required": true },
+            { "name": "total_cmds", "type": "usize", "required": true },
+            { "name": "rtk_cmds", "type": "usize", "required": true },
+            { "name": "output_tokens", "type": "usize", "required": true }
+          ],
+          "confidence": "confirmed"
+        },
+        {
+          "name": "CcusageMetrics",
+          "fields": [
+            { "name": "input_tokens", "type": "u64", "required": true },
+            { "name": "output_tokens", "type": "u64", "required": true },
+            { "name": "cache_creation_tokens", "type": "u64", "required": false },
+            { "name": "cache_read_tokens", "type": "u64", "required": false },
+            { "name": "total_tokens", "type": "u64", "required": true },
+            { "name": "total_cost", "type": "f64", "required": true }
+          ],
+          "confidence": "confirmed"
+        },
+        {
+          "name": "Granularity",
+          "fields": [
+            { "name": "Daily", "type": "variant", "required": true },
+            { "name": "Weekly", "type": "variant", "required": true },
+            { "name": "Monthly", "type": "variant", "required": true }
+          ],
+          "confidence": "confirmed"
+        },
+        {
+          "name": "PeriodEconomics",
+          "fields": [
+            { "name": "label", "type": "String", "required": true },
+            { "name": "cc_cost", "type": "Option<f64>", "required": false },
+            { "name": "cc_total_tokens", "type": "Option<u64>", "required": false },
+            { "name": "rtk_commands", "type": "Option<usize>", "required": false },
+            { "name": "rtk_saved_tokens", "type": "Option<usize>", "required": false },
+            { "name": "weighted_input_cpt", "type": "Option<f64>", "required": false },
+            { "name": "savings_weighted", "type": "Option<f64>", "required": false }
+          ],
+          "confidence": "confirmed"
+        }
+      ],
+      "business_rules": [
+        {
+          "description": "Analytics e read-only sobre o banco de tracking; novos fluxos que gravam no DB pertencem a core ou cmds.",
+          "location": "src/analytics/README.md:7",
+          "confidence": "confirmed"
+        },
+        {
+          "description": "gain --reset exige confirmacao humana ou --yes e recusa reset em stdin nao interativo por padrao.",
+          "location": "src/analytics/gain.rs:34",
+          "confidence": "confirmed"
+        },
+        {
+          "description": "ccusage indisponivel deve degradar para Ok(None), nao quebrar todo o relatorio economics.",
+          "location": "src/analytics/ccusage.rs:126",
+          "confidence": "confirmed"
+        },
+        {
+          "description": "Adocao de sessao conta tanto comandos explicitamente prefixados por rtk quanto comandos que o hook classificaria como suportados.",
+          "location": "src/analytics/session_cmd.rs:28",
+          "confidence": "confirmed"
+        }
+      ],
+      "dependencies": [
+        "core",
+        "discover",
+        "hooks",
+        "chrono",
+        "serde",
+        "colored",
+        "anyhow"
+      ],
+      "algorithms": [
+        "Resumo e export de tracking por escopo global/projeto",
+        "Renderizacao KPI e graficos ASCII TTY-aware",
+        "Merge temporal entre ccusage e tracking RTK",
+        "Calculo de custo por token de input ponderado",
+        "Conversao de semana legada sabado para segunda ISO",
+        "Fallback de ccusage para npx",
+        "Classificacao de comandos RTK em sessoes Claude Code",
+        "Deteccao best-effort de uso excessivo de RTK_DISABLED"
+      ],
+      "complexity": "medium-high"
+    },
+    {
+      "name": "discover",
+      "path": "src/discover",
+      "purpose": "Motor compartilhado de classificacao/rewrite de comandos shell e analise historica de sessoes Claude Code para oportunidades de economia RTK.",
+      "primary_files": [
+        "src/discover/README.md",
+        "src/discover/mod.rs",
+        "src/discover/lexer.rs",
+        "src/discover/provider.rs",
+        "src/discover/registry.rs",
+        "src/discover/report.rs",
+        "src/discover/rules.rs"
+      ],
+      "functions": [
+        {
+          "name": "discover::run",
+          "file": "src/discover/mod.rs",
+          "params": [
+            "project: Option<&str>",
+            "all: bool",
+            "since_days: u64",
+            "limit: usize",
+            "format: &str",
+            "verbose: u8"
+          ],
+          "returns": "Result<()>",
+          "confidence": "confirmed"
+        },
+        {
+          "name": "tokenize",
+          "file": "src/discover/lexer.rs",
+          "params": [
+            "input: &str"
+          ],
+          "returns": "Vec<ParsedToken>",
+          "confidence": "confirmed"
+        },
+        {
+          "name": "contains_unattestable_construct",
+          "file": "src/discover/lexer.rs",
+          "params": [
+            "cmd: &str"
+          ],
+          "returns": "bool",
+          "confidence": "confirmed"
+        },
+        {
+          "name": "ClaudeProvider::extract_commands",
+          "file": "src/discover/provider.rs",
+          "params": [
+            "path: &Path"
+          ],
+          "returns": "Result<Vec<ExtractedCommand>>",
+          "confidence": "confirmed"
+        },
+        {
+          "name": "classify_command",
+          "file": "src/discover/registry.rs",
+          "params": [
+            "cmd: &str"
+          ],
+          "returns": "Classification",
+          "confidence": "confirmed"
+        },
+        {
+          "name": "rewrite_command",
+          "file": "src/discover/registry.rs",
+          "params": [
+            "cmd: &str",
+            "excluded: &[String]",
+            "transparent_prefixes: &[String]"
+          ],
+          "returns": "Option<String>",
+          "confidence": "confirmed"
+        }
+      ],
+      "entities": [
+        {
+          "name": "TokenKind",
+          "fields": [
+            { "name": "Arg", "type": "variant", "required": true },
+            { "name": "Operator", "type": "variant", "required": true },
+            { "name": "Pipe", "type": "variant", "required": true },
+            { "name": "Redirect", "type": "variant", "required": true },
+            { "name": "Shellism", "type": "variant", "required": true }
+          ],
+          "confidence": "confirmed"
+        },
+        {
+          "name": "ParsedToken",
+          "fields": [
+            { "name": "kind", "type": "TokenKind", "required": true },
+            { "name": "value", "type": "String", "required": true },
+            { "name": "offset", "type": "usize", "required": true }
+          ],
+          "confidence": "confirmed"
+        },
+        {
+          "name": "ExtractedCommand",
+          "fields": [
+            { "name": "command", "type": "String", "required": true },
+            { "name": "output_len", "type": "Option<usize>", "required": false },
+            { "name": "session_id", "type": "String", "required": true },
+            { "name": "output_content", "type": "Option<String>", "required": false },
+            { "name": "is_error", "type": "bool", "required": true },
+            { "name": "sequence_index", "type": "usize", "required": true }
+          ],
+          "confidence": "confirmed"
+        },
+        {
+          "name": "Classification",
+          "fields": [
+            { "name": "Supported", "type": "variant { rtk_equivalent, category, estimated_savings_pct, status }", "required": true },
+            { "name": "Unsupported", "type": "variant { base_command }", "required": true },
+            { "name": "Ignored", "type": "variant", "required": true }
+          ],
+          "confidence": "confirmed"
+        },
+        {
+          "name": "RtkRule",
+          "fields": [
+            { "name": "pattern", "type": "&'static str", "required": true },
+            { "name": "rtk_cmd", "type": "&'static str", "required": true },
+            { "name": "rewrite_prefixes", "type": "&[&str]", "required": true },
+            { "name": "category", "type": "&'static str", "required": true },
+            { "name": "savings_pct", "type": "f64", "required": true },
+            { "name": "subcmd_savings", "type": "&[(&str, f64)]", "required": false },
+            { "name": "subcmd_status", "type": "&[(&str, RtkStatus)]", "required": false }
+          ],
+          "confidence": "confirmed"
+        },
+        {
+          "name": "DiscoverReport",
+          "fields": [
+            { "name": "sessions_scanned", "type": "usize", "required": true },
+            { "name": "total_commands", "type": "usize", "required": true },
+            { "name": "already_rtk", "type": "usize", "required": true },
+            { "name": "supported", "type": "Vec<SupportedEntry>", "required": true },
+            { "name": "unsupported", "type": "Vec<UnsupportedEntry>", "required": true },
+            { "name": "parse_errors", "type": "usize", "required": true },
+            { "name": "rtk_disabled_count", "type": "usize", "required": true },
+            { "name": "agent_status", "type": "AgentIntegrationStatus", "required": true }
+          ],
+          "confidence": "confirmed"
+        }
+      ],
+      "business_rules": [
+        {
+          "description": "Rewrite e analise historica devem usar a mesma logica de classificacao para manter discover alinhado com hooks.",
+          "location": "src/discover/README.md:53",
+          "confidence": "confirmed"
+        },
+        {
+          "description": "Heredoc e aritmetica $((...)) bloqueiam split/rewrite para evitar alteracao insegura.",
+          "location": "src/discover/registry.rs:249",
+          "confidence": "confirmed"
+        },
+        {
+          "description": "Em pipes, apenas o lado esquerdo e reescrito; find/fd antes de pipe sao preservados crus.",
+          "location": "src/discover/registry.rs:638",
+          "confidence": "confirmed"
+        },
+        {
+          "description": "gh com --json, --jq ou --template nao e reescrito para nao corromper saida estruturada.",
+          "location": "src/discover/registry.rs:927",
+          "confidence": "confirmed"
+        },
+        {
+          "description": "RTK_DISABLED= no prefixo env bloqueia rewrite e deve ser reportado como bypass quando o comando seria suportado.",
+          "location": "src/discover/registry.rs:820",
+          "confidence": "confirmed"
+        }
+      ],
+      "dependencies": [
+        "core",
+        "hooks",
+        "regex",
+        "lazy_static",
+        "serde",
+        "walkdir",
+        "dirs",
+        "anyhow"
+      ],
+      "algorithms": [
+        "Lexer shell-aware com offsets",
+        "Deteccao de constructos nao atestaveis para permissoes",
+        "Scan de JSONL Claude Code por tool_use/tool_result",
+        "Classificacao por RegexSet sobre 86 RtkRule",
+        "Normalizacao de env prefixes, paths absolutos, Git global opts, golangci opts e PHP Composer tools",
+        "Rewrite composto por segmentos com preservacao de operadores e redirects",
+        "Prefixos transparentes recursivos com limite de profundidade",
+        "Estimativa ponderada de economia por bucket",
+        "Renderizacao de DiscoverReport em texto e JSON"
+      ],
+      "complexity": "high"
+    },
+    {
+      "name": "learn",
+      "path": "src/learn",
+      "purpose": "Detecta correcoes recorrentes de CLI em historico Claude Code e gera relatorios/regras para evitar erros repetidos.",
+      "primary_files": [
+        "src/learn/README.md",
+        "src/learn/mod.rs",
+        "src/learn/detector.rs",
+        "src/learn/report.rs"
+      ],
+      "functions": [
+        {
+          "name": "learn::run",
+          "file": "src/learn/mod.rs",
+          "params": [
+            "project: Option<String>",
+            "all: bool",
+            "since: u64",
+            "format: String",
+            "write_rules: bool",
+            "min_confidence: f64",
+            "min_occurrences: usize"
+          ],
+          "returns": "Result<()>",
+          "confidence": "confirmed"
+        },
+        {
+          "name": "is_command_error",
+          "file": "src/learn/detector.rs",
+          "params": [
+            "is_error: bool",
+            "output: &str"
+          ],
+          "returns": "bool",
+          "confidence": "confirmed"
+        },
+        {
+          "name": "classify_error",
+          "file": "src/learn/detector.rs",
+          "params": [
+            "output: &str"
+          ],
+          "returns": "ErrorType",
+          "confidence": "confirmed"
+        },
+        {
+          "name": "find_corrections",
+          "file": "src/learn/detector.rs",
+          "params": [
+            "commands: &[CommandExecution]"
+          ],
+          "returns": "Vec<CorrectionPair>",
+          "confidence": "confirmed"
+        },
+        {
+          "name": "deduplicate_corrections",
+          "file": "src/learn/detector.rs",
+          "params": [
+            "pairs: Vec<CorrectionPair>"
+          ],
+          "returns": "Vec<CorrectionRule>",
+          "confidence": "confirmed"
+        },
+        {
+          "name": "write_rules_file",
+          "file": "src/learn/report.rs",
+          "params": [
+            "rules: &[CorrectionRule]",
+            "path: &str"
+          ],
+          "returns": "Result<()>",
+          "confidence": "confirmed"
+        }
+      ],
+      "entities": [
+        {
+          "name": "ErrorType",
+          "fields": [
+            { "name": "UnknownFlag", "type": "variant", "required": true },
+            { "name": "CommandNotFound", "type": "variant", "required": true },
+            { "name": "WrongSyntax", "type": "variant", "required": true },
+            { "name": "WrongPath", "type": "variant", "required": true },
+            { "name": "MissingArg", "type": "variant", "required": true },
+            { "name": "PermissionDenied", "type": "variant", "required": true },
+            { "name": "Other", "type": "variant(String)", "required": true }
+          ],
+          "confidence": "confirmed"
+        },
+        {
+          "name": "CorrectionPair",
+          "fields": [
+            { "name": "wrong_command", "type": "String", "required": true },
+            { "name": "right_command", "type": "String", "required": true },
+            { "name": "error_output", "type": "String", "required": true },
+            { "name": "error_type", "type": "ErrorType", "required": true },
+            { "name": "confidence", "type": "f64", "required": true }
+          ],
+          "confidence": "confirmed"
+        },
+        {
+          "name": "CorrectionRule",
+          "fields": [
+            { "name": "wrong_pattern", "type": "String", "required": true },
+            { "name": "right_pattern", "type": "String", "required": true },
+            { "name": "error_type", "type": "ErrorType", "required": true },
+            { "name": "occurrences", "type": "usize", "required": true },
+            { "name": "base_command", "type": "String", "required": true },
+            { "name": "example_error", "type": "String", "required": true }
+          ],
+          "confidence": "confirmed"
+        },
+        {
+          "name": "CommandExecution",
+          "fields": [
+            { "name": "command", "type": "String", "required": true },
+            { "name": "is_error", "type": "bool", "required": true },
+            { "name": "output", "type": "String", "required": true }
+          ],
+          "confidence": "confirmed"
+        }
+      ],
+      "business_rules": [
+        {
+          "description": "User rejection/cancelamento nao deve ser classificado como erro de CLI.",
+          "location": "src/learn/detector.rs:72",
+          "confidence": "confirmed"
+        },
+        {
+          "description": "Correcoes so sao buscadas nos proximos 3 comandos apos um erro.",
+          "location": "src/learn/detector.rs:123",
+          "confidence": "confirmed"
+        },
+        {
+          "description": "Erros de compilacao/teste de ciclo TDD sao descartados como nao sendo correcao de CLI.",
+          "location": "src/learn/detector.rs:184",
+          "confidence": "confirmed"
+        },
+        {
+          "description": "Diferencas apenas de path sao tratadas como exploracao, nao correcao.",
+          "location": "src/learn/detector.rs:201",
+          "confidence": "confirmed"
+        }
+      ],
+      "dependencies": [
+        "discover",
+        "regex",
+        "lazy_static",
+        "serde_json",
+        "anyhow"
+      ],
+      "algorithms": [
+        "Scan de sessoes Claude Code com provider compartilhado",
+        "Classificacao regex de erros de CLI",
+        "Similaridade Jaccard por base command e argumentos",
+        "Busca de correcao em janela de 3 comandos",
+        "Boost de confianca para candidato bem-sucedido",
+        "Deduplicacao por base command, tipo de erro e token alterado",
+        "Geracao de relatorio console/JSON/Markdown"
+      ],
+      "complexity": "medium"
     }
   ]
 }

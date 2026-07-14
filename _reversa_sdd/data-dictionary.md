@@ -322,3 +322,157 @@ Projeto: `rtk`
 | `permissions::check_command_for` | cmd + host -> `PermissionVerdict` | Avalia regras do host. |
 | `integrity::verify_hook_at` | path -> `IntegrityStatus` | Verifica hash do hook. |
 | `trust::check_trust_with_content` | path -> status + conteudo opcional | Gate de filtros TOML. |
+
+## Modulo `analytics`
+
+### Comandos e summaries
+
+| Entidade | Tipo | Local | Campos principais |
+|---|---|---|---|
+| `SessionSummary` | struct | `src/analytics/session_cmd.rs` | `id`, `date`, `total_cmds`, `rtk_cmds`, `output_tokens`. |
+| `ExportData` | struct | `src/analytics/gain.rs` | `summary`, `daily`, `weekly`, `monthly`. |
+| `ExportSummary` | struct | `src/analytics/gain.rs` | `total_commands`, `total_input`, `total_output`, `total_saved`, `avg_savings_pct`, `total_time_ms`, `avg_time_ms`. |
+
+### ccusage
+
+| Entidade | Tipo | Local | Campos/variantes principais |
+|---|---|---|---|
+| `CcusageMetrics` | struct | `src/analytics/ccusage.rs` | `input_tokens`, `output_tokens`, `cache_creation_tokens`, `cache_read_tokens`, `total_tokens`, `total_cost`. |
+| `CcusagePeriod` | struct | `src/analytics/ccusage.rs` | `key`, `metrics`. |
+| `Granularity` | enum | `src/analytics/ccusage.rs` | `Daily`, `Weekly`, `Monthly`. |
+| `DailyResponse` / `WeeklyResponse` / `MonthlyResponse` | structs internos | `src/analytics/ccusage.rs` | Vetores `daily`, `weekly`, `monthly`. |
+| `DailyEntry` / `WeeklyEntry` / `MonthlyEntry` | structs internos | `src/analytics/ccusage.rs` | Chave de periodo com alias `period` + `CcusageMetrics`. |
+
+### Economics
+
+| Entidade | Tipo | Local | Campos principais |
+|---|---|---|---|
+| `PeriodEconomics` | struct | `src/analytics/cc_economics.rs` | `label`, metricas ccusage, metricas RTK, `weighted_input_cpt`, `savings_weighted`, `blended_cpt`, `active_cpt`. |
+| `Totals` | struct | `src/analytics/cc_economics.rs` | Totais agregados de custo, tokens, comandos RTK e economias estimadas. |
+
+### Constantes
+
+| Nome | Local | Valor/Papel |
+|---|---|---|
+| `WEIGHT_OUTPUT` | `src/analytics/cc_economics.rs` | Peso 5.0 para token de output. |
+| `WEIGHT_CACHE_CREATE` | `src/analytics/cc_economics.rs` | Peso 1.25 para cache write. |
+| `WEIGHT_CACHE_READ` | `src/analytics/cc_economics.rs` | Peso 0.1 para cache read. |
+| `ESTIMATED_PRO_MONTHLY` | `src/analytics/gain.rs` | Baseline heuristico de 6.000.000 tokens/mes para quota Pro. |
+
+### Contratos de funcao principais
+
+| Funcao | Assinatura resumida | Papel |
+|---|---|---|
+| `gain::run` | flags de escopo/formato/periodo/reset -> `Result<()>` | Renderiza ou exporta economia de tokens RTK. |
+| `ccusage::fetch` | `Granularity` -> `Result<Option<Vec<CcusagePeriod>>>` | Executa e parseia ccusage com degradacao graciosa. |
+| `cc_economics::run` | periodo/formato/verbose -> `Result<()>` | Combina gasto Claude Code com economia RTK. |
+| `session_cmd::run` | `verbose: u8` -> `Result<()>` | Mostra adocao de RTK em sessoes Claude Code recentes. |
+| `count_rtk_commands` | `&[ExtractedCommand]` -> `(usize, usize, usize)` | Conta comandos totais, comandos cobertos por RTK e output somado. |
+| `convert_saturday_to_monday` | `&str` -> `Option<String>` | Alinha semanas RTK legadas ao padrao ISO do ccusage. |
+
+## Modulo `discover`
+
+### Aggregation e comando
+
+| Entidade | Tipo | Local | Campos principais |
+|---|---|---|---|
+| `SupportedBucket` | struct interno | `src/discover/mod.rs` | `rtk_equivalent`, `category`, `count`, `total_output_tokens`, `total_raw_output_tokens`, `command_counts`. |
+| `UnsupportedBucket` | struct interno | `src/discover/mod.rs` | `count`, `example`. |
+
+### Lexer
+
+| Entidade | Tipo | Local | Campos/variantes principais |
+|---|---|---|---|
+| `TokenKind` | enum | `src/discover/lexer.rs` | `Arg`, `Operator`, `Pipe`, `Redirect`, `Shellism`. |
+| `ParsedToken` | struct | `src/discover/lexer.rs` | `kind`, `value`, `offset`. |
+
+### Provider de sessoes
+
+| Entidade | Tipo | Local | Campos/contratos |
+|---|---|---|---|
+| `ExtractedCommand` | struct | `src/discover/provider.rs` | `command`, `output_len`, `session_id`, `output_content`, `is_error`, `sequence_index`. |
+| `SessionProvider` | trait | `src/discover/provider.rs` | `discover_sessions(project_filter, since_days)`, `extract_commands(path)`. |
+| `ClaudeProvider` | struct | `src/discover/provider.rs` | Provider atual para JSONL Claude Code. |
+
+### Registry e regras
+
+| Entidade | Tipo | Local | Campos/variantes principais |
+|---|---|---|---|
+| `Classification` | enum | `src/discover/registry.rs` | `Supported { rtk_equivalent, category, estimated_savings_pct, status }`, `Unsupported { base_command }`, `Ignored`. |
+| `GolangciRunParts` | struct interno | `src/discover/registry.rs` | `global_segment`, `run_segment`. |
+| `ExcludePattern` | enum interno | `src/discover/registry.rs` | `Regex(Regex)`, `Prefix(String)`. |
+| `RtkRule` | struct | `src/discover/rules.rs` | `pattern`, `rtk_cmd`, `rewrite_prefixes`, `category`, `savings_pct`, `subcmd_savings`, `subcmd_status`. |
+
+### Report
+
+| Entidade | Tipo | Local | Campos principais |
+|---|---|---|---|
+| `RtkStatus` | enum | `src/discover/report.rs` | `Existing`, `Passthrough`, `NotSupported`. |
+| `SupportedEntry` | struct | `src/discover/report.rs` | `command`, `count`, `rtk_equivalent`, `category`, `estimated_savings_tokens`, `estimated_savings_pct`, `rtk_status`. |
+| `UnsupportedEntry` | struct | `src/discover/report.rs` | `base_command`, `count`, `example`. |
+| `AgentIntegrationStatus` | struct | `src/discover/report.rs` | `cursor_hook_installed`, `hermes_plugin_installed`, `copilot_hook_installed`. |
+| `DiscoverReport` | struct | `src/discover/report.rs` | `sessions_scanned`, `total_commands`, `already_rtk`, `since_days`, `supported`, `unsupported`, `parse_errors`, `rtk_disabled_count`, `rtk_disabled_examples`, `agent_status`. |
+
+### Constantes
+
+| Nome | Local | Valor/Papel |
+|---|---|---|
+| `RULES` | `src/discover/rules.rs` | 86 regras de classificacao/rewrite. |
+| `IGNORED_PREFIXES` | `src/discover/rules.rs` | Prefixos de comandos shell/operacionais ignorados. |
+| `IGNORED_EXACT` | `src/discover/rules.rs` | Comandos exatos ignorados (`cd`, `echo`, `fi`, `done`, etc.). |
+| `PHP_TOOL_NAMES` | `src/discover/registry.rs` | Ferramentas PHP normalizadas (`phpunit`, `phpstan`, `ecs`, `pest`, `paratest`, `pint`). |
+| `BUILTIN_TRANSPARENT_PREFIXES` | `src/discover/registry.rs` | `noglob`, `command`, `builtin`, `exec`, `nocorrect`. |
+| `MAX_PREFIX_DEPTH` | `src/discover/registry.rs` | Limite de recursao de prefixos: 10. |
+
+### Contratos de funcao principais
+
+| Funcao | Assinatura resumida | Papel |
+|---|---|---|
+| `discover::run` | filtros/periodo/formato -> `Result<()>` | Orquestra scan de sessoes e relatorio. |
+| `tokenize` | `&str` -> `Vec<ParsedToken>` | Lexer shell-aware com offsets. |
+| `contains_unattestable_construct` | `&str` -> `bool` | Gate de seguranca para permissoes. |
+| `split_for_permissions` | `&str` -> `Vec<&str>` | Segmenta comandos para permissao, truncando redirects. |
+| `split_on_operators` | `&str`, `stop_at_pipe` -> `Vec<&str>` | Divide comandos respeitando aspas e pipes. |
+| `ClaudeProvider::encode_project_path` | `&str` -> `String` | Replica slug de diretorio de projeto Claude Code. |
+| `classify_command` | `&str` -> `Classification` | Classifica comando contra regras RTK. |
+| `rewrite_command` | cmd + exclusoes + prefixos -> `Option<String>` | Reescreve comando shell quando seguro e suportado. |
+| `strip_disabled_prefix` | `&str` -> `(&str, &str)` | Separa prefixo env/sudo/env do comando real. |
+| `format_text` / `format_json` | `&DiscoverReport` -> `String` | Renderiza relatorio humano ou JSON. |
+
+## Modulo `learn`
+
+### Detector
+
+| Entidade | Tipo | Local | Campos/variantes principais |
+|---|---|---|---|
+| `ErrorType` | enum | `src/learn/detector.rs` | `UnknownFlag`, `CommandNotFound`, `WrongSyntax`, `WrongPath`, `MissingArg`, `PermissionDenied`, `Other(String)`. |
+| `CorrectionPair` | struct | `src/learn/detector.rs` | `wrong_command`, `right_command`, `error_output`, `error_type`, `confidence`. |
+| `CorrectionRule` | struct | `src/learn/detector.rs` | `wrong_pattern`, `right_pattern`, `error_type`, `occurrences`, `base_command`, `example_error`. |
+| `CommandExecution` | struct | `src/learn/detector.rs` | `command`, `is_error`, `output`. |
+
+### Constantes e regexes
+
+| Nome | Local | Valor/Papel |
+|---|---|---|
+| `CORRECTION_WINDOW` | `src/learn/detector.rs` | Busca correcao nos proximos 3 comandos. |
+| `MIN_CONFIDENCE` | `src/learn/detector.rs` | Limiar interno 0.6 para aceitar par detectado. |
+| `UNKNOWN_FLAG_RE` | `src/learn/detector.rs` | Detecta flag/opcao desconhecida ou invalida. |
+| `CMD_NOT_FOUND_RE` | `src/learn/detector.rs` | Detecta command not found / comando nao reconhecido. |
+| `WRONG_PATH_RE` | `src/learn/detector.rs` | Detecta arquivo/caminho inexistente. |
+| `MISSING_ARG_RE` | `src/learn/detector.rs` | Detecta argumento/valor obrigatorio ausente. |
+| `PERMISSION_DENIED_RE` | `src/learn/detector.rs` | Detecta permissao/acesso negado. |
+| `USER_REJECTION_RE` | `src/learn/detector.rs` | Filtra cancelamento/rejeicao humana, nao erro de CLI. |
+
+### Contratos de funcao principais
+
+| Funcao | Assinatura resumida | Papel |
+|---|---|---|
+| `learn::run` | filtros/formato/limiares -> `Result<()>` | Orquestra deteccao e saida de regras. |
+| `is_command_error` | `is_error: bool`, `output: &str` -> `bool` | Decide se tool_result representa erro CLI real. |
+| `classify_error` | `&str` -> `ErrorType` | Classifica texto de erro. |
+| `extract_base_command` | `&str` -> `String` | Normaliza base command por primeiros 1-2 tokens. |
+| `command_similarity` | `&str`, `&str` -> `f64` | Similaridade Jaccard com 0.5 base para mesmo comando. |
+| `find_corrections` | `&[CommandExecution]` -> `Vec<CorrectionPair>` | Detecta pares erro-correcao na janela. |
+| `deduplicate_corrections` | `Vec<CorrectionPair>` -> `Vec<CorrectionRule>` | Agrupa pares por base/erro/diff token. |
+| `format_console_report` | rules + contadores -> `String` | Renderiza relatorio textual. |
+| `write_rules_file` | rules + path -> `Result<()>` | Gera Markdown de regras CLI. |
