@@ -5,7 +5,7 @@ license: MIT
 compatibility: Claude Code, Codex, Cursor, Gemini CLI e demais agentes compatíveis com Agent Skills.
 metadata:
   author: sandeco
-  version: "1.0.0"
+  version: "1.1.0"
   framework: reversa
   role: orchestrator
   mode: autonomous
@@ -98,14 +98,15 @@ Após o INICIAR, salve tudo em `state.json`, atualize `phase` para `"reconhecime
 Execute o plano sequencialmente, um agente por vez, exatamente como o `reversa` faz (informar o agente, ativar o skill, salvar checkpoint, marcar ✅ no `plan.md`, resumo breve). Com estes overrides:
 
 1. **Nenhuma confirmação intermediária.** Não pergunte "podemos começar com o Scout?", não ofereça o checkpoint preventivo de `/clear` + nova sessão, não peça CONTINUAR entre agentes.
-2. **Handoff automático.** Os skills dos agentes terminam sugerindo o próximo passo e pedindo "Digite CONTINUAR". Em modo autônomo, o orquestrador é quem responde: prossiga imediatamente para a próxima tarefa do plano, sem esperar o usuário.
-3. **Após o Scout:** expanda a Fase 2 do `plan.md` com uma tarefa por módulo (igual ao fluxo normal). **Não** apresente o menu de `doc_level` (já respondido). Em seguida, persista a organização das specs em `config.toml` seguindo as regras de escrita do `step-03` (atomic write, `scout_suggestion` imutável, non-destructive), usando a resposta da entrevista:
+2. **Handoff automático.** Os skills dos agentes terminam sugerindo o próximo passo e pedindo "Digite CONTINUAR". Em modo autônomo, o orquestrador é quem responde sem esperar o usuário, respeitando a fronteira por unit do Writer descrita no item seguinte.
+3. **Writer avança uma unit por autorização.** Antes do primeiro arquivo de cada unit, valide o checkpoint anterior e persista `redator_progress.auto_advance` com `enabled: true`, `scope: "unit"` e o identificador exato da próxima unit. Ao concluir essa unit, o Writer deve desabilitar a autorização e persistir o checkpoint antes de qualquer arquivo da unit seguinte. O orquestrador pode então renovar a autorização, sempre nomeando uma única unit; nunca mantenha autorização ilimitada, agrupe units ou reutilize a autorização anterior. Depois de todas as units, trate os globais separadamente e gere cada um apenas com uma autorização específica de próximo arquivo. Essa renovação interna não exige intervenção humana, mas permanece delimitada e auditável no estado.
+4. **Após o Scout:** expanda a Fase 2 do `plan.md` com uma tarefa por módulo (igual ao fluxo normal). **Não** apresente o menu de `doc_level` (já respondido). Em seguida, persista a organização das specs em `config.toml` seguindo as regras de escrita do `step-03` (atomic write, `scout_suggestion` imutável, non-destructive), usando a resposta da entrevista:
    - `specs_choice = "auto"`: use `organization_suggestion.granularity` do `surface.json`. Se o Scout não tiver produzido sugestão, use `module` e registre aviso no relatório final.
    - Qualquer outro valor: use o valor escolhido (e `custom_folders`, se houver).
-4. **Conflitos que o fluxo normal pergunta viram avisos.** Detecção de estrutura divergente em disco (RF-11) e override em `config.user.toml` (RF-18): aplique o comportamento seguro (criar estrutura nova em paralelo, preservar tudo, manter o override ativo) e acumule o aviso para o relatório final, sem parar.
-5. **Lacunas:** com `answer_mode = "file"`, nenhum agente pergunta no chat. Toda dúvida vai para `<output_folder>/questions.md` com contexto e marcador 🔴 LACUNA na spec correspondente. Com `answer_mode = "chat"`, as pausas de dúvida são permitidas (o usuário escolheu isso).
-6. **Checkpoints continuam obrigatórios.** Salve `state.json` após cada agente, seguindo `checkpoint-guide.md`. O modo autônomo não dispensa a retomabilidade.
-7. **Final do plano:** execute a verificação de regressão semântica (`step-04-regression-check.md`) normalmente.
+5. **Conflitos que o fluxo normal pergunta viram avisos.** Detecção de estrutura divergente em disco (RF-11) e override em `config.user.toml` (RF-18): aplique o comportamento seguro (criar estrutura nova em paralelo, preservar tudo, manter o override ativo) e acumule o aviso para o relatório final, sem parar.
+6. **Lacunas:** com `answer_mode = "file"`, nenhum agente pergunta no chat. Toda dúvida vai para `<output_folder>/questions.md` com contexto e marcador 🔴 LACUNA na spec correspondente. Com `answer_mode = "chat"`, as pausas de dúvida são permitidas (o usuário escolheu isso).
+7. **Checkpoints continuam obrigatórios.** Salve `state.json` após cada agente e após cada unit do Writer, seguindo `checkpoint-guide.md`. O modo autônomo não dispensa a retomabilidade.
+8. **Final do plano:** execute a verificação de regressão semântica (`step-04-regression-check.md`) normalmente.
 
 ## Paradas legítimas (lista fechada)
 

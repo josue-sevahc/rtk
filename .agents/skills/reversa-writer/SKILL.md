@@ -5,7 +5,7 @@ license: MIT
 compatibility: Claude Code, Codex, Cursor, Gemini CLI e demais agentes compatíveis com Agent Skills.
 metadata:
   author: sandeco
-  version: "1.2.0"
+  version: "1.3.0"
   framework: reversa
   phase: geracao
 ---
@@ -50,6 +50,30 @@ Os nomes das pastas seguem `doc_language` do `state.json`. Em uma instalação `
 ### Caso `hybrid`
 
 Para cada módulo `M` em `surface.json.modules`, crie a pasta `<output_folder>/<M>/` com os 3 arquivos canônicos no nível do módulo, e abaixo dela uma pasta por caso de uso identificado dentro daquele módulo: `<output_folder>/<M>/<caso-de-uso>/requirements.md`, `design.md`, `tasks.md`.
+
+Antes de adicionar qualquer subunit híbrida ao plano ou criar seu diretório, execute uma **verificação de duplicidade de rastreabilidade**:
+
+1. Monte a identidade candidata com os caminhos relativos normalizados do legado e, quando disponíveis, símbolos, rotas, comandos e fluxos cobertos.
+2. Compare essa identidade e o contrato comportamental pretendido com todas as units e subunits já planejadas, concluídas ou preservadas.
+3. Classifique o resultado como `unique`, `partial_overlap` ou `duplicate` e persista-o em `redator_progress.hybrid_traceability_checks` antes de incluir arquivos no `generation_plan`.
+4. Crie a subunit somente quando o resultado for `unique`, ou `partial_overlap` acompanhado de `reason` que documente uma fronteira comportamental distinta.
+5. Se o resultado for `duplicate`, não crie diretório nem arquivos e registre `duplicate_of`, `legacy_refs` e a evidência em `reason`.
+
+Compartilhar isoladamente um arquivo do legado não caracteriza duplicidade. Use `duplicate` somente quando as referências relevantes e o contrato comportamental proposto já estiverem integralmente cobertos.
+
+Registro mínimo:
+
+```json
+{
+  "unit": "nucleo/execucao-compartilhada",
+  "traceability_check": {
+    "result": "duplicate",
+    "duplicate_of": "wrappers-comandos/execucao-filtrada",
+    "legacy_refs": ["src/core/runner.rs", "src/core/stream.rs"],
+    "reason": "O contrato operacional e as referências já estão cobertos pela unit existente."
+  }
+}
+```
 
 ## Artefatos canônicos e opcionais
 
@@ -117,6 +141,17 @@ Digite CONTINUAR para iniciar, ou me diga se quer ajustar o plano.
 
 Aguarde a confirmação do usuário antes de prosseguir.
 
+Após a aprovação e **antes de criar qualquer diretório de unit ou arquivo de spec**, persista atomicamente em `.reversa/state.json#redator_progress.generation_plan` a lista integral, ordenada e aprovada, incluindo todas as units, opcionais e globais. A gravação deve satisfazer:
+
+- `plan_revision` é incrementado a cada alteração aprovada do plano;
+- `plan_total_files` é exatamente igual a `generation_plan.length`;
+- cada item possui no mínimo `order`, `path`, `unit`, `kind` (`canonical`, `optional` ou `global`) e `status`;
+- itens novos começam como `pending`; arquivos preexistentes são registrados como `preserved` e nunca sobrescritos;
+- `next_file` aponta para o primeiro item `pending`, ou é `null` somente quando não existe item pendente;
+- persistir somente `active_batch` ou outra visão parcial não substitui `generation_plan`.
+
+Se uma execução antiga tiver `redator_progress` sem `generation_plan`, reconstrua e persista o plano completo antes de criar outro arquivo. Qualquer ajuste posterior exige uma nova revisão integral persistida antes da continuação.
+
 ### Passo 2, Gerar um arquivo por vez
 
 Para cada item do plano, em sequência:
@@ -125,11 +160,46 @@ Para cada item do plano, em sequência:
 2. Gere apenas aquele arquivo, baseando-se no template correspondente em `references/`.
 3. Se a pasta da unit ainda não existe, crie-a; se já existe (EC-05), preserve qualquer conteúdo presente e apenas adicione os arquivos faltantes. Nunca sobrescreva arquivos já existentes sem confirmação.
 4. Marque o item como concluído no plano.
-5. Salve o progresso em `.reversa/state.json` (campo `redator_progress`).
+5. Salve o progresso em `.reversa/state.json` (campo `redator_progress`), atualizando o status do item e `next_file` na mesma gravação atômica.
 6. Informe: `"✅ [arquivo] concluído. Próximo: [próximo item]. Digite CONTINUAR para prosseguir."`
 7. Pare e aguarde a resposta do usuário.
 
-Só avance para o próximo item após resposta. Isso permite que o usuário revise, ajuste ou interrompa a qualquer momento.
+Só avance para o próximo item após resposta, exceto enquanto houver uma autorização `auto_advance` válida conforme a seção abaixo. Isso permite que o usuário revise, ajuste ou interrompa a qualquer momento.
+
+### Invariante de `next_file`
+
+Considere `pending` a sequência ordenada dos itens de `generation_plan` cujo `status` é `pending`:
+
+```text
+se pending não está vazio:
+  next_file DEVE ser pending[0].path
+se pending está vazio:
+  next_file DEVE ser null
+```
+
+É proibido persistir `next_file: null` enquanto houver qualquer item pendente, inclusive global. `next_file` nunca pode apontar para item `completed`, `preserved`, `skipped` ou inexistente. Antes de retomar uma geração, valide essa invariante; se estiver violada, recompute `next_file` a partir do plano, registre a correção no estado e só então prossiga.
+
+### Comandos de continuação e avanço automático limitado
+
+- `CONTINUAR` autoriza somente o próximo arquivo.
+- “continue sem confirmação”, “pode seguir automaticamente” e equivalentes autorizam apenas os arquivos restantes da **unit atual**.
+- Um comando sem limite textual adicional adota o limite seguro explícito “até concluir esta unit”; informe esse limite antes de avançar.
+- Para habilitar `auto_advance`, persista `enabled: true`, `scope: "unit"` e `unit` com o identificador exato da unit atual. `enabled: true` sem `scope` ou `unit` válidos não autoriza geração.
+- Ao concluir a unit autorizada, desabilite `auto_advance`, persista o checkpoint e pare antes do primeiro arquivo da próxima unit.
+- Se a autorização for recebida no último arquivo da unit, ela autoriza somente esse arquivo.
+- Uma autorização nunca abrange duas units, o restante do plano ou arquivos globais. Globais são uma fronteira própria e exigem confirmação separada, arquivo por arquivo.
+
+Estado válido durante o avanço:
+
+```json
+{
+  "auto_advance": {
+    "enabled": true,
+    "scope": "unit",
+    "unit": "nucleo/tracking-e-telemetria"
+  }
+}
+```
 
 **Pausa preventiva entre units:** quando você concluir o último arquivo (`tasks.md`) de uma unit e a sessão já gerou **3 units ou mais** sem pausa, troque a mensagem padrão "Digite CONTINUAR" pela versão com pausa preventiva:
 
