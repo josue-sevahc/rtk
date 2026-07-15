@@ -26,11 +26,17 @@
       "_reversa_sdd/entrada-cli/tasks.md",
       "_reversa_sdd/entrada-cli/roteamento-e-fallback/requirements.md",
       "_reversa_sdd/entrada-cli/roteamento-e-fallback/design.md",
-      "_reversa_sdd/entrada-cli/roteamento-e-fallback/tasks.md"
+      "_reversa_sdd/entrada-cli/roteamento-e-fallback/tasks.md",
+      "_reversa_sdd/wrappers-comandos/requirements.md",
+      "_reversa_sdd/wrappers-comandos/design.md",
+      "_reversa_sdd/wrappers-comandos/tasks.md",
+      "_reversa_sdd/wrappers-comandos/execucao-filtrada/requirements.md",
+      "_reversa_sdd/wrappers-comandos/execucao-filtrada/design.md",
+      "_reversa_sdd/wrappers-comandos/execucao-filtrada/tasks.md"
     ],
-    "last_completed_file": "_reversa_sdd/entrada-cli/roteamento-e-fallback/tasks.md",
-    "next_file": "_reversa_sdd/wrappers-comandos/requirements.md",
-    "updated_at": "2026-07-15T00:34:48Z"
+    "last_completed_file": "_reversa_sdd/wrappers-comandos/execucao-filtrada/tasks.md",
+    "next_file": "_reversa_sdd/nucleo/requirements.md",
+    "updated_at": "2026-07-15T01:31:26Z"
   },
   "checkpoints": {
     "scout": {
