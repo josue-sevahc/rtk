@@ -18,6 +18,20 @@
     "geracao",
     "revisao"
   ],
+  "redator_progress": {
+    "plan_total_files": 78,
+    "completed_files": [
+      "_reversa_sdd/entrada-cli/requirements.md",
+      "_reversa_sdd/entrada-cli/design.md",
+      "_reversa_sdd/entrada-cli/tasks.md",
+      "_reversa_sdd/entrada-cli/roteamento-e-fallback/requirements.md",
+      "_reversa_sdd/entrada-cli/roteamento-e-fallback/design.md",
+      "_reversa_sdd/entrada-cli/roteamento-e-fallback/tasks.md"
+    ],
+    "last_completed_file": "_reversa_sdd/entrada-cli/roteamento-e-fallback/tasks.md",
+    "next_file": "_reversa_sdd/wrappers-comandos/requirements.md",
+    "updated_at": "2026-07-15T00:34:48Z"
+  },
   "checkpoints": {
     "scout": {
       "completed_at": "2026-07-14T14:23:54Z",
