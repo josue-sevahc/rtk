@@ -49,6 +49,22 @@
 - [ ] **Redator** — User Stories (se aplicável)
 - [ ] **Redator** — Code/Spec Matrix
 
+### Controle Incremental do Redator
+
+> Organização configurada: `hybrid`. Cada módulo recebe os três arquivos canônicos; casos de uso aninhados só são criados quando acrescentam um contrato distinto, sem duplicar uma unit já documentada em outro módulo.
+
+- ✅ `entrada-cli/` — unit do módulo `main` (3 arquivos canônicos)
+- ✅ `entrada-cli/roteamento-e-fallback/` — caso de uso do roteamento da CLI (3 arquivos canônicos)
+- ✅ `wrappers-comandos/` — unit do módulo `cmds` (3 arquivos canônicos)
+- ✅ `wrappers-comandos/execucao-filtrada/` — contrato compartilhado de execução filtrada (3 arquivos canônicos)
+- ✅ `nucleo/` — unit do módulo `core` (3 arquivos canônicos)
+- ✅ `nucleo/pipeline-de-filtros-toml/` — registry trust-gated, compilação e aplicação da DSL (3 arquivos canônicos).
+- ✅ `nucleo/tracking-e-telemetria/` — tracking SQLite, agregações, retenção e ping opt-in (3 arquivos canônicos).
+
+> Não criar `nucleo/execucao-compartilhada/`: sua superfície operacional já está coberta por `wrappers-comandos/execucao-filtrada/`, que rastreia `core::runner`, `core::stream`, `core::guard`, `core::tee` e `core::tracking`. Duplicá-la reduziria a qualidade da rastreabilidade. 🟢
+
+> Após decidir os dois subunits candidatos, o Redator deve persistir a lista ordenada de arquivos pendentes em `.reversa/state.json` antes de voltar a gerar. O plano anterior registrou apenas o total de 78 arquivos e não preservou essa lista.
+
 ## Fase 5: Revisão ✅
 
 - [ ] **Revisor** — Revisão cruzada de specs
