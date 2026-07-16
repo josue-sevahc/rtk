@@ -35,7 +35,7 @@
 - `src/hooks`, `hooks/` e `openclaw/`: sustentam os adaptadores por agente apresentados na matriz de integracoes. 🟢
 - `src/analytics` e `src/discover`: sustentam os comandos de economia, descoberta e sessao citados nos guias. 🟢
 - `README.md` e `CONTRIBUTING.md`: complementam a superficie de onboarding e as regras de contribuicao. 🟢
-- Infraestrutura de publicacao do site de documentacao: e inferida pela estrutura de front matter e hierarquia de `docs/guide/`, mas o gerador nao foi identificado nesta unit. 🔴
+- Infraestrutura de publicacao do site de documentacao: `docs/guide/` alimenta o repositorio `rtk-ai/rtk-website` pelo pipeline `prepare-docs.mjs`, que publica a navegacao via Starlight. 🟢 `.github/docs-pipeline-contract.md:3`
 
 ## Decisoes de Design Identificadas
 
@@ -59,6 +59,6 @@ A unit e majoritariamente declarativa: paginas Markdown com front matter de titu
 
 ## Riscos e Lacunas
 
-- 🔴 O mecanismo que transforma os arquivos de `docs/guide/` no site publicado nao foi confirmado a partir dos artefatos analisados.
+- 🟢 O contrato de integracao com o site esta documentado em `.github/docs-pipeline-contract.md`; a implementacao de `prepare-docs.mjs` pertence ao repositorio externo `rtk-ai/rtk-website`.
 - 🟡 Alguns exemplos de versao, cobertura percentual e lista de agentes podem ficar defasados se nao forem atualizados junto com releases.
 - 🟡 Existem referencias historicas a `CLAUDE.md` em scripts de diagnostico, enquanto guias mais recentes cobrem outros agentes; a consistencia integral entre todas as paginas requer revisao editorial.

@@ -82,4 +82,4 @@ Cenario: Restringir o tier aceito
 
 ## Lacunas
 
-- 🔴 O README descreve tipos canonicos adicionais e uma migracao mais ampla, mas `src/parser/types.rs` implementa somente resultados de teste e estado de dependencias nesta revisao.
+- 🟢 O README descreve tipos canonicos adicionais e uma migracao mais ampla, mas `src/parser/types.rs` implementa somente resultados de teste e estado de dependencias; a divergencia e diretamente observavel nos dois arquivos.

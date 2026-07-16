@@ -7,7 +7,7 @@
 - [ ] A interface de CLI e os comandos `rtk init`, `rtk rewrite`, `rtk gain`, `rtk discover`, `rtk session`, `rtk trust` e `rtk untrust` estao definidos. 🟢
 - [ ] As integracoes de agentes e seus mecanismos de hook, plugin ou rules file estao disponiveis. 🟢
 - [ ] O contrato de configuracao para tracking, filtros, tee, telemetria e hooks esta documentado pela unit correspondente. 🟢
-- [ ] O destino de publicacao do site de documentacao esta decidido. 🔴
+- [ ] O destino de publicacao e `rtk-ai/rtk-website`, via `prepare-docs.mjs` e Starlight. 🟢 Origem: `.github/docs-pipeline-contract.md`.
 
 ## Tarefas
 

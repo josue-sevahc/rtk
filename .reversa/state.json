@@ -992,6 +992,25 @@
         "generation_plan_completed": 78,
         "next_file": null
       }
+    },
+    "reviewer": {
+      "status": "awaiting_user_validation",
+      "reviewed_at": "2026-07-16T19:36:37Z",
+      "files": [
+        "_reversa_sdd/traceability/code-spec-matrix.md",
+        "_reversa_sdd/questions.md",
+        "_reversa_sdd/gaps.md"
+      ],
+      "summary": {
+        "specs_reviewed": 78,
+        "units_reviewed": 26,
+        "cross_review": false,
+        "reclassifications": 12,
+        "questions_generated": 9,
+        "questions_answered": 0,
+        "preliminary_confidence": 93.82,
+        "confidence_report_pending": true
+      }
     }
   },
   "engines": [

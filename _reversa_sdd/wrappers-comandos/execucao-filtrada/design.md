@@ -92,7 +92,7 @@
 
 ## Riscos e Lacunas
 
-- 🔴 A captura maxima de 10 MiB pode ocultar a parte final de outputs muito extensos para filtro, tee e tracking; a saida visivel em streaming ainda e encaminhada ate o limite de logica observada.
+- 🟢 Ao atingir 10 MiB por stream, a captura deixa de acumular os bytes seguintes e emite warning; por isso filtro, tee e tracking podem observar somente o prefixo capturado, enquanto o processo continua. `src/core/stream.rs:245`, `src/core/stream.rs:376`
 - 🔴 A equivalencia de sinal e descritores em Windows nao foi exercitada; a conversao `128+sinal` e especificamente Unix.
 - 🟡 Em streaming, `flush` e `on_exit` usam o ultimo descritor filtrado, o que pode ser surpreendente para filtros que alternam output entre stdout e stderr.
 - 🟡 O tratamento de panic cobre `FilterMode::Buffered`; filtros invocados no caminho `CaptureOnly` pelo wrapper seguem a politica de panic do chamador.

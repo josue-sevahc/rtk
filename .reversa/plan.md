@@ -45,9 +45,9 @@
 ## Fase 4: Geração 📝
 
 - ✅ **Redator** — Specs SDD por componente
-- [ ] **Redator** — OpenAPI (se aplicável)
-- [ ] **Redator** — User Stories (se aplicável)
-- [ ] **Redator** — Code/Spec Matrix
+- ✅ **Redator** — OpenAPI (não aplicável: o legado não expõe API HTTP)
+- ✅ **Redator** — User Stories (não aplicável à organização por contratos operacionais escolhida)
+- ✅ **Redator** — Code/Spec Matrix
 
 ### Controle Incremental do Redator
 
@@ -62,6 +62,7 @@
 - ✅ `nucleo/tracking-e-telemetria/` — tracking SQLite, agregações, retenção e ping opt-in (3 arquivos canônicos).
 - ✅ `integracoes-de-agentes/` — unit do módulo `hooks` (3 arquivos canônicos).
 - ✅ `integracoes-de-agentes/protocolo-de-hooks-e-permissoes/` — contrato de instalação, integridade e permissões de hooks (3 arquivos canônicos).
+- ✅ `integracoes-de-agentes/instalacao-e-configuracao/` — instalação idempotente, integridade e diagnóstico de hooks (3 arquivos canônicos).
 - ✅ `analiticos/` — unit do módulo `analytics` (3 arquivos canônicos).
 - ✅ `analiticos/relatorios-de-economia/` — correlação read-only entre tracking RTK e custos Claude Code (3 arquivos canônicos).
 - ✅ `analiticos/adocao-por-sessao/` — medição de cobertura RTK em sessões Claude Code (3 arquivos canônicos).
@@ -73,6 +74,8 @@
 - ✅ `perfis-de-filtros/` — unit do módulo `filters` (3 arquivos canônicos).
 - ✅ `perfis-de-filtros/catalogo-embutido/` — catálogo TOML determinístico e incorporado ao binário (3 arquivos canônicos).
 - ✅ `plugin-openclaw/` — adaptador TypeScript para reescrita, bloqueio e aprovação de chamadas `exec` (3 arquivos canônicos).
+- ✅ `parser-de-saida/` — tipos canônicos, tiers de parsing e fallback de saída (3 arquivos canônicos).
+- ✅ `parser-de-saida/formatacao-estruturada/` — formatação compacta, detalhada e ultracompacta (3 arquivos canônicos).
 - ✅ `documentacao-do-produto/` — jornada de instalacao, configuracao, integracoes, privacidade e contribuicao (3 arquivos canonicos).
 - ✅ `automacao-e-scripts/` — automacao de distribuicao, diagnostico, testes e benchmark (3 arquivos canonicos).
 - ✅ `automacao-e-scripts/instalacao-e-validacao/` — contrato seguro de instalacao local/remota e validacao operacional (3 arquivos canonicos).
@@ -83,7 +86,7 @@
 
 ## Fase 5: Revisão ✅
 
-- [ ] **Revisor** — Revisão cruzada de specs
+- ✅ **Revisor** — Revisão cruzada de specs
 - [ ] **Revisor** — Resolução de lacunas com o usuário
 - [ ] **Revisor** — Relatório de confiança final
 

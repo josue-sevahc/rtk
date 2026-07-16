@@ -57,7 +57,7 @@ O sistema nao possui servico backend proprio, fila, cache distribuido ou banco r
 - 🔴 O lexer de shell e propositalmente parcial, portanto comandos complexos podem cair em defer/passthrough ou exigir novas regras.
 - 🔴 O plugin OpenClaw usa formas manuais/`any`, nao possui testes automatizados no subdiretorio e nao separa claramente erro operacional de ausencia de rewrite.
 - 🔴 Filtros extensos (`git`, `cargo`, `aws`, `dotnet`, `mvn`, `search`) dependem de compatibilidade com CLIs externas que nao foi exercitada nesta extracao.
-- 🔴 Documentacao atual parece divergir entre `history.db` e `tracking.db`, e alguns scripts de instalacao/validacao carregam referencias possivelmente antigas.
+- 🟢 A implementacao usa `history.db` por `src/core/constants.rs`; documentos legados ainda citam `tracking.db`, portanto a divergencia documental esta confirmada.
 - 🔴 Nao houve teste real de concorrencia SQLite/WAL, instalacao em todos os hosts ou comportamento em Windows.
 
 ## Referencias

@@ -66,5 +66,5 @@
 ## Riscos e Lacunas
 
 - 🔴 Os scripts de rede, VM e benchmark pesado nao foram executados durante a analise.
-- 🔴 `check-installation.sh` ainda menciona um fork e `feat/all-features`, sinais possivelmente desatualizados.
-- 🔴 `validate-docs.sh` procura um hook em `.claude/hooks/` embora a configuracao atual centralize hooks em outro local.
+- 🟢 `check-installation.sh` ainda menciona um fork e `feat/all-features`; a referencia legada esta presente diretamente no script.
+- 🟢 `validate-docs.sh` procura um hook em `.claude/hooks/`, enquanto a configuracao atual registra hooks em `.github/hooks/`; a divergencia de caminhos e observavel no repositorio.

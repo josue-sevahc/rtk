@@ -47,5 +47,5 @@
 
 ## Riscos e Lacunas
 
-- 🔴 A regravação do arquivo local pode substituir edições manuais; a política de mesclagem não é implementada no módulo.
+- 🟢 `write_rules_file` recompõe todo o conteúdo e usa `fs::write`, portanto uma nova geração substitui edições manuais; não há mesclagem no módulo. `src/learn/report.rs:54`
 - 🔴 A análise não verificou integração efetiva do arquivo gerado com o ambiente de agentes.

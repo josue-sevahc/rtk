@@ -65,5 +65,5 @@
 ## Riscos e Lacunas
 
 - 🔴 Nao ha evidencia de teste de integracao contra cada target distribuido.
-- 🔴 As instrucoes legadas de fork e hook em `check-installation.sh` podem nao refletir a topologia atual.
+- 🟢 `check-installation.sh` contem instrucoes de fork/branch e caminho de hook que divergem da topologia atualmente versionada; trata-se de divida documental confirmada no script.
 - 🟡 A verificacao de `PATH` informa o padrao `~/.local/bin` mesmo quando outro destino foi configurado no instalador remoto.

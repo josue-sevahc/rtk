@@ -73,8 +73,7 @@ O CLI Rust é a origem desse protocolo: ele avalia deny antes de rewrite, trata 
 
 ## Riscos e Lacunas
 
-- 🔴 Não há testes automatizados dentro de `openclaw/` para validar o contrato contra uma instância real de OpenClaw.
-- 🔴 `api` usa `any` e o shape de `event` é manual; a compatibilidade da API e de `requireApproval` não foi executada estaticamente.
+- 🟢 Não há testes automatizados versionados dentro de `openclaw/`; o inventário do diretório contém apenas implementação, manifestos e documentação.
+- 🟢 `api` usa `any` e o shape de `event` é manual em `openclaw/index.ts`. 🔴 A compatibilidade runtime da API e de `requireApproval` com versões reais do host não foi exercitada.
 - 🟡 Erros operacionais do subprocesso e ausência de rewrite compartilham o mesmo fallback; diagnóstico detalhado dependeria de observabilidade adicional.
 - 🟡 A execução síncrona pode afetar a latência da ferramenta em ambientes nos quais o CLI se aproxime do timeout, embora o limite seja explícito.
-
