@@ -8,14 +8,14 @@
   "doc_level": "completo",
   "output_folder": "_reversa_sdd",
   "forward_folder": "_reversa_forward",
-  "phase": "revisao",
+  "phase": "geracao",
   "completed": [
+    "reconhecimento",
     "escavacao",
-    "geracao",
-    "interpretacao",
-    "reconhecimento"
+    "interpretacao"
   ],
   "pending": [
+    "geracao",
     "revisao"
   ],
   "redator_progress": {
@@ -692,7 +692,7 @@
         "root_unit": "automacao-e-scripts",
         "parent_unit": null,
         "kind": "canonical",
-        "status": "completed"
+        "status": "pending"
       },
       {
         "order": 74,
@@ -701,7 +701,7 @@
         "root_unit": "automacao-e-scripts",
         "parent_unit": null,
         "kind": "canonical",
-        "status": "completed"
+        "status": "pending"
       },
       {
         "order": 75,
@@ -710,7 +710,7 @@
         "root_unit": "automacao-e-scripts",
         "parent_unit": null,
         "kind": "canonical",
-        "status": "completed"
+        "status": "pending"
       },
       {
         "order": 76,
@@ -719,7 +719,7 @@
         "root_unit": "automacao-e-scripts",
         "parent_unit": "automacao-e-scripts",
         "kind": "canonical",
-        "status": "completed"
+        "status": "pending"
       },
       {
         "order": 77,
@@ -728,7 +728,7 @@
         "root_unit": "automacao-e-scripts",
         "parent_unit": "automacao-e-scripts",
         "kind": "canonical",
-        "status": "completed"
+        "status": "pending"
       },
       {
         "order": 78,
@@ -737,7 +737,7 @@
         "root_unit": "automacao-e-scripts",
         "parent_unit": "automacao-e-scripts",
         "kind": "canonical",
-        "status": "completed"
+        "status": "pending"
       }
     ],
     "completed_files": [
@@ -747,12 +747,6 @@
       "_reversa_sdd/aprendizado/recomendacoes-de-adocao/tasks.md",
       "_reversa_sdd/aprendizado/requirements.md",
       "_reversa_sdd/aprendizado/tasks.md",
-      "_reversa_sdd/automacao-e-scripts/design.md",
-      "_reversa_sdd/automacao-e-scripts/instalacao-e-validacao/design.md",
-      "_reversa_sdd/automacao-e-scripts/instalacao-e-validacao/requirements.md",
-      "_reversa_sdd/automacao-e-scripts/instalacao-e-validacao/tasks.md",
-      "_reversa_sdd/automacao-e-scripts/requirements.md",
-      "_reversa_sdd/automacao-e-scripts/tasks.md",
       "_reversa_sdd/descoberta/analise-de-historico/design.md",
       "_reversa_sdd/descoberta/analise-de-historico/requirements.md",
       "_reversa_sdd/descoberta/analise-de-historico/tasks.md",
@@ -762,9 +756,6 @@
       "_reversa_sdd/descoberta/reescrita-e-classificacao/tasks.md",
       "_reversa_sdd/descoberta/requirements.md",
       "_reversa_sdd/descoberta/tasks.md",
-      "_reversa_sdd/documentacao-do-produto/design.md",
-      "_reversa_sdd/documentacao-do-produto/requirements.md",
-      "_reversa_sdd/documentacao-do-produto/tasks.md",
       "_reversa_sdd/entrada-cli/design.md",
       "_reversa_sdd/entrada-cli/requirements.md",
       "_reversa_sdd/entrada-cli/roteamento-e-fallback/design.md",
@@ -786,24 +777,27 @@
       "_reversa_sdd/parser-de-saida/formatacao-estruturada/tasks.md",
       "_reversa_sdd/parser-de-saida/requirements.md",
       "_reversa_sdd/parser-de-saida/tasks.md",
-      "_reversa_sdd/perfis-de-filtros/catalogo-embutido/design.md",
-      "_reversa_sdd/perfis-de-filtros/catalogo-embutido/requirements.md",
-      "_reversa_sdd/perfis-de-filtros/catalogo-embutido/tasks.md",
-      "_reversa_sdd/perfis-de-filtros/design.md",
-      "_reversa_sdd/perfis-de-filtros/requirements.md",
-      "_reversa_sdd/perfis-de-filtros/tasks.md",
-      "_reversa_sdd/plugin-openclaw/design.md",
-      "_reversa_sdd/plugin-openclaw/requirements.md",
-      "_reversa_sdd/plugin-openclaw/tasks.md",
       "_reversa_sdd/wrappers-comandos/design.md",
       "_reversa_sdd/wrappers-comandos/execucao-filtrada/design.md",
       "_reversa_sdd/wrappers-comandos/execucao-filtrada/requirements.md",
       "_reversa_sdd/wrappers-comandos/execucao-filtrada/tasks.md",
       "_reversa_sdd/wrappers-comandos/requirements.md",
-      "_reversa_sdd/wrappers-comandos/tasks.md"
+      "_reversa_sdd/wrappers-comandos/tasks.md",
+      "_reversa_sdd/perfis-de-filtros/requirements.md",
+      "_reversa_sdd/perfis-de-filtros/design.md",
+      "_reversa_sdd/perfis-de-filtros/tasks.md",
+      "_reversa_sdd/perfis-de-filtros/catalogo-embutido/requirements.md",
+      "_reversa_sdd/perfis-de-filtros/catalogo-embutido/design.md",
+      "_reversa_sdd/perfis-de-filtros/catalogo-embutido/tasks.md",
+      "_reversa_sdd/plugin-openclaw/requirements.md",
+      "_reversa_sdd/plugin-openclaw/design.md",
+      "_reversa_sdd/plugin-openclaw/tasks.md",
+      "_reversa_sdd/documentacao-do-produto/requirements.md",
+      "_reversa_sdd/documentacao-do-produto/design.md",
+      "_reversa_sdd/documentacao-do-produto/tasks.md"
     ],
-    "last_completed_file": "_reversa_sdd/automacao-e-scripts/instalacao-e-validacao/tasks.md",
-    "next_file": null,
+    "last_completed_file": "_reversa_sdd/documentacao-do-produto/tasks.md",
+    "next_file": "_reversa_sdd/automacao-e-scripts/requirements.md",
     "auto_advance": {
       "enabled": false,
       "mode": null,
@@ -811,8 +805,8 @@
       "root_unit": null,
       "target_orders": [],
       "max_iterations": 0,
-      "completed_iterations": 6,
-      "last_progress_order": 78
+      "completed_iterations": 3,
+      "last_progress_order": 72
     },
     "active_batch": [
       {
@@ -840,7 +834,7 @@
         "status": "completed"
       }
     ],
-    "updated_at": "2026-07-16T19:20:00Z"
+    "updated_at": "2026-07-16T17:01:55Z"
   },
   "checkpoints": {
     "scout": {
@@ -973,24 +967,19 @@
       }
     },
     "writer": {
-      "completed_at": "2026-07-16T19:20:00Z",
-      "root_unit_completed": "automacao-e-scripts",
+      "last_completed_at": "2026-07-16T17:16:33Z",
+      "root_unit_completed": "documentacao-do-produto",
       "files": [
-        "_reversa_sdd/automacao-e-scripts/requirements.md",
-        "_reversa_sdd/automacao-e-scripts/design.md",
-        "_reversa_sdd/automacao-e-scripts/tasks.md",
-        "_reversa_sdd/automacao-e-scripts/instalacao-e-validacao/requirements.md",
-        "_reversa_sdd/automacao-e-scripts/instalacao-e-validacao/design.md",
-        "_reversa_sdd/automacao-e-scripts/instalacao-e-validacao/tasks.md"
+        "_reversa_sdd/documentacao-do-produto/requirements.md",
+        "_reversa_sdd/documentacao-do-produto/design.md",
+        "_reversa_sdd/documentacao-do-produto/tasks.md"
       ],
       "summary": {
         "units_completed": [
-          "automacao-e-scripts",
-          "automacao-e-scripts/instalacao-e-validacao"
+          "documentacao-do-produto"
         ],
-        "files_processed": 6,
-        "generation_plan_completed": 78,
-        "next_file": null
+        "files_processed": 3,
+        "next_file": "_reversa_sdd/automacao-e-scripts/requirements.md"
       }
     }
   },

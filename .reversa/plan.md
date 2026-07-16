@@ -44,7 +44,7 @@
 
 ## Fase 4: Geração 📝
 
-- [ ] **Redator** — Specs SDD por componente
+- ✅ **Redator** — Specs SDD por componente
 - [ ] **Redator** — OpenAPI (se aplicável)
 - [ ] **Redator** — User Stories (se aplicável)
 - [ ] **Redator** — Code/Spec Matrix
@@ -74,6 +74,8 @@
 - ✅ `perfis-de-filtros/catalogo-embutido/` — catálogo TOML determinístico e incorporado ao binário (3 arquivos canônicos).
 - ✅ `plugin-openclaw/` — adaptador TypeScript para reescrita, bloqueio e aprovação de chamadas `exec` (3 arquivos canônicos).
 - ✅ `documentacao-do-produto/` — jornada de instalacao, configuracao, integracoes, privacidade e contribuicao (3 arquivos canonicos).
+- ✅ `automacao-e-scripts/` — automacao de distribuicao, diagnostico, testes e benchmark (3 arquivos canonicos).
+- ✅ `automacao-e-scripts/instalacao-e-validacao/` — contrato seguro de instalacao local/remota e validacao operacional (3 arquivos canonicos).
 
 > Não criar `nucleo/execucao-compartilhada/`: sua superfície operacional já está coberta por `wrappers-comandos/execucao-filtrada/`, que rastreia `core::runner`, `core::stream`, `core::guard`, `core::tee` e `core::tracking`. Duplicá-la reduziria a qualidade da rastreabilidade. 🟢
 
