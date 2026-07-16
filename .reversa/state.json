@@ -461,7 +461,7 @@
         "root_unit": "aprendizado",
         "parent_unit": null,
         "kind": "canonical",
-        "status": "pending"
+        "status": "completed"
       },
       {
         "order": 50,
@@ -470,7 +470,7 @@
         "root_unit": "aprendizado",
         "parent_unit": null,
         "kind": "canonical",
-        "status": "pending"
+        "status": "completed"
       },
       {
         "order": 51,
@@ -479,7 +479,7 @@
         "root_unit": "aprendizado",
         "parent_unit": null,
         "kind": "canonical",
-        "status": "pending"
+        "status": "completed"
       },
       {
         "order": 52,
@@ -488,7 +488,7 @@
         "root_unit": "aprendizado",
         "parent_unit": "aprendizado",
         "kind": "canonical",
-        "status": "pending"
+        "status": "completed"
       },
       {
         "order": 53,
@@ -497,7 +497,7 @@
         "root_unit": "aprendizado",
         "parent_unit": "aprendizado",
         "kind": "canonical",
-        "status": "pending"
+        "status": "completed"
       },
       {
         "order": 54,
@@ -506,7 +506,7 @@
         "root_unit": "aprendizado",
         "parent_unit": "aprendizado",
         "kind": "canonical",
-        "status": "pending"
+        "status": "completed"
       },
       {
         "order": 55,
@@ -726,39 +726,45 @@
       }
     ],
     "completed_files": [
-      "_reversa_sdd/entrada-cli/requirements.md",
-      "_reversa_sdd/entrada-cli/design.md",
-      "_reversa_sdd/entrada-cli/tasks.md",
-      "_reversa_sdd/entrada-cli/roteamento-e-fallback/requirements.md",
-      "_reversa_sdd/entrada-cli/roteamento-e-fallback/design.md",
-      "_reversa_sdd/entrada-cli/roteamento-e-fallback/tasks.md",
-      "_reversa_sdd/wrappers-comandos/requirements.md",
-      "_reversa_sdd/wrappers-comandos/design.md",
-      "_reversa_sdd/wrappers-comandos/tasks.md",
-      "_reversa_sdd/wrappers-comandos/execucao-filtrada/requirements.md",
-      "_reversa_sdd/wrappers-comandos/execucao-filtrada/design.md",
-      "_reversa_sdd/wrappers-comandos/execucao-filtrada/tasks.md",
-      "_reversa_sdd/nucleo/requirements.md",
-      "_reversa_sdd/nucleo/design.md",
-      "_reversa_sdd/nucleo/tasks.md",
-      "_reversa_sdd/nucleo/pipeline-de-filtros-toml/requirements.md",
-      "_reversa_sdd/nucleo/pipeline-de-filtros-toml/design.md",
-      "_reversa_sdd/nucleo/pipeline-de-filtros-toml/tasks.md",
-      "_reversa_sdd/nucleo/tracking-e-telemetria/requirements.md",
-      "_reversa_sdd/nucleo/tracking-e-telemetria/design.md",
-      "_reversa_sdd/nucleo/tracking-e-telemetria/tasks.md",
-      "_reversa_sdd/descoberta/requirements.md",
-      "_reversa_sdd/descoberta/design.md",
-      "_reversa_sdd/descoberta/tasks.md",
-      "_reversa_sdd/descoberta/reescrita-e-classificacao/requirements.md",
-      "_reversa_sdd/descoberta/reescrita-e-classificacao/design.md",
-      "_reversa_sdd/descoberta/reescrita-e-classificacao/tasks.md",
-      "_reversa_sdd/descoberta/analise-de-historico/requirements.md",
+      "_reversa_sdd/aprendizado/design.md",
+      "_reversa_sdd/aprendizado/recomendacoes-de-adocao/design.md",
+      "_reversa_sdd/aprendizado/recomendacoes-de-adocao/requirements.md",
+      "_reversa_sdd/aprendizado/recomendacoes-de-adocao/tasks.md",
+      "_reversa_sdd/aprendizado/requirements.md",
+      "_reversa_sdd/aprendizado/tasks.md",
       "_reversa_sdd/descoberta/analise-de-historico/design.md",
-      "_reversa_sdd/descoberta/analise-de-historico/tasks.md"
+      "_reversa_sdd/descoberta/analise-de-historico/requirements.md",
+      "_reversa_sdd/descoberta/analise-de-historico/tasks.md",
+      "_reversa_sdd/descoberta/design.md",
+      "_reversa_sdd/descoberta/reescrita-e-classificacao/design.md",
+      "_reversa_sdd/descoberta/reescrita-e-classificacao/requirements.md",
+      "_reversa_sdd/descoberta/reescrita-e-classificacao/tasks.md",
+      "_reversa_sdd/descoberta/requirements.md",
+      "_reversa_sdd/descoberta/tasks.md",
+      "_reversa_sdd/entrada-cli/design.md",
+      "_reversa_sdd/entrada-cli/requirements.md",
+      "_reversa_sdd/entrada-cli/roteamento-e-fallback/design.md",
+      "_reversa_sdd/entrada-cli/roteamento-e-fallback/requirements.md",
+      "_reversa_sdd/entrada-cli/roteamento-e-fallback/tasks.md",
+      "_reversa_sdd/entrada-cli/tasks.md",
+      "_reversa_sdd/nucleo/design.md",
+      "_reversa_sdd/nucleo/pipeline-de-filtros-toml/design.md",
+      "_reversa_sdd/nucleo/pipeline-de-filtros-toml/requirements.md",
+      "_reversa_sdd/nucleo/pipeline-de-filtros-toml/tasks.md",
+      "_reversa_sdd/nucleo/requirements.md",
+      "_reversa_sdd/nucleo/tasks.md",
+      "_reversa_sdd/nucleo/tracking-e-telemetria/design.md",
+      "_reversa_sdd/nucleo/tracking-e-telemetria/requirements.md",
+      "_reversa_sdd/nucleo/tracking-e-telemetria/tasks.md",
+      "_reversa_sdd/wrappers-comandos/design.md",
+      "_reversa_sdd/wrappers-comandos/execucao-filtrada/design.md",
+      "_reversa_sdd/wrappers-comandos/execucao-filtrada/requirements.md",
+      "_reversa_sdd/wrappers-comandos/execucao-filtrada/tasks.md",
+      "_reversa_sdd/wrappers-comandos/requirements.md",
+      "_reversa_sdd/wrappers-comandos/tasks.md"
     ],
-    "last_completed_file": "_reversa_sdd/descoberta/analise-de-historico/tasks.md",
-    "next_file": "_reversa_sdd/aprendizado/requirements.md",
+    "last_completed_file": "_reversa_sdd/aprendizado/recomendacoes-de-adocao/tasks.md",
+    "next_file": "_reversa_sdd/parser-de-saida/requirements.md",
     "auto_advance": {
       "enabled": false,
       "mode": null,
@@ -766,36 +772,36 @@
       "root_unit": null,
       "target_orders": [],
       "max_iterations": 0,
-      "completed_iterations": 18,
-      "last_progress_order": 48
+      "completed_iterations": 6,
+      "last_progress_order": 54
     },
     "active_batch": [
       {
-        "path": "_reversa_sdd/nucleo/pipeline-de-filtros-toml/requirements.md",
+        "path": "_reversa_sdd/aprendizado/requirements.md",
         "status": "completed"
       },
       {
-        "path": "_reversa_sdd/nucleo/pipeline-de-filtros-toml/design.md",
+        "path": "_reversa_sdd/aprendizado/design.md",
         "status": "completed"
       },
       {
-        "path": "_reversa_sdd/nucleo/pipeline-de-filtros-toml/tasks.md",
+        "path": "_reversa_sdd/aprendizado/tasks.md",
         "status": "completed"
       },
       {
-        "path": "_reversa_sdd/nucleo/tracking-e-telemetria/requirements.md",
+        "path": "_reversa_sdd/aprendizado/recomendacoes-de-adocao/requirements.md",
         "status": "completed"
       },
       {
-        "path": "_reversa_sdd/nucleo/tracking-e-telemetria/design.md",
+        "path": "_reversa_sdd/aprendizado/recomendacoes-de-adocao/design.md",
         "status": "completed"
       },
       {
-        "path": "_reversa_sdd/nucleo/tracking-e-telemetria/tasks.md",
+        "path": "_reversa_sdd/aprendizado/recomendacoes-de-adocao/tasks.md",
         "status": "completed"
       }
     ],
-    "updated_at": "2026-07-16T03:11:00Z"
+    "updated_at": "2026-07-16T15:41:33Z"
   },
   "checkpoints": {
     "scout": {
@@ -928,27 +934,23 @@
       }
     },
     "writer": {
-      "last_completed_at": "2026-07-16T03:11:00Z",
-      "root_unit_completed": "descoberta",
+      "last_completed_at": "2026-07-16T15:41:33Z",
+      "root_unit_completed": "aprendizado",
       "files": [
-        "_reversa_sdd/descoberta/requirements.md",
-        "_reversa_sdd/descoberta/design.md",
-        "_reversa_sdd/descoberta/tasks.md",
-        "_reversa_sdd/descoberta/reescrita-e-classificacao/requirements.md",
-        "_reversa_sdd/descoberta/reescrita-e-classificacao/design.md",
-        "_reversa_sdd/descoberta/reescrita-e-classificacao/tasks.md",
-        "_reversa_sdd/descoberta/analise-de-historico/requirements.md",
-        "_reversa_sdd/descoberta/analise-de-historico/design.md",
-        "_reversa_sdd/descoberta/analise-de-historico/tasks.md"
+        "_reversa_sdd/aprendizado/requirements.md",
+        "_reversa_sdd/aprendizado/design.md",
+        "_reversa_sdd/aprendizado/tasks.md",
+        "_reversa_sdd/aprendizado/recomendacoes-de-adocao/requirements.md",
+        "_reversa_sdd/aprendizado/recomendacoes-de-adocao/design.md",
+        "_reversa_sdd/aprendizado/recomendacoes-de-adocao/tasks.md"
       ],
       "summary": {
         "units_completed": [
-          "descoberta",
-          "descoberta/reescrita-e-classificacao",
-          "descoberta/analise-de-historico"
+          "aprendizado",
+          "aprendizado/recomendacoes-de-adocao"
         ],
-        "files_processed": 9,
-        "next_file": "_reversa_sdd/aprendizado/requirements.md"
+        "files_processed": 6,
+        "next_file": "_reversa_sdd/parser-de-saida/requirements.md"
       }
     }
   },
