@@ -21,6 +21,21 @@
   "redator_progress": {
     "plan_revision": 2,
     "plan_total_files": 78,
+    "hybrid_traceability_checks": [
+      {
+        "unit": "perfis-de-filtros/catalogo-embutido",
+        "traceability_check": {
+          "result": "partial_overlap",
+          "legacy_refs": [
+            "src/filters/*.toml",
+            "src/filters/README.md",
+            "build.rs",
+            "src/core/toml_filter.rs"
+          ],
+          "reason": "A subunit cobre a autoria, validacao de exemplos e concatenacao deterministica do catalogo embutido. A unit nucleo/pipeline-de-filtros-toml cobre o carregamento trust-gated, selecao e aplicacao runtime da DSL; as fronteiras comportamentais sao distintas."
+        }
+      }
+    ],
     "generation_plan": [
       {
         "order": 1,
@@ -569,7 +584,7 @@
         "root_unit": "perfis-de-filtros",
         "parent_unit": null,
         "kind": "canonical",
-        "status": "pending"
+        "status": "completed"
       },
       {
         "order": 62,
@@ -578,7 +593,7 @@
         "root_unit": "perfis-de-filtros",
         "parent_unit": null,
         "kind": "canonical",
-        "status": "pending"
+        "status": "completed"
       },
       {
         "order": 63,
@@ -587,7 +602,7 @@
         "root_unit": "perfis-de-filtros",
         "parent_unit": null,
         "kind": "canonical",
-        "status": "pending"
+        "status": "completed"
       },
       {
         "order": 64,
@@ -596,7 +611,7 @@
         "root_unit": "perfis-de-filtros",
         "parent_unit": "perfis-de-filtros",
         "kind": "canonical",
-        "status": "pending"
+        "status": "completed"
       },
       {
         "order": 65,
@@ -605,7 +620,7 @@
         "root_unit": "perfis-de-filtros",
         "parent_unit": "perfis-de-filtros",
         "kind": "canonical",
-        "status": "pending"
+        "status": "completed"
       },
       {
         "order": 66,
@@ -614,7 +629,7 @@
         "root_unit": "perfis-de-filtros",
         "parent_unit": "perfis-de-filtros",
         "kind": "canonical",
-        "status": "pending"
+        "status": "completed"
       },
       {
         "order": 67,
@@ -767,10 +782,16 @@
       "_reversa_sdd/wrappers-comandos/execucao-filtrada/requirements.md",
       "_reversa_sdd/wrappers-comandos/execucao-filtrada/tasks.md",
       "_reversa_sdd/wrappers-comandos/requirements.md",
-      "_reversa_sdd/wrappers-comandos/tasks.md"
+      "_reversa_sdd/wrappers-comandos/tasks.md",
+      "_reversa_sdd/perfis-de-filtros/requirements.md",
+      "_reversa_sdd/perfis-de-filtros/design.md",
+      "_reversa_sdd/perfis-de-filtros/tasks.md",
+      "_reversa_sdd/perfis-de-filtros/catalogo-embutido/requirements.md",
+      "_reversa_sdd/perfis-de-filtros/catalogo-embutido/design.md",
+      "_reversa_sdd/perfis-de-filtros/catalogo-embutido/tasks.md"
     ],
-    "last_completed_file": "_reversa_sdd/parser-de-saida/formatacao-estruturada/tasks.md",
-    "next_file": "_reversa_sdd/perfis-de-filtros/requirements.md",
+    "last_completed_file": "_reversa_sdd/perfis-de-filtros/catalogo-embutido/tasks.md",
+    "next_file": "_reversa_sdd/plugin-openclaw/requirements.md",
     "auto_advance": {
       "enabled": false,
       "mode": null,
@@ -779,7 +800,7 @@
       "target_orders": [],
       "max_iterations": 0,
       "completed_iterations": 6,
-      "last_progress_order": 60
+      "last_progress_order": 66
     },
     "active_batch": [
       {
@@ -940,23 +961,23 @@
       }
     },
     "writer": {
-      "last_completed_at": "2026-07-16T16:29:33Z",
-      "root_unit_completed": "parser-de-saida",
+      "last_completed_at": "2026-07-16T16:48:49Z",
+      "root_unit_completed": "perfis-de-filtros",
       "files": [
-        "_reversa_sdd/parser-de-saida/requirements.md",
-        "_reversa_sdd/parser-de-saida/design.md",
-        "_reversa_sdd/parser-de-saida/tasks.md",
-        "_reversa_sdd/parser-de-saida/formatacao-estruturada/requirements.md",
-        "_reversa_sdd/parser-de-saida/formatacao-estruturada/design.md",
-        "_reversa_sdd/parser-de-saida/formatacao-estruturada/tasks.md"
+        "_reversa_sdd/perfis-de-filtros/requirements.md",
+        "_reversa_sdd/perfis-de-filtros/design.md",
+        "_reversa_sdd/perfis-de-filtros/tasks.md",
+        "_reversa_sdd/perfis-de-filtros/catalogo-embutido/requirements.md",
+        "_reversa_sdd/perfis-de-filtros/catalogo-embutido/design.md",
+        "_reversa_sdd/perfis-de-filtros/catalogo-embutido/tasks.md"
       ],
       "summary": {
         "units_completed": [
-          "parser-de-saida",
-          "parser-de-saida/formatacao-estruturada"
+          "perfis-de-filtros",
+          "perfis-de-filtros/catalogo-embutido"
         ],
         "files_processed": 6,
-        "next_file": "_reversa_sdd/perfis-de-filtros/requirements.md"
+        "next_file": "_reversa_sdd/plugin-openclaw/requirements.md"
       }
     }
   },
