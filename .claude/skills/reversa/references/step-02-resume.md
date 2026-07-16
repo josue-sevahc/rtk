@@ -79,7 +79,9 @@ Se `answer_mode` for `"chat"` (padrão):
 
 ## 6. Confirmação
 
-Pergunte apenas: "Continuamos de onde paramos? (CONTINUAR para seguir)"
+Antes de perguntar, examine `redator_progress.auto_advance`. Se houver um loop válido e ativo (`enabled: true`, `mode: "loop"`, `scope: "unit_tree"` e alvos pendentes da `root_unit`), retome automaticamente a próxima ordem de `target_orders` sem pedir confirmação. Isso preserva a autorização de um loop interrompido involuntariamente por estouro de contexto. Se o loop estiver inválido, desabilite-o, salve o reparo e siga o fluxo normal.
+
+Sem loop ativo, pergunte apenas: "Continuamos de onde paramos? (`continuar` para seguir um arquivo; `loop` para concluir a próxima unit principal e suas subunits)"
 
 Após confirmação, retome a próxima tarefa pendente no plano (`.reversa/plan.md`).
 

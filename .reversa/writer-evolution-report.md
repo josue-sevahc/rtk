@@ -262,3 +262,77 @@ Metadados atualizados:
 - `.reversa/_config/files-manifest.json`: hashes SHA-256 das seis cópias recalculados.
 
 Nenhum arquivo do projeto legado, spec já gerada em `_reversa_sdd/`, plano de execução ou estado runtime em `.reversa/state.json` foi alterado por essa implementação. Estados antigos sem `generation_plan` serão reconstruídos pelo Writer antes da próxima geração, conforme o novo contrato.
+
+## 10. Correção do limite de avanço — comando `loop`
+
+Data da correção: 2026-07-15 (America/Bahia)
+Commit analisado: `91ac8c52bda84000bf57d4a814ae34b0fc8d8e9e`
+
+Esta seção substitui, para implementação futura no repositório-fonte, a semântica de avanço descrita nas seções 3.4, 3.5 e 4 e nos cenários 9 a 13.
+
+### 10.1 Falha identificada
+
+A implementação anterior tratava `unit` como limite plano. Em granularidade híbrida, a unit principal e cada subunit tinham identificadores distintos, por exemplo `analiticos`, `analiticos/relatorios-de-economia` e `analiticos/adocao-por-sessao`. Como não havia relação persistida entre elas, “continuar sem confirmação” podia encerrar após uma unit ou subunit isolada.
+
+Também permaneceram prompts antigos que ofereciam somente `CONTINUAR`, portanto os modos não eram apresentados de forma consistente após cada arquivo.
+
+### 10.2 Semântica corrigida
+
+Os comandos canônicos do Writer são:
+
+- `clear`: salva o checkpoint, desabilita loop ativo e encerra a conversa sem gerar outro arquivo;
+- `continuar`: gera exatamente o arquivo apontado por `next_file`, salva e volta a apresentar os comandos;
+- `loop`: processa todos os itens pendentes da unit principal alvo e de todas as suas subunits descendentes, sem confirmações intermediárias.
+
+“Continuar sem confirmação” permanece apenas como alias retrocompatível de `loop`.
+
+O loop nunca atravessa para outra unit principal nem alcança globais. Ao concluir a árvore, salva o checkpoint, desabilita-se e apresenta novamente os três comandos.
+
+### 10.3 Hierarquia persistida
+
+Cada item de `generation_plan` passa a incluir:
+
+- `root_unit`: identificador da unit principal;
+- `parent_unit`: pai imediato da subunit, ou `null` na raiz;
+- `unit`: identificador integral da unit ou subunit do item.
+
+Planos antigos sem esses campos devem ser migrados antes do próximo arquivo ou antes de aceitar `loop`, com incremento de `plan_revision`.
+
+### 10.4 Loop finito e verificável
+
+Ao iniciar `loop`, `auto_advance` persiste `mode: "loop"`, `scope: "unit_tree"`, `root_unit`, a lista finita `target_orders`, `max_iterations`, `completed_iterations` e `last_progress_order`.
+
+Cada iteração deve reduzir em um a quantidade de alvos pendentes. O loop termina com sucesso somente quando nenhuma ordem de `target_orders` permanece pendente. Ele interrompe com checkpoint em erro irrecuperável, risco non-destructive, estouro de contexto ou estagnação.
+
+### 10.5 Estado local migrado
+
+O plano local foi migrado da revisão 1 para a revisão 2, preservando os 78 itens, seus status e `next_file`. Para o próximo alvo `analiticos`, o limite calculado contém nove arquivos:
+
+- unit principal `analiticos`;
+- subunit `analiticos/relatorios-de-economia`;
+- subunit `analiticos/adocao-por-sessao`.
+
+### 10.6 Arquivos adicionais afetados
+
+Além dos arquivos listados na seção 9, a correção altera:
+
+- `.agents/skills/reversa/SKILL.md` e `.claude/skills/reversa/SKILL.md`, para o orquestrador não substituir o menu do Writer;
+- `.agents/skills/reversa/references/step-02-resume.md` e seu espelho `.claude`, para retomar automaticamente um loop válido interrompido por contexto;
+- `.reversa/state.json`, migrado para a hierarquia explícita do plano atual.
+
+Versões locais após a correção:
+
+- Reversa Writer: `1.4.0`;
+- Reversa Autonomous: `1.2.0`;
+- Reversa orchestrator: `1.1.0`.
+
+### 10.7 Aceite corrigido
+
+1. Após cada arquivo fora de loop, a resposta mostra `clear`, `continuar` e `loop`.
+2. `continuar` processa somente `next_file`.
+3. `loop` em `analiticos` processa as ordens 31 a 39 e para antes da ordem 40.
+4. Concluir a última tarefa de uma subunit não encerra o loop enquanto houver outra subunit da mesma `root_unit` pendente.
+5. O loop não inclui globais nem itens de outra `root_unit`.
+6. Uma iteração sem redução de pendências dispara estagnação e checkpoint.
+7. `clear` preserva `next_file` e desabilita o loop.
+8. Estouro de contexto preserva um loop válido para retomada automática.

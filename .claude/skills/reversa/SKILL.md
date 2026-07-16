@@ -5,7 +5,7 @@ license: MIT
 compatibility: Claude Code, Codex, Cursor, Gemini CLI e demais agentes compatíveis com Agent Skills.
 metadata:
   author: sandeco
-  version: "1.0.0"
+  version: "1.1.0"
   framework: reversa
   role: orchestrator
 ---
@@ -26,6 +26,16 @@ Execute as tarefas do plano **sequencialmente, uma por vez**:
 2. Ative o skill `reversa-[agente]` correspondente. Se a engine não suportar ativação direta de skills por nome, leia `.agents/skills/reversa-[agente]/SKILL.md` na íntegra e execute no contexto atual.
 3. Após conclusão: salve checkpoint em `.reversa/state.json` seguindo `references/checkpoint-guide.md` e marque a tarefa com ✅ em `.reversa/plan.md`.
 4. Apresente resumo breve do que foi gerado.
+
+### Handoff durante o Writer
+
+Enquanto a tarefa ativa for o Writer, o contrato de comandos do `reversa-writer` prevalece sobre prompts genéricos de continuação. Não substitua nem resuma o menu após cada arquivo:
+
+- `clear`: checkpoint salvo e encerramento da conversa, sem novo arquivo;
+- `continuar`: exatamente o próximo arquivo;
+- `loop`: toda a árvore da unit principal alvo, incluindo todas as subunits, até a condição de sucesso persistida.
+
+O orquestrador não deve transformar `loop` em uma sequência de novas perguntas nem considerar uma subunit isolada como limite. Só recupere o controle após o Writer concluir a árvore, interromper por uma parada legítima ou finalizar todo o plano de geração.
 
 **Ação especial após o Scout:**
 

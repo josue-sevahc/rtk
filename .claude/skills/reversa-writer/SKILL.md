@@ -5,7 +5,7 @@ license: MIT
 compatibility: Claude Code, Codex, Cursor, Gemini CLI e demais agentes compatíveis com Agent Skills.
 metadata:
   author: sandeco
-  version: "1.3.0"
+  version: "1.4.0"
   framework: reversa
   phase: geracao
 ---
@@ -60,6 +60,8 @@ Antes de adicionar qualquer subunit híbrida ao plano ou criar seu diretório, e
 5. Se o resultado for `duplicate`, não crie diretório nem arquivos e registre `duplicate_of`, `legacy_refs` e a evidência em `reason`.
 
 Compartilhar isoladamente um arquivo do legado não caracteriza duplicidade. Use `duplicate` somente quando as referências relevantes e o contrato comportamental proposto já estiverem integralmente cobertos.
+
+No plano híbrido, o módulo de nível 1 é a **unit principal** (`root_unit`). Cada caso de uso abaixo dele é uma **subunit** com `parent_unit` apontando para a pasta imediatamente superior. A árvore da unit principal inclui seus próprios arquivos e os arquivos de todas as subunits descendentes, independentemente da profundidade.
 
 Registro mínimo:
 
@@ -136,7 +138,7 @@ Globais (se aplicáveis):
   [ ] N+1. user-stories/<fluxo>.md
   [ ] N+2. traceability/code-spec-matrix.md
 
-Digite CONTINUAR para iniciar, ou me diga se quer ajustar o plano.
+Digite `continuar` para gerar somente o primeiro arquivo, `loop` para concluir a primeira unit principal e todas as suas subunits, ou me diga se quer ajustar o plano.
 ```
 
 Aguarde a confirmação do usuário antes de prosseguir.
@@ -145,12 +147,14 @@ Após a aprovação e **antes de criar qualquer diretório de unit ou arquivo de
 
 - `plan_revision` é incrementado a cada alteração aprovada do plano;
 - `plan_total_files` é exatamente igual a `generation_plan.length`;
-- cada item possui no mínimo `order`, `path`, `unit`, `kind` (`canonical`, `optional` ou `global`) e `status`;
+- cada item possui no mínimo `order`, `path`, `unit`, `root_unit`, `parent_unit`, `kind` (`canonical`, `optional` ou `global`) e `status`;
 - itens novos começam como `pending`; arquivos preexistentes são registrados como `preserved` e nunca sobrescritos;
 - `next_file` aponta para o primeiro item `pending`, ou é `null` somente quando não existe item pendente;
 - persistir somente `active_batch` ou outra visão parcial não substitui `generation_plan`.
 
-Se uma execução antiga tiver `redator_progress` sem `generation_plan`, reconstrua e persista o plano completo antes de criar outro arquivo. Qualquer ajuste posterior exige uma nova revisão integral persistida antes da continuação.
+Em `hybrid`, todos os itens da unit principal e de suas subunits compartilham o mesmo `root_unit`; itens do módulo raiz usam `parent_unit: null`. Globais usam `unit: "global"`, `root_unit: null` e `parent_unit: null`.
+
+Se uma execução antiga tiver `redator_progress` sem `generation_plan` ou itens sem `root_unit`/`parent_unit`, reconstrua e persista o plano completo antes de criar outro arquivo ou aceitar `loop`. Na migração de um plano híbrido, derive a hierarquia a partir das units aprovadas e da árvore de pastas: o primeiro segmento é `root_unit` e a pasta imediatamente superior é `parent_unit`. Incremente `plan_revision`. Qualquer ajuste posterior exige uma nova revisão integral persistida antes da continuação.
 
 ### Passo 2, Gerar um arquivo por vez
 
@@ -161,8 +165,8 @@ Para cada item do plano, em sequência:
 3. Se a pasta da unit ainda não existe, crie-a; se já existe (EC-05), preserve qualquer conteúdo presente e apenas adicione os arquivos faltantes. Nunca sobrescreva arquivos já existentes sem confirmação.
 4. Marque o item como concluído no plano.
 5. Salve o progresso em `.reversa/state.json` (campo `redator_progress`), atualizando o status do item e `next_file` na mesma gravação atômica.
-6. Informe: `"✅ [arquivo] concluído. Próximo: [próximo item]. Digite CONTINUAR para prosseguir."`
-7. Pare e aguarde a resposta do usuário.
+6. Fora de um loop ativo, apresente o menu obrigatório de comandos definido abaixo.
+7. Pare e aguarde a resposta do usuário, salvo enquanto o loop válido ainda tiver itens-alvo pendentes.
 
 Só avance para o próximo item após resposta, exceto enquanto houver uma autorização `auto_advance` válida conforme a seção abaixo. Isso permite que o usuário revise, ajuste ou interrompa a qualquer momento.
 
@@ -179,38 +183,56 @@ se pending está vazio:
 
 É proibido persistir `next_file: null` enquanto houver qualquer item pendente, inclusive global. `next_file` nunca pode apontar para item `completed`, `preserved`, `skipped` ou inexistente. Antes de retomar uma geração, valide essa invariante; se estiver violada, recompute `next_file` a partir do plano, registre a correção no estado e só então prossiga.
 
-### Comandos de continuação e avanço automático limitado
+### Comandos obrigatórios após cada tarefa
 
-- `CONTINUAR` autoriza somente o próximo arquivo.
-- “continue sem confirmação”, “pode seguir automaticamente” e equivalentes autorizam apenas os arquivos restantes da **unit atual**.
-- Um comando sem limite textual adicional adota o limite seguro explícito “até concluir esta unit”; informe esse limite antes de avançar.
-- Para habilitar `auto_advance`, persista `enabled: true`, `scope: "unit"` e `unit` com o identificador exato da unit atual. `enabled: true` sem `scope` ou `unit` válidos não autoriza geração.
-- Ao concluir a unit autorizada, desabilite `auto_advance`, persista o checkpoint e pare antes do primeiro arquivo da próxima unit.
-- Se a autorização for recebida no último arquivo da unit, ela autoriza somente esse arquivo.
-- Uma autorização nunca abrange duas units, o restante do plano ou arquivos globais. Globais são uma fronteira própria e exigem confirmação separada, arquivo por arquivo.
+Fora de um loop ativo, toda resposta que conclui um arquivo deve terminar com os três comandos abaixo. Não ofereça “continuar sem confirmação” como texto de comando; o nome canônico é `loop`.
 
-Estado válido durante o avanço:
+> ✅ `[arquivo]` concluído. Checkpoint salvo.
+> Próximo: `[próximo item]`.
+>
+> Comandos:
+> - `clear` — salvar o ponto atual e encerrar esta conversa;
+> - `continuar` — gerar somente o próximo arquivo;
+> - `loop` — concluir a unit principal **[root_unit alvo]** e todas as suas subunits, sem confirmações intermediárias.
+
+Aceite maiúsculas/minúsculas sem distinção. Por compatibilidade, “continuar sem confirmação”, “continue sem confirmação” e equivalentes são aliases de `loop`, mas sempre responda usando o nome canônico `loop`.
+
+- `continuar` autoriza exatamente o item apontado por `next_file`; depois dele, salve e mostre novamente os três comandos.
+- `clear` desabilita qualquer loop ativo, persiste o checkpoint e `next_file`, informa que está seguro executar `/clear` e encerra a resposta sem gerar outro arquivo.
+- `loop` nunca significa “até o fim do plano”. Ele autoriza somente a árvore de uma unit principal e nunca alcança a próxima unit principal ou globais.
+
+Se o último arquivo concluído ainda pertence a uma árvore com pendências, o alvo oferecido é o `root_unit` desse arquivo. Se essa árvore acabou, o alvo oferecido é o `root_unit` do item apontado por `next_file`. Se `next_file` for global ou `null`, `loop` fica indisponível e informe isso no menu.
+
+### Contrato do loop por árvore de unit
+
+Ao receber `loop`, execute este ciclo sem pedir confirmação entre arquivos:
+
+1. **Gatilho:** valide o plano e determine `target_orders`, a lista ordenada de todos os itens `pending` cujo `root_unit` é a unit principal alvo. A lista inclui a unit principal e todas as subunits descendentes.
+2. **Memória e limite:** persista `auto_advance` antes da primeira iteração com `enabled: true`, `mode: "loop"`, `scope: "unit_tree"`, `root_unit`, `target_orders`, `max_iterations: target_orders.length`, `completed_iterations: 0` e `last_progress_order: null`.
+3. **Execução:** selecione a menor ordem ainda pendente em `target_orders`, gere ou preserve exatamente esse arquivo e atualize seu status.
+4. **Verificação:** na mesma gravação atômica, incremente `completed_iterations`, registre `last_progress_order`, recalcule `next_file` global e confirme que a quantidade de alvos pendentes diminuiu. Então repita a partir do passo 3.
+5. **Sucesso:** pare somente quando nenhum item de `target_orders` estiver `pending`. Desabilite `auto_advance`, persista o checkpoint da árvore completa e não gere o primeiro arquivo da próxima unit principal.
+
+Estado válido durante o loop:
 
 ```json
 {
   "auto_advance": {
     "enabled": true,
-    "scope": "unit",
-    "unit": "nucleo/tracking-e-telemetria"
+    "mode": "loop",
+    "scope": "unit_tree",
+    "root_unit": "nucleo",
+    "target_orders": [13, 14, 15, 16, 17, 18, 19, 20, 21],
+    "max_iterations": 9,
+    "completed_iterations": 4,
+    "last_progress_order": 16
   }
 }
 ```
 
-**Pausa preventiva entre units:** quando você concluir o último arquivo (`tasks.md`) de uma unit e a sessão já gerou **3 units ou mais** sem pausa, troque a mensagem padrão "Digite CONTINUAR" pela versão com pausa preventiva:
+Pare o loop antes do sucesso apenas por erro irrecuperável, risco non-destructive, estouro de contexto ou estagnação. Há estagnação quando uma iteração não reduz a quantidade de alvos pendentes, tenta ultrapassar `max_iterations` ou `next_file`/o próximo alvo não pertence a `target_orders`. Salve o estado e explique o bloqueio. Em estouro de contexto, preserve o loop ativo para retomada automática; em `clear`, desabilite-o explicitamente.
 
-> "✅ [arquivo] concluído. Unit **[X]** está completa e o checkpoint está salvo. Próxima unit: **[Y]**. Você quer:
->
-> 1. Continuar agora
-> 2. Pausar aqui, digitar `/clear` e retomar com `/reversa` em sessão nova (recomendado se a sessão atual já está longa, preserva qualidade nas próximas units)
->
-> Pressione 1, 2, ou digite CONTINUAR para opção 1."
-
-Antes de oferecer a opção 2, confirme que `redator_progress` em `.reversa/state.json` reflete o último arquivo concluído. Não force a pausa, o usuário decide.
+Ao concluir o loop com sucesso, apresente um resumo com a unit principal, subunits concluídas e arquivos processados; depois mostre novamente os três comandos para o próximo item. O menu substitui a pausa preventiva antiga: destaque `clear` como recomendado quando a sessão estiver longa, mas nunca introduza confirmação dentro de um loop em andamento.
 
 ### Passo 3, Globais
 
