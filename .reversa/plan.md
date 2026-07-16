@@ -73,6 +73,7 @@
 - ✅ `perfis-de-filtros/` — unit do módulo `filters` (3 arquivos canônicos).
 - ✅ `perfis-de-filtros/catalogo-embutido/` — catálogo TOML determinístico e incorporado ao binário (3 arquivos canônicos).
 - ✅ `plugin-openclaw/` — adaptador TypeScript para reescrita, bloqueio e aprovação de chamadas `exec` (3 arquivos canônicos).
+- ✅ `documentacao-do-produto/` — jornada de instalacao, configuracao, integracoes, privacidade e contribuicao (3 arquivos canonicos).
 
 > Não criar `nucleo/execucao-compartilhada/`: sua superfície operacional já está coberta por `wrappers-comandos/execucao-filtrada/`, que rastreia `core::runner`, `core::stream`, `core::guard`, `core::tee` e `core::tracking`. Duplicá-la reduziria a qualidade da rastreabilidade. 🟢
 

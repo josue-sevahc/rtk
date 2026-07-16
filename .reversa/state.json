@@ -665,7 +665,7 @@
         "root_unit": "documentacao-do-produto",
         "parent_unit": null,
         "kind": "canonical",
-        "status": "pending"
+        "status": "completed"
       },
       {
         "order": 71,
@@ -674,7 +674,7 @@
         "root_unit": "documentacao-do-produto",
         "parent_unit": null,
         "kind": "canonical",
-        "status": "pending"
+        "status": "completed"
       },
       {
         "order": 72,
@@ -683,7 +683,7 @@
         "root_unit": "documentacao-do-produto",
         "parent_unit": null,
         "kind": "canonical",
-        "status": "pending"
+        "status": "completed"
       },
       {
         "order": 73,
@@ -791,10 +791,13 @@
       "_reversa_sdd/perfis-de-filtros/catalogo-embutido/tasks.md",
       "_reversa_sdd/plugin-openclaw/requirements.md",
       "_reversa_sdd/plugin-openclaw/design.md",
-      "_reversa_sdd/plugin-openclaw/tasks.md"
+      "_reversa_sdd/plugin-openclaw/tasks.md",
+      "_reversa_sdd/documentacao-do-produto/requirements.md",
+      "_reversa_sdd/documentacao-do-produto/design.md",
+      "_reversa_sdd/documentacao-do-produto/tasks.md"
     ],
-    "last_completed_file": "_reversa_sdd/plugin-openclaw/tasks.md",
-    "next_file": "_reversa_sdd/documentacao-do-produto/requirements.md",
+    "last_completed_file": "_reversa_sdd/documentacao-do-produto/tasks.md",
+    "next_file": "_reversa_sdd/automacao-e-scripts/requirements.md",
     "auto_advance": {
       "enabled": false,
       "mode": null,
@@ -803,7 +806,7 @@
       "target_orders": [],
       "max_iterations": 0,
       "completed_iterations": 3,
-      "last_progress_order": 69
+      "last_progress_order": 72
     },
     "active_batch": [
       {
@@ -964,19 +967,19 @@
       }
     },
     "writer": {
-      "last_completed_at": "2026-07-16T17:01:55Z",
-      "root_unit_completed": "plugin-openclaw",
+      "last_completed_at": "2026-07-16T17:16:33Z",
+      "root_unit_completed": "documentacao-do-produto",
       "files": [
-        "_reversa_sdd/plugin-openclaw/requirements.md",
-        "_reversa_sdd/plugin-openclaw/design.md",
-        "_reversa_sdd/plugin-openclaw/tasks.md"
+        "_reversa_sdd/documentacao-do-produto/requirements.md",
+        "_reversa_sdd/documentacao-do-produto/design.md",
+        "_reversa_sdd/documentacao-do-produto/tasks.md"
       ],
       "summary": {
         "units_completed": [
-          "plugin-openclaw"
+          "documentacao-do-produto"
         ],
         "files_processed": 3,
-        "next_file": "_reversa_sdd/documentacao-do-produto/requirements.md"
+        "next_file": "_reversa_sdd/automacao-e-scripts/requirements.md"
       }
     }
   },
