@@ -42,7 +42,9 @@
 2. T-04 e T-05 materializam a heurística de recomendação.
 3. T-06 e as tarefas de teste fecham o contrato de consumo.
 
-## Lacunas Pendentes (🔴)
+## Decisoes e Lacunas
+
+- 🟢 Os limiares atuais devem ser preservados como perfil versionado `legacy-v1`; recalibracoes futuras exigem dataset, benchmark, falsos positivos, economia e protecao `never_worse`. Decisao do usuario em 2026-07-16.
 
 - Calibrar a heurística com histórico real antes de tratar as recomendações como regra de equipe.
-- Definir se a sequência entre múltiplas sessões deve ser cronologicamente ordenada.
+- 🟢 O perfil `legacy-v1` preserva a ordenacao observada sem prometer cronologia global; uma alteracao futura exige dataset e benchmark. Decisao do usuario em 2026-07-16.

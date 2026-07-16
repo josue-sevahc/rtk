@@ -76,5 +76,5 @@
 
 ## Lacunas Pendentes (🔴)
 
-- 🔴 Executar matriz de compatibilidade real por versão de host e sistema operacional.
+- 🟢 O baseline certificado inicial cobre Linux x86_64, Claude Code e OpenClaw; outros hosts e sistemas permanecem experimentais ate matriz executavel. Decisao do usuario em 2026-07-16.
 - 🔴 Confirmar se todos os formatos de configuração de terceiros permanecem estáveis.

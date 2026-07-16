@@ -68,5 +68,5 @@
 
 ## Lacunas Pendentes (🔴)
 
-- Validar em runtime os caminhos de instalacao para todas as plataformas e versoes de ferramentas suportadas.
-- Decidir se as referencias a fork, branch e caminho de hook ainda devem fazer parte do diagnostico.
+- 🟢 O baseline certificado inicial de automacao e Linux x86_64, Bash/Zsh e UTF-8; demais plataformas permanecem experimentais. Decisao do usuario em 2026-07-16.
+- 🟢 Referencias legadas a fork, branch e caminhos antigos de hook devem ser removidas do diagnostico reconstruido. Decisao do usuario em 2026-07-16.

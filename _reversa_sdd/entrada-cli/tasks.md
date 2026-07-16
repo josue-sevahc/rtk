@@ -27,10 +27,10 @@
   - Criterio de pronto: todo parse inicia `maybe_ping`; `gain` pula apenas o aviso de hook; comandos da whitelist exigem `runtime_check` bem-sucedido antes do handler.
   - Confianca: 🟢
 
-- [ ] T-04, Implementar a whitelist de comandos operacionais.
+- [ ] T-04, Implementar um registro central de comandos com ownership e politica de integridade.
   - Origem no legado: `src/main.rs:2668`.
-  - Criterio de pronto: wrappers de shell suportados retornam verdadeiro e meta-comandos administrativos retornam falso; a lista e mantida explicitamente e coberta por teste de regressao.
-  - Confianca: 🟢
+  - Criterio de pronto: todo wrapper RTK e fechado por padrao e declara explicitamente sua politica de integridade; comandos externos nao reconhecidos continuam em passthrough; um novo wrapper sem politica falha antes do dispatch.
+  - Confianca: 🟢 Decisao validada pelo usuario em 2026-07-16; o legado usa whitelist que falha aberta.
 
 - [ ] T-05, Implementar o dispatch central e os adaptadores de argumentos por ecossistema.
   - Origem no legado: `src/main.rs:1569-2640`, `build_k8s_namespace_args`, `build_k8s_logs_args`, `merge_pnpm_args`, `merge_pnpm_args_os` e `validate_pnpm_filters`.
@@ -113,6 +113,6 @@
 
 ## Lacunas Pendentes (🔴)
 
-- 🔴 Confirmar em Windows a paridade de quoting, spawn, codigos de saida e propagacao de sinais, pois a extracao validou apenas os blocos Unix do legado.
+- 🟢 O baseline certificado inicial e Linux x86_64, Bash/Zsh e UTF-8; Windows e outros shells permanecem experimentais ate validacao em matriz executavel. Decisao do usuario em 2026-07-16.
 - 🔴 Exercitar em runtime a matriz completa de dispatch contra as versoes reais das ferramentas externas; a analise atual nao prova compatibilidade dinamica.
-- 🔴 Decidir se a whitelist que falha aberta para novos comandos operacionais deve ser preservada ou substituida por uma politica mais restritiva na reimplementacao.
+- 🟢 A reconstrucao deve substituir a whitelist dispersa por registro central e falha fechada para wrappers RTK; passthrough externo permanece aberto. Decisao do usuario em 2026-07-16.

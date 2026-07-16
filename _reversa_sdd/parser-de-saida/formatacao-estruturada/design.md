@@ -59,4 +59,4 @@
 ## Riscos e Lacunas
 
 - 🟡 O modo Ultra usa marcadores ASCII, apesar de o README citar simbolos; a compatibilidade desejada de apresentacao precisa de validacao humana.
-- 🔴 A policy de localizacao dos textos gerados nao aparece no modulo.
+- 🟢 Codigos, chaves, enums e schemas permanecem em ingles como contrato canonico; somente a apresentacao humana pode ser localizada, com `en-US` obrigatorio e `pt-BR` como primeiro locale adicional. Decisao do usuario em 2026-07-16.

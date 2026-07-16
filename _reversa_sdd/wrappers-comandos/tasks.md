@@ -112,5 +112,5 @@
 ## Lacunas Pendentes (🔴)
 
 - 🔴 Validar compatibilidade de cada wrapper contra as versoes reais das ferramentas, seus locales e formatos de output.
-- 🔴 Definir um conjunto minimo de fixtures de contrato por ferramenta antes de declarar equivalencia comportamental.
+- 🟢 Compatibilidade de wrapper so pode ser declarada quando houver fixture ou teste correspondente; ferramentas, versoes e locales sem cobertura permanecem experimentais. Decisao do usuario em 2026-07-16.
 - 🔴 Avaliar se todos os filtros de alto impacto devem ter specs aninhadas adicionais, especialmente Git, Cargo, AWS, .NET, Maven e search.

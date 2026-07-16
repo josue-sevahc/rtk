@@ -50,5 +50,5 @@
 
 ## Lacunas Pendentes (🔴)
 
-- Definir matriz de versoes e locales para os testes de integracao com ferramentas externas.
+- 🟢 A matriz certificada nasce apenas de combinacoes com fixture ou teste; versoes e locales sem cobertura permanecem experimentais. Decisao do usuario em 2026-07-16.
 - Definir politica de atualizacao da sentinela de contagem quando novos perfis forem adicionados.

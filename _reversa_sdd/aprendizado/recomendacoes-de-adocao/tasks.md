@@ -18,9 +18,9 @@
 - [ ] T-03, Implementar relatório textual para conjuntos vazios e não vazios. Confiança: 🟢
   - Origem no legado: `src/learn/report.rs`.
   - Critério de pronto: texto mostra cabeçalho, recorrência e fragmento de erro quando presentes.
-- [ ] T-04, Implementar a escrita Markdown agrupada e ordenada por comando-base. Confiança: 🟢
+- [ ] T-04, Implementar a escrita Markdown agrupada e ordenada por comando-base dentro de secoes gerenciadas. Confiança: 🟢
   - Origem no legado: `src/learn/report.rs`.
-  - Critério de pronto: diretórios pais são criados e o arquivo segue o formato observado.
+  - Critério de pronto: somente o trecho entre marcadores gerenciados e atualizado; conteudo manual externo e preservado; sem marcadores, a operacao recusa escrita, gera arquivo separado ou exige `--force` com backup.
 - [ ] T-05, Ligar a escrita somente ao modo textual, `--write-rules` e existência de regras. Confiança: 🟢
   - Origem no legado: `src/learn/mod.rs`.
   - Critério de pronto: JSON e listas vazias não produzem arquivo.
@@ -29,8 +29,8 @@
 
 - [ ] TT-01, Testar JSON com regras e limiares. Confiança: 🟢 `src/learn/mod.rs`
 - [ ] TT-02, Testar relatório textual vazio, recorrente e com primeira linha de erro. Confiança: 🟢 `src/learn/report.rs`
-- [ ] TT-03, Testar criação de diretório, agrupamento alfabético e regravação do arquivo de regras. Confiança: 🟢 `src/learn/report.rs`
-- [ ] TT-04, Validar a experiência de consumo e a política para edições manuais no arquivo gerado. Confiança: 🔴
+- [ ] TT-03, Testar criação de diretório, agrupamento alfabético e atualização idempotente da seção gerenciada. Confiança: 🟢 `src/learn/report.rs` e decisao do usuario em 2026-07-16.
+- [ ] TT-04, Testar preservacao de conteudo manual, recusa sem marcadores e `--force` com backup. Confiança: 🟢 Decisao validada pelo usuario em 2026-07-16.
 
 ## Ordem Sugerida
 
@@ -40,4 +40,4 @@
 
 ## Lacunas Pendentes (🔴)
 
-- Definir proteção ou mesclagem para edições manuais de `.claude/rules/cli-corrections.md`.
+- 🟢 Usar secoes gerenciadas e preservar conteudo manual; sem marcadores, recusar, gerar arquivo separado ou exigir `--force` com backup. Decisao do usuario em 2026-07-16.

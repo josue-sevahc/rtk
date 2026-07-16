@@ -36,10 +36,10 @@
   - Criterio de pronto: leitores de stdout/stderr alimentam canal; cada linha chega ao filtro, vai para o descritor correto e `flush`/`on_exit` adicionam texto final.
   - Confianca: 🟢
 
-- [ ] T-06, Implementar limites de 10 MiB para captura de stdout e stderr.
+- [ ] T-06, Implementar limite configuravel de captura, com default de 10 MiB por stream e limites seguros.
   - Origem no legado: `src/core/stream.rs:244`, `src/core/stream.rs:330-455`.
-  - Criterio de pronto: buffers param de crescer ao teto; cada stream emite no maximo um warning; processo e encaminhamento de linhas continuam conforme o modo ativo.
-  - Confianca: 🟢
+  - Criterio de pronto: buffers param de crescer no limite configurado; modo ilimitado nao existe; cada stream emite no maximo um warning; o truncamento e persistido no tracking; processo e encaminhamento de linhas continuam conforme o modo ativo.
+  - Confianca: 🟢 Default confirmado no legado e extensao validada pelo usuario em 2026-07-16.
 
 - [ ] T-07, Implementar filtro buffered resiliente a panic e tratamento de escrita em pipe fechado.
   - Origem no legado: `src/core/stream.rs:420-510`.
@@ -111,6 +111,6 @@
 
 ## Lacunas Pendentes (🔴)
 
-- 🔴 Validar sinais, pipes e `BrokenPipe` na plataforma Windows e nas shells suportadas, pois a conversao por sinal e Unix-especifica.
-- 🔴 Determinar se o teto de 10 MiB e suficiente para workloads reais e como comunicar ao usuario quando a filtragem pode estar baseada em captura incompleta.
+- 🟢 O baseline certificado inicial limita a paridade de sinais e shells a Linux x86_64 com Bash/Zsh; demais plataformas permanecem experimentais. Decisao do usuario em 2026-07-16.
+- 🟢 Preservar 10 MiB por stream como default configuravel, sem modo ilimitado, sempre com warning e registro de truncamento no tracking. Decisao do usuario em 2026-07-16.
 - 🔴 Exercitar concorrencia e cancelamento sob carga real de stdout/stderr para confirmar ausencia de deadlock fora dos testes estaticos.

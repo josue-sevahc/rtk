@@ -13,11 +13,10 @@
     "escavacao",
     "geracao",
     "interpretacao",
-    "reconhecimento"
-  ],
-  "pending": [
+    "reconhecimento",
     "revisao"
   ],
+  "pending": [],
   "redator_progress": {
     "plan_revision": 2,
     "plan_total_files": 78,
@@ -994,22 +993,26 @@
       }
     },
     "reviewer": {
-      "status": "awaiting_user_validation",
+      "status": "completed",
       "reviewed_at": "2026-07-16T19:36:37Z",
+      "completed_at": "2026-07-16T20:51:55Z",
       "files": [
         "_reversa_sdd/traceability/code-spec-matrix.md",
         "_reversa_sdd/questions.md",
-        "_reversa_sdd/gaps.md"
+        "_reversa_sdd/gaps.md",
+        "_reversa_sdd/confidence-report.md"
       ],
       "summary": {
         "specs_reviewed": 78,
         "units_reviewed": 26,
         "cross_review": false,
-        "reclassifications": 12,
+        "reclassifications": 26,
         "questions_generated": 9,
-        "questions_answered": 0,
+        "questions_answered": 9,
         "preliminary_confidence": 93.82,
-        "confidence_report_pending": true
+        "final_confidence": 94.59,
+        "confidence_report_pending": false,
+        "regression_check": "skipped_no_regression_watch"
       }
     }
   },

@@ -27,6 +27,9 @@
 - [ ] T-06, Aplicar limites de listagem e incluir wanted version no detalhado quando divergir da latest. Confianca: 🟢
   - Origem no legado: `src/parser/formatter.rs`.
   - Criterio de pronto: saidas alem dos limites exibem contagem residual e detalhes wanted aparecem no verbose.
+- [ ] T-07, Separar o contrato estruturado da apresentacao humana localizavel. Confianca: 🟢
+  - Origem: decisao do usuario em 2026-07-16.
+  - Criterio de pronto: codigos, chaves, enums e schemas permanecem em ingles; `en-US` e obrigatorio e `pt-BR` e o primeiro locale adicional para textos humanos.
 
 ## Tarefas de Teste
 
@@ -36,6 +39,7 @@
 - [ ] TT-04, Testar inventario de dependencias sem `latest_version` e ausencia real de desatualizados. Confianca: 🟢 `src/parser/formatter.rs`
 - [ ] TT-05, Testar limite de dependencias, wanted version e formato Ultra. Confianca: 🟢 `src/parser/formatter.rs`
 - [ ] TT-06, Validar legibilidade e economia de tokens com saidas reais de ferramentas. Confianca: 🔴
+- [ ] TT-07, Testar estabilidade dos campos estruturados e snapshots de apresentacao em `en-US` e `pt-BR`. Confianca: 🟢 Decisao do usuario em 2026-07-16.
 
 ## Ordem Sugerida
 
@@ -45,4 +49,4 @@
 
 ## Lacunas Pendentes (🔴)
 
-- Definir uma meta mensuravel de economia de tokens para cada modo de apresentacao.
+- 🟢 Preservar os valores atuais no perfil versionado `legacy-v1`; qualquer perfil recalibrado exige dataset, benchmark, falsos positivos, economia e protecao `never_worse`. Decisao do usuario em 2026-07-16.

@@ -1,27 +1,19 @@
 # Lacunas da Revisao - RTK
 
-> Estado em 2026-07-16: revisao cruzada concluida; validacao humana pendente.
+> Estado em 2026-07-16: revisao cruzada e validacao humana concluidas.
 
-## Lacunas que Exigem Decisao
+## Decisoes Humanas Pendentes
 
-| Tema | Units afetadas | Pergunta |
-|---|---|---|
-| Baseline de compatibilidade | CLI, wrappers, filtros, hooks, scripts | `questions.md#pergunta-1` |
-| Gate de integridade | entrada CLI | `questions.md#pergunta-2` |
-| Limite de captura | execucao filtrada | `questions.md#pergunta-3` |
-| Persistencia local | nucleo e tracking | `questions.md#pergunta-4` |
-| Backend de telemetria | tracking e telemetria | `questions.md#pergunta-5` |
-| Falhas do OpenClaw | plugin OpenClaw | `questions.md#pergunta-6` |
-| Arquivo de recomendacoes | aprendizado | `questions.md#pergunta-7` |
-| Localizacao de saida | parser | `questions.md#pergunta-8` |
-| Calibracao de heuristicas | descoberta, aprendizado, filtros e parser | `questions.md#pergunta-9` |
+Nenhuma. As nove perguntas de `questions.md` foram respondidas e incorporadas nas specs.
 
 ## Lacunas de Validacao Externa
 
-- A analise nao executou a matriz completa de ferramentas externas, agentes, sistemas operacionais e locales.
-- O contrato runtime do OpenClaw e dos demais hosts nao esta versionado neste repositorio.
-- O backend de telemetria e erasure nao faz parte da superficie analisada.
-- Benchmarks de producao para economia, falsos positivos e grandes historicos nao estao disponiveis nos artefatos locais.
+- O baseline certificado inicial e Linux x86_64, Bash/Zsh, UTF-8, Claude Code e OpenClaw; combinacoes sem fixture ou teste permanecem experimentais.
+- Ferramentas externas, formatos de hosts e a API runtime do OpenClaw ainda exigem matrizes executaveis de compatibilidade.
+- Concorrencia SQLite/WAL, streams sob carga, cancelamento e historicos muito grandes ainda exigem testes dinamicos.
+- O backend de telemetria e erasure permanece fora do escopo; a paridade declarada cobre somente o cliente.
+- Metricas de producao para falsos positivos e economia nao estao disponiveis; os valores atuais ficam preservados no perfil `legacy-v1`.
+- A equivalencia de `parse_error.exit()` e outros detalhes dependentes da stack alvo deve ser validada quando a tecnologia de reconstrucao for escolhida.
 
 ## Inconsistencias Confirmadas
 
@@ -35,4 +27,4 @@
 - O destino de `docs/guide/` foi confirmado como `rtk-ai/rtk-website`, via `prepare-docs.mjs` e Starlight.
 - A truncagem de captura em 10 MiB e seu warning foram confirmados diretamente em `src/core/stream.rs`.
 - A ausencia de testes no pacote OpenClaw e o uso de shapes manuais foram reclassificados como fatos observaveis; somente a compatibilidade runtime permanece aberta.
-
+- Segurança de novos wrappers, migracao SQLite, politica de truncamento, falhas do OpenClaw, merge de rules, localizacao e versionamento de heuristicas receberam decisoes humanas explicitas.

@@ -68,5 +68,5 @@
 
 ## Lacunas Pendentes (🔴)
 
-- Confirmar se referencias a fork, branch e hooks antigos devem ser removidas ou atualizadas.
+- 🟢 Remover referencias a fork, branch e hooks antigos, alinhando o diagnostico a topologia atual. Decisao do usuario em 2026-07-16.
 - Executar testes reais em Linux e macOS, com os dois mecanismos de checksum.

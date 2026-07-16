@@ -32,10 +32,10 @@
   - Criterio de pronto: indisponibilidade do tracker usa valores neutros e falha de rede nao bloqueia o CLI.
   - Confianca: 🟢
 
-- [ ] T-06, Implementar subcomandos `status`, `enable`, `disable` e `forget`.
+- [ ] T-06, Implementar subcomandos `status`, `enable`, `disable` e `forget`, com paridade limitada ao cliente.
   - Origem no legado: `src/core/telemetry_cmd.rs:12-182`.
-  - Criterio de pronto: enable exige TTY e resposta explicita; forget remove consentimento, salt, marker e banco local antes de tentar erasure remoto.
-  - Confianca: 🟢
+  - Criterio de pronto: enable exige TTY e resposta explicita; telemetria inicia desabilitada; forget remove consentimento, salt, marker e banco local; erasure remoto so e tentado quando URL, payload, autenticacao, retencao e SLA estiverem definidos por contrato externo canonico.
+  - Confianca: 🟢 Comportamento cliente confirmado no legado e escopo validado pelo usuario em 2026-07-16.
 
 ## Tarefas de Teste
 
@@ -61,10 +61,10 @@
 
 ## Tarefas de Migracao de Dados
 
-- [ ] TM-01, Definir compatibilidade e importacao do banco de tracking legado.
+- [ ] TM-01, Importar opcionalmente `tracking.db` para o banco canonico `history.db`.
   - Origem no legado: `src/core/tracking.rs:281-308`.
-  - Criterio de pronto: ha decisao registrada sobre preservar comandos e falhas de parse existentes, incluindo versoes de schema anteriores.
-  - Confianca: 🔴
+  - Criterio de pronto: deteccao automatica nao importa sem confirmacao; importacao cria backup, deduplica, e idempotente e preserva o banco legado sem escrita ou exclusao.
+  - Confianca: 🟢 Decisao validada pelo usuario em 2026-07-16.
 
 ## Ordem Sugerida
 
@@ -76,4 +76,4 @@
 ## Lacunas Pendentes (🔴)
 
 - 🔴 Validar concorrencia de SQLite em multiplas instancias e sistemas de arquivos sem suporte a WAL.
-- 🔴 Validar contrato do endpoint e processamento efetivo de erasure remoto.
+- 🟢 Nao ha contrato backend validado no escopo; a paridade cobre apenas o cliente e considera erasure remoto indisponivel ate existir contrato externo canonico. Decisao do usuario em 2026-07-16.

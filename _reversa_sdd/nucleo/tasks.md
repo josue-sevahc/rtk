@@ -99,10 +99,10 @@
 
 ## Tarefas de Migracao de Dados
 
-- [ ] TM-01, Definir se o historico SQLite legado sera importado ou reiniciado na reimplementacao.
+- [ ] TM-01, Importar opcionalmente o banco legado `tracking.db` para o banco canonico `history.db`.
   - Origem no legado: `src/core/tracking.rs`, `src/core/constants.rs`.
-  - Criterio de pronto: existe uma decisao registrada sobre compatibilidade de schema, retencao e preservacao de dados locais.
-  - Confianca: 🔴
+  - Criterio de pronto: a deteccao e automatica, mas a importacao exige confirmacao ou comando explicito; cria backup, e idempotente, deduplica registros e nunca modifica ou apaga o banco legado.
+  - Confianca: 🟢 Decisao validada pelo usuario em 2026-07-16.
 
 ## Ordem Sugerida
 
@@ -115,5 +115,5 @@
 ## Lacunas Pendentes (🔴)
 
 - 🔴 Validar em Windows a semantica de `PATHEXT`, sinais e captura de processos, nao exercitada pela analise estatica.
-- 🔴 Definir a estrategia de migracao ou descarte do banco SQLite local de tracking.
+- 🟢 `history.db` e canonico; `tracking.db` pode ser importado somente com confirmacao ou comando explicito, com backup, deduplicacao e preservacao integral do legado. Decisao do usuario em 2026-07-16.
 - 🔴 Executar teste de concorrencia real com multiplas instancias e WAL antes de afirmar equivalencia de persistencia.

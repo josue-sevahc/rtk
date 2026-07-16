@@ -50,6 +50,11 @@
   - Critério de pronto: `verbose: false` não emite logs de decisão; `verbose: true` torna cada transição relevante rastreável no console.
   - Confiança: 🟢
 
+- [ ] T-09, Distinguir ausencia de rewrite de falha operacional ou de seguranca.
+  - Origem no legado: delta sobre o bloco `catch` de `openclaw/index.ts`.
+  - Critério de pronto: exit 1 permanece passthrough silencioso; timeout, resposta invalida, exit desconhecido e falha de processo geram warning estruturado e defer/passthrough; falhas de integridade ou seguranca bloqueiam ou exigem aprovacao explicita.
+  - Confiança: 🟢 Decisao validada pelo usuario em 2026-07-16.
+
 ## Tarefas de Teste
 
 - [ ] TT-01, Testar habilitação, ausência de binário e cache de disponibilidade.
@@ -72,6 +77,11 @@
   - Critério de pronto: `allow-once`, `deny` e timeout são aceitos pelo host conforme o contrato e não há `allow-always` implícito.
   - Confiança: 🔴 A compatibilidade real não foi exercitada no legado analisado.
 
+- [ ] TT-05, Testar a classificacao de falhas do subprocesso.
+  - Origem no legado: delta de reconstrucao sobre `openclaw/index.ts`.
+  - Critério de pronto: ausencia de rewrite nao emite warning; falhas operacionais emitem evento estruturado; integridade e seguranca nunca degradam silenciosamente para execucao automatica.
+  - Confiança: 🟢 Decisao validada pelo usuario em 2026-07-16.
+
 ## Ordem Sugerida
 
 1. Implementar T-01 a T-04 para estabilizar publicação, descoberta de binário e protocolo com o CLI.
@@ -82,5 +92,4 @@
 
 - 🔴 Validar versões suportadas da API OpenClaw, sobretudo o contrato de `api.on` e `requireApproval`.
 - 🔴 Criar cobertura automatizada no subdiretório `openclaw/`; o legado não contém testes locais para esse adaptador.
-- 🔴 Confirmar que degradar erro de subprocesso para passthrough é a política operacional desejada em produção.
-
+- 🟢 Passthrough silencioso fica restrito a ausencia de rewrite; falhas operacionais geram warning estruturado e falhas de seguranca bloqueiam ou pedem aprovacao. Decisao do usuario em 2026-07-16.

@@ -6,7 +6,7 @@
 
 - [ ] 🟢 Disponibilizar o schema TOML e o compilador de regexes descritos em `nucleo/pipeline-de-filtros-toml`.
 - [ ] 🟢 Disponibilizar o processo de build capaz de gerar um artefato em `OUT_DIR`.
-- [ ] 🔴 Definir quais versoes e locales das ferramentas externas devem ser considerados suportados.
+- [ ] 🟢 Certificar inicialmente apenas combinacoes cobertas por fixture ou teste no baseline Linux x86_64, Bash/Zsh e UTF-8; demais versoes e locales permanecem experimentais. Decisao do usuario em 2026-07-16.
 
 ## Tarefas
 
@@ -50,4 +50,4 @@
 ## Lacunas Pendentes (🔴)
 
 - Validar a compatibilidade de perfis com ferramentas externas reais antes de prometer equivalencia de saida.
-- Definir uma meta mensuravel de reducao de ruido ou tokens que nao remova informacoes de diagnostico.
+- 🟢 Os valores atuais formam o perfil versionado `legacy-v1`; novos perfis exigem dataset, benchmark, metricas de falsos positivos/economia e protecao `never_worse`. Decisao do usuario em 2026-07-16.

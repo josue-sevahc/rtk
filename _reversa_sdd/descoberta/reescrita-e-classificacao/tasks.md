@@ -7,7 +7,7 @@
   - Pronto quando: aspas, escapes, pipes, operadores e redirects são distinguidos sem parser Bash total.
 - [ ] T-02, Modelar `RtkRule`, status e catálogo ordenado de regras. Confiança: 🟢
   - Origem: `src/discover/rules.rs`.
-  - Pronto quando: regras mais específicas podem sobrescrever categoria, percentual e status.
+  - Pronto quando: regras mais específicas podem sobrescrever categoria, percentual e status; os valores legados ficam identificados pelo perfil versionado `legacy-v1`.
 - [ ] T-03, Implementar normalizações antes da classificação. Confiança: 🟢
   - Origem: `src/discover/registry.rs`.
   - Pronto quando: env/sudo, paths absolutos e wrappers observados alcançam a mesma regra-base.
@@ -23,3 +23,5 @@
 - [ ] TT-01, Cobrir regras conflitantes, comandos ignorados, wrappers e percentuais por subcomando. Confiança: 🟢
 - [ ] TT-02, Cobrir chains, pipes, redirects, heredoc, substituições, `RTK_DISABLED` e limite de prefixos. Confiança: 🟢
 - [ ] TT-03, Executar matriz de regressão contra shells e plataformas suportadas. Confiança: 🔴
+- [ ] TT-04, Garantir que perfis recalibrados nao substituam silenciosamente `legacy-v1`. Confiança: 🟢
+  - Pronto quando: todo novo perfil referencia dataset e benchmark com falsos positivos, economia e protecao `never_worse`.

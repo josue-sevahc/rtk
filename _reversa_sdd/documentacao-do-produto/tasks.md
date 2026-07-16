@@ -81,5 +81,5 @@ Nao se aplica: a unit publica conhecimento em arquivos Markdown e nao possui mig
 
 ## Lacunas Pendentes (🔴)
 
-- Definir e registrar qual gerador ou pipeline publica `docs/guide/` no destino final.
-- Confirmar uma fonte unica de verdade para exemplos de versao e para a lista de agentes em documentacao historica e atual.
+- 🟢 `docs/guide/` alimenta `rtk-ai/rtk-website` via `prepare-docs.mjs` e Starlight. Evidencia: `.github/docs-pipeline-contract.md`.
+- 🟢 A lista certificada inicial deve refletir apenas Linux x86_64, Claude Code e OpenClaw; outros agentes permanecem experimentais ate validacao executavel. Decisao do usuario em 2026-07-16.
