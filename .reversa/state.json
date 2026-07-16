@@ -380,7 +380,7 @@
         "root_unit": "descoberta",
         "parent_unit": null,
         "kind": "canonical",
-        "status": "pending"
+        "status": "completed"
       },
       {
         "order": 41,
@@ -389,7 +389,7 @@
         "root_unit": "descoberta",
         "parent_unit": null,
         "kind": "canonical",
-        "status": "pending"
+        "status": "completed"
       },
       {
         "order": 42,
@@ -398,7 +398,7 @@
         "root_unit": "descoberta",
         "parent_unit": null,
         "kind": "canonical",
-        "status": "pending"
+        "status": "completed"
       },
       {
         "order": 43,
@@ -407,7 +407,7 @@
         "root_unit": "descoberta",
         "parent_unit": "descoberta",
         "kind": "canonical",
-        "status": "pending"
+        "status": "completed"
       },
       {
         "order": 44,
@@ -416,7 +416,7 @@
         "root_unit": "descoberta",
         "parent_unit": "descoberta",
         "kind": "canonical",
-        "status": "pending"
+        "status": "completed"
       },
       {
         "order": 45,
@@ -425,7 +425,7 @@
         "root_unit": "descoberta",
         "parent_unit": "descoberta",
         "kind": "canonical",
-        "status": "pending"
+        "status": "completed"
       },
       {
         "order": 46,
@@ -434,7 +434,7 @@
         "root_unit": "descoberta",
         "parent_unit": "descoberta",
         "kind": "canonical",
-        "status": "pending"
+        "status": "completed"
       },
       {
         "order": 47,
@@ -443,7 +443,7 @@
         "root_unit": "descoberta",
         "parent_unit": "descoberta",
         "kind": "canonical",
-        "status": "pending"
+        "status": "completed"
       },
       {
         "order": 48,
@@ -452,7 +452,7 @@
         "root_unit": "descoberta",
         "parent_unit": "descoberta",
         "kind": "canonical",
-        "status": "pending"
+        "status": "completed"
       },
       {
         "order": 49,
@@ -746,10 +746,19 @@
       "_reversa_sdd/nucleo/pipeline-de-filtros-toml/tasks.md",
       "_reversa_sdd/nucleo/tracking-e-telemetria/requirements.md",
       "_reversa_sdd/nucleo/tracking-e-telemetria/design.md",
-      "_reversa_sdd/nucleo/tracking-e-telemetria/tasks.md"
+      "_reversa_sdd/nucleo/tracking-e-telemetria/tasks.md",
+      "_reversa_sdd/descoberta/requirements.md",
+      "_reversa_sdd/descoberta/design.md",
+      "_reversa_sdd/descoberta/tasks.md",
+      "_reversa_sdd/descoberta/reescrita-e-classificacao/requirements.md",
+      "_reversa_sdd/descoberta/reescrita-e-classificacao/design.md",
+      "_reversa_sdd/descoberta/reescrita-e-classificacao/tasks.md",
+      "_reversa_sdd/descoberta/analise-de-historico/requirements.md",
+      "_reversa_sdd/descoberta/analise-de-historico/design.md",
+      "_reversa_sdd/descoberta/analise-de-historico/tasks.md"
     ],
-    "last_completed_file": "_reversa_sdd/analiticos/adocao-por-sessao/tasks.md",
-    "next_file": "_reversa_sdd/descoberta/requirements.md",
+    "last_completed_file": "_reversa_sdd/descoberta/analise-de-historico/tasks.md",
+    "next_file": "_reversa_sdd/aprendizado/requirements.md",
     "auto_advance": {
       "enabled": false,
       "mode": null,
@@ -757,8 +766,8 @@
       "root_unit": null,
       "target_orders": [],
       "max_iterations": 0,
-      "completed_iterations": 9,
-      "last_progress_order": 39
+      "completed_iterations": 18,
+      "last_progress_order": 48
     },
     "active_batch": [
       {
@@ -786,7 +795,7 @@
         "status": "completed"
       }
     ],
-    "updated_at": "2026-07-16T02:55:17Z"
+    "updated_at": "2026-07-16T03:11:00Z"
   },
   "checkpoints": {
     "scout": {
@@ -919,27 +928,27 @@
       }
     },
     "writer": {
-      "last_completed_at": "2026-07-16T02:55:17Z",
-      "root_unit_completed": "analiticos",
+      "last_completed_at": "2026-07-16T03:11:00Z",
+      "root_unit_completed": "descoberta",
       "files": [
-        "_reversa_sdd/analiticos/requirements.md",
-        "_reversa_sdd/analiticos/design.md",
-        "_reversa_sdd/analiticos/tasks.md",
-        "_reversa_sdd/analiticos/relatorios-de-economia/requirements.md",
-        "_reversa_sdd/analiticos/relatorios-de-economia/design.md",
-        "_reversa_sdd/analiticos/relatorios-de-economia/tasks.md",
-        "_reversa_sdd/analiticos/adocao-por-sessao/requirements.md",
-        "_reversa_sdd/analiticos/adocao-por-sessao/design.md",
-        "_reversa_sdd/analiticos/adocao-por-sessao/tasks.md"
+        "_reversa_sdd/descoberta/requirements.md",
+        "_reversa_sdd/descoberta/design.md",
+        "_reversa_sdd/descoberta/tasks.md",
+        "_reversa_sdd/descoberta/reescrita-e-classificacao/requirements.md",
+        "_reversa_sdd/descoberta/reescrita-e-classificacao/design.md",
+        "_reversa_sdd/descoberta/reescrita-e-classificacao/tasks.md",
+        "_reversa_sdd/descoberta/analise-de-historico/requirements.md",
+        "_reversa_sdd/descoberta/analise-de-historico/design.md",
+        "_reversa_sdd/descoberta/analise-de-historico/tasks.md"
       ],
       "summary": {
         "units_completed": [
-          "analiticos",
-          "analiticos/relatorios-de-economia",
-          "analiticos/adocao-por-sessao"
+          "descoberta",
+          "descoberta/reescrita-e-classificacao",
+          "descoberta/analise-de-historico"
         ],
         "files_processed": 9,
-        "next_file": "_reversa_sdd/descoberta/requirements.md"
+        "next_file": "_reversa_sdd/aprendizado/requirements.md"
       }
     }
   },

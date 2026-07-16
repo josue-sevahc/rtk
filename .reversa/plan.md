@@ -65,6 +65,9 @@
 - ✅ `analiticos/` — unit do módulo `analytics` (3 arquivos canônicos).
 - ✅ `analiticos/relatorios-de-economia/` — correlação read-only entre tracking RTK e custos Claude Code (3 arquivos canônicos).
 - ✅ `analiticos/adocao-por-sessao/` — medição de cobertura RTK em sessões Claude Code (3 arquivos canônicos).
+- ✅ `descoberta/` — unit do módulo `discover` (3 arquivos canônicos).
+- ✅ `descoberta/reescrita-e-classificacao/` — classificação shell e proposta de rewrite seguro (3 arquivos canônicos).
+- ✅ `descoberta/analise-de-historico/` — leitura de sessões Claude Code e relatório de oportunidades (3 arquivos canônicos).
 
 > Não criar `nucleo/execucao-compartilhada/`: sua superfície operacional já está coberta por `wrappers-comandos/execucao-filtrada/`, que rastreia `core::runner`, `core::stream`, `core::guard`, `core::tee` e `core::tracking`. Duplicá-la reduziria a qualidade da rastreabilidade. 🟢
 
