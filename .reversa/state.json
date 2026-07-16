@@ -19,7 +19,556 @@
     "revisao"
   ],
   "redator_progress": {
+    "plan_revision": 1,
     "plan_total_files": 78,
+    "generation_plan": [
+      {
+        "order": 1,
+        "path": "_reversa_sdd/entrada-cli/requirements.md",
+        "unit": "entrada-cli",
+        "kind": "canonical",
+        "status": "completed"
+      },
+      {
+        "order": 2,
+        "path": "_reversa_sdd/entrada-cli/design.md",
+        "unit": "entrada-cli",
+        "kind": "canonical",
+        "status": "completed"
+      },
+      {
+        "order": 3,
+        "path": "_reversa_sdd/entrada-cli/tasks.md",
+        "unit": "entrada-cli",
+        "kind": "canonical",
+        "status": "completed"
+      },
+      {
+        "order": 4,
+        "path": "_reversa_sdd/entrada-cli/roteamento-e-fallback/requirements.md",
+        "unit": "entrada-cli/roteamento-e-fallback",
+        "kind": "canonical",
+        "status": "completed"
+      },
+      {
+        "order": 5,
+        "path": "_reversa_sdd/entrada-cli/roteamento-e-fallback/design.md",
+        "unit": "entrada-cli/roteamento-e-fallback",
+        "kind": "canonical",
+        "status": "completed"
+      },
+      {
+        "order": 6,
+        "path": "_reversa_sdd/entrada-cli/roteamento-e-fallback/tasks.md",
+        "unit": "entrada-cli/roteamento-e-fallback",
+        "kind": "canonical",
+        "status": "completed"
+      },
+      {
+        "order": 7,
+        "path": "_reversa_sdd/wrappers-comandos/requirements.md",
+        "unit": "wrappers-comandos",
+        "kind": "canonical",
+        "status": "completed"
+      },
+      {
+        "order": 8,
+        "path": "_reversa_sdd/wrappers-comandos/design.md",
+        "unit": "wrappers-comandos",
+        "kind": "canonical",
+        "status": "completed"
+      },
+      {
+        "order": 9,
+        "path": "_reversa_sdd/wrappers-comandos/tasks.md",
+        "unit": "wrappers-comandos",
+        "kind": "canonical",
+        "status": "completed"
+      },
+      {
+        "order": 10,
+        "path": "_reversa_sdd/wrappers-comandos/execucao-filtrada/requirements.md",
+        "unit": "wrappers-comandos/execucao-filtrada",
+        "kind": "canonical",
+        "status": "completed"
+      },
+      {
+        "order": 11,
+        "path": "_reversa_sdd/wrappers-comandos/execucao-filtrada/design.md",
+        "unit": "wrappers-comandos/execucao-filtrada",
+        "kind": "canonical",
+        "status": "completed"
+      },
+      {
+        "order": 12,
+        "path": "_reversa_sdd/wrappers-comandos/execucao-filtrada/tasks.md",
+        "unit": "wrappers-comandos/execucao-filtrada",
+        "kind": "canonical",
+        "status": "completed"
+      },
+      {
+        "order": 13,
+        "path": "_reversa_sdd/nucleo/requirements.md",
+        "unit": "nucleo",
+        "kind": "canonical",
+        "status": "completed"
+      },
+      {
+        "order": 14,
+        "path": "_reversa_sdd/nucleo/design.md",
+        "unit": "nucleo",
+        "kind": "canonical",
+        "status": "completed"
+      },
+      {
+        "order": 15,
+        "path": "_reversa_sdd/nucleo/tasks.md",
+        "unit": "nucleo",
+        "kind": "canonical",
+        "status": "completed"
+      },
+      {
+        "order": 16,
+        "path": "_reversa_sdd/nucleo/pipeline-de-filtros-toml/requirements.md",
+        "unit": "nucleo/pipeline-de-filtros-toml",
+        "kind": "canonical",
+        "status": "completed"
+      },
+      {
+        "order": 17,
+        "path": "_reversa_sdd/nucleo/pipeline-de-filtros-toml/design.md",
+        "unit": "nucleo/pipeline-de-filtros-toml",
+        "kind": "canonical",
+        "status": "completed"
+      },
+      {
+        "order": 18,
+        "path": "_reversa_sdd/nucleo/pipeline-de-filtros-toml/tasks.md",
+        "unit": "nucleo/pipeline-de-filtros-toml",
+        "kind": "canonical",
+        "status": "completed"
+      },
+      {
+        "order": 19,
+        "path": "_reversa_sdd/nucleo/tracking-e-telemetria/requirements.md",
+        "unit": "nucleo/tracking-e-telemetria",
+        "kind": "canonical",
+        "status": "completed"
+      },
+      {
+        "order": 20,
+        "path": "_reversa_sdd/nucleo/tracking-e-telemetria/design.md",
+        "unit": "nucleo/tracking-e-telemetria",
+        "kind": "canonical",
+        "status": "completed"
+      },
+      {
+        "order": 21,
+        "path": "_reversa_sdd/nucleo/tracking-e-telemetria/tasks.md",
+        "unit": "nucleo/tracking-e-telemetria",
+        "kind": "canonical",
+        "status": "completed"
+      },
+      {
+        "order": 22,
+        "path": "_reversa_sdd/integracoes-de-agentes/requirements.md",
+        "unit": "integracoes-de-agentes",
+        "kind": "canonical",
+        "status": "completed"
+      },
+      {
+        "order": 23,
+        "path": "_reversa_sdd/integracoes-de-agentes/design.md",
+        "unit": "integracoes-de-agentes",
+        "kind": "canonical",
+        "status": "completed"
+      },
+      {
+        "order": 24,
+        "path": "_reversa_sdd/integracoes-de-agentes/tasks.md",
+        "unit": "integracoes-de-agentes",
+        "kind": "canonical",
+        "status": "completed"
+      },
+      {
+        "order": 25,
+        "path": "_reversa_sdd/integracoes-de-agentes/instalacao-e-configuracao/requirements.md",
+        "unit": "integracoes-de-agentes/instalacao-e-configuracao",
+        "kind": "canonical",
+        "status": "completed"
+      },
+      {
+        "order": 26,
+        "path": "_reversa_sdd/integracoes-de-agentes/instalacao-e-configuracao/design.md",
+        "unit": "integracoes-de-agentes/instalacao-e-configuracao",
+        "kind": "canonical",
+        "status": "completed"
+      },
+      {
+        "order": 27,
+        "path": "_reversa_sdd/integracoes-de-agentes/instalacao-e-configuracao/tasks.md",
+        "unit": "integracoes-de-agentes/instalacao-e-configuracao",
+        "kind": "canonical",
+        "status": "completed"
+      },
+      {
+        "order": 28,
+        "path": "_reversa_sdd/integracoes-de-agentes/protocolo-de-hooks-e-permissoes/requirements.md",
+        "unit": "integracoes-de-agentes/protocolo-de-hooks-e-permissoes",
+        "kind": "canonical",
+        "status": "completed"
+      },
+      {
+        "order": 29,
+        "path": "_reversa_sdd/integracoes-de-agentes/protocolo-de-hooks-e-permissoes/design.md",
+        "unit": "integracoes-de-agentes/protocolo-de-hooks-e-permissoes",
+        "kind": "canonical",
+        "status": "completed"
+      },
+      {
+        "order": 30,
+        "path": "_reversa_sdd/integracoes-de-agentes/protocolo-de-hooks-e-permissoes/tasks.md",
+        "unit": "integracoes-de-agentes/protocolo-de-hooks-e-permissoes",
+        "kind": "canonical",
+        "status": "completed"
+      },
+      {
+        "order": 31,
+        "path": "_reversa_sdd/analiticos/requirements.md",
+        "unit": "analiticos",
+        "kind": "canonical",
+        "status": "pending"
+      },
+      {
+        "order": 32,
+        "path": "_reversa_sdd/analiticos/design.md",
+        "unit": "analiticos",
+        "kind": "canonical",
+        "status": "pending"
+      },
+      {
+        "order": 33,
+        "path": "_reversa_sdd/analiticos/tasks.md",
+        "unit": "analiticos",
+        "kind": "canonical",
+        "status": "pending"
+      },
+      {
+        "order": 34,
+        "path": "_reversa_sdd/analiticos/relatorios-de-economia/requirements.md",
+        "unit": "analiticos/relatorios-de-economia",
+        "kind": "canonical",
+        "status": "pending"
+      },
+      {
+        "order": 35,
+        "path": "_reversa_sdd/analiticos/relatorios-de-economia/design.md",
+        "unit": "analiticos/relatorios-de-economia",
+        "kind": "canonical",
+        "status": "pending"
+      },
+      {
+        "order": 36,
+        "path": "_reversa_sdd/analiticos/relatorios-de-economia/tasks.md",
+        "unit": "analiticos/relatorios-de-economia",
+        "kind": "canonical",
+        "status": "pending"
+      },
+      {
+        "order": 37,
+        "path": "_reversa_sdd/analiticos/adocao-por-sessao/requirements.md",
+        "unit": "analiticos/adocao-por-sessao",
+        "kind": "canonical",
+        "status": "pending"
+      },
+      {
+        "order": 38,
+        "path": "_reversa_sdd/analiticos/adocao-por-sessao/design.md",
+        "unit": "analiticos/adocao-por-sessao",
+        "kind": "canonical",
+        "status": "pending"
+      },
+      {
+        "order": 39,
+        "path": "_reversa_sdd/analiticos/adocao-por-sessao/tasks.md",
+        "unit": "analiticos/adocao-por-sessao",
+        "kind": "canonical",
+        "status": "pending"
+      },
+      {
+        "order": 40,
+        "path": "_reversa_sdd/descoberta/requirements.md",
+        "unit": "descoberta",
+        "kind": "canonical",
+        "status": "pending"
+      },
+      {
+        "order": 41,
+        "path": "_reversa_sdd/descoberta/design.md",
+        "unit": "descoberta",
+        "kind": "canonical",
+        "status": "pending"
+      },
+      {
+        "order": 42,
+        "path": "_reversa_sdd/descoberta/tasks.md",
+        "unit": "descoberta",
+        "kind": "canonical",
+        "status": "pending"
+      },
+      {
+        "order": 43,
+        "path": "_reversa_sdd/descoberta/reescrita-e-classificacao/requirements.md",
+        "unit": "descoberta/reescrita-e-classificacao",
+        "kind": "canonical",
+        "status": "pending"
+      },
+      {
+        "order": 44,
+        "path": "_reversa_sdd/descoberta/reescrita-e-classificacao/design.md",
+        "unit": "descoberta/reescrita-e-classificacao",
+        "kind": "canonical",
+        "status": "pending"
+      },
+      {
+        "order": 45,
+        "path": "_reversa_sdd/descoberta/reescrita-e-classificacao/tasks.md",
+        "unit": "descoberta/reescrita-e-classificacao",
+        "kind": "canonical",
+        "status": "pending"
+      },
+      {
+        "order": 46,
+        "path": "_reversa_sdd/descoberta/analise-de-historico/requirements.md",
+        "unit": "descoberta/analise-de-historico",
+        "kind": "canonical",
+        "status": "pending"
+      },
+      {
+        "order": 47,
+        "path": "_reversa_sdd/descoberta/analise-de-historico/design.md",
+        "unit": "descoberta/analise-de-historico",
+        "kind": "canonical",
+        "status": "pending"
+      },
+      {
+        "order": 48,
+        "path": "_reversa_sdd/descoberta/analise-de-historico/tasks.md",
+        "unit": "descoberta/analise-de-historico",
+        "kind": "canonical",
+        "status": "pending"
+      },
+      {
+        "order": 49,
+        "path": "_reversa_sdd/aprendizado/requirements.md",
+        "unit": "aprendizado",
+        "kind": "canonical",
+        "status": "pending"
+      },
+      {
+        "order": 50,
+        "path": "_reversa_sdd/aprendizado/design.md",
+        "unit": "aprendizado",
+        "kind": "canonical",
+        "status": "pending"
+      },
+      {
+        "order": 51,
+        "path": "_reversa_sdd/aprendizado/tasks.md",
+        "unit": "aprendizado",
+        "kind": "canonical",
+        "status": "pending"
+      },
+      {
+        "order": 52,
+        "path": "_reversa_sdd/aprendizado/recomendacoes-de-adocao/requirements.md",
+        "unit": "aprendizado/recomendacoes-de-adocao",
+        "kind": "canonical",
+        "status": "pending"
+      },
+      {
+        "order": 53,
+        "path": "_reversa_sdd/aprendizado/recomendacoes-de-adocao/design.md",
+        "unit": "aprendizado/recomendacoes-de-adocao",
+        "kind": "canonical",
+        "status": "pending"
+      },
+      {
+        "order": 54,
+        "path": "_reversa_sdd/aprendizado/recomendacoes-de-adocao/tasks.md",
+        "unit": "aprendizado/recomendacoes-de-adocao",
+        "kind": "canonical",
+        "status": "pending"
+      },
+      {
+        "order": 55,
+        "path": "_reversa_sdd/parser-de-saida/requirements.md",
+        "unit": "parser-de-saida",
+        "kind": "canonical",
+        "status": "pending"
+      },
+      {
+        "order": 56,
+        "path": "_reversa_sdd/parser-de-saida/design.md",
+        "unit": "parser-de-saida",
+        "kind": "canonical",
+        "status": "pending"
+      },
+      {
+        "order": 57,
+        "path": "_reversa_sdd/parser-de-saida/tasks.md",
+        "unit": "parser-de-saida",
+        "kind": "canonical",
+        "status": "pending"
+      },
+      {
+        "order": 58,
+        "path": "_reversa_sdd/parser-de-saida/formatacao-estruturada/requirements.md",
+        "unit": "parser-de-saida/formatacao-estruturada",
+        "kind": "canonical",
+        "status": "pending"
+      },
+      {
+        "order": 59,
+        "path": "_reversa_sdd/parser-de-saida/formatacao-estruturada/design.md",
+        "unit": "parser-de-saida/formatacao-estruturada",
+        "kind": "canonical",
+        "status": "pending"
+      },
+      {
+        "order": 60,
+        "path": "_reversa_sdd/parser-de-saida/formatacao-estruturada/tasks.md",
+        "unit": "parser-de-saida/formatacao-estruturada",
+        "kind": "canonical",
+        "status": "pending"
+      },
+      {
+        "order": 61,
+        "path": "_reversa_sdd/perfis-de-filtros/requirements.md",
+        "unit": "perfis-de-filtros",
+        "kind": "canonical",
+        "status": "pending"
+      },
+      {
+        "order": 62,
+        "path": "_reversa_sdd/perfis-de-filtros/design.md",
+        "unit": "perfis-de-filtros",
+        "kind": "canonical",
+        "status": "pending"
+      },
+      {
+        "order": 63,
+        "path": "_reversa_sdd/perfis-de-filtros/tasks.md",
+        "unit": "perfis-de-filtros",
+        "kind": "canonical",
+        "status": "pending"
+      },
+      {
+        "order": 64,
+        "path": "_reversa_sdd/perfis-de-filtros/catalogo-embutido/requirements.md",
+        "unit": "perfis-de-filtros/catalogo-embutido",
+        "kind": "canonical",
+        "status": "pending"
+      },
+      {
+        "order": 65,
+        "path": "_reversa_sdd/perfis-de-filtros/catalogo-embutido/design.md",
+        "unit": "perfis-de-filtros/catalogo-embutido",
+        "kind": "canonical",
+        "status": "pending"
+      },
+      {
+        "order": 66,
+        "path": "_reversa_sdd/perfis-de-filtros/catalogo-embutido/tasks.md",
+        "unit": "perfis-de-filtros/catalogo-embutido",
+        "kind": "canonical",
+        "status": "pending"
+      },
+      {
+        "order": 67,
+        "path": "_reversa_sdd/plugin-openclaw/requirements.md",
+        "unit": "plugin-openclaw",
+        "kind": "canonical",
+        "status": "pending"
+      },
+      {
+        "order": 68,
+        "path": "_reversa_sdd/plugin-openclaw/design.md",
+        "unit": "plugin-openclaw",
+        "kind": "canonical",
+        "status": "pending"
+      },
+      {
+        "order": 69,
+        "path": "_reversa_sdd/plugin-openclaw/tasks.md",
+        "unit": "plugin-openclaw",
+        "kind": "canonical",
+        "status": "pending"
+      },
+      {
+        "order": 70,
+        "path": "_reversa_sdd/documentacao-do-produto/requirements.md",
+        "unit": "documentacao-do-produto",
+        "kind": "canonical",
+        "status": "pending"
+      },
+      {
+        "order": 71,
+        "path": "_reversa_sdd/documentacao-do-produto/design.md",
+        "unit": "documentacao-do-produto",
+        "kind": "canonical",
+        "status": "pending"
+      },
+      {
+        "order": 72,
+        "path": "_reversa_sdd/documentacao-do-produto/tasks.md",
+        "unit": "documentacao-do-produto",
+        "kind": "canonical",
+        "status": "pending"
+      },
+      {
+        "order": 73,
+        "path": "_reversa_sdd/automacao-e-scripts/requirements.md",
+        "unit": "automacao-e-scripts",
+        "kind": "canonical",
+        "status": "pending"
+      },
+      {
+        "order": 74,
+        "path": "_reversa_sdd/automacao-e-scripts/design.md",
+        "unit": "automacao-e-scripts",
+        "kind": "canonical",
+        "status": "pending"
+      },
+      {
+        "order": 75,
+        "path": "_reversa_sdd/automacao-e-scripts/tasks.md",
+        "unit": "automacao-e-scripts",
+        "kind": "canonical",
+        "status": "pending"
+      },
+      {
+        "order": 76,
+        "path": "_reversa_sdd/automacao-e-scripts/instalacao-e-validacao/requirements.md",
+        "unit": "automacao-e-scripts/instalacao-e-validacao",
+        "kind": "canonical",
+        "status": "pending"
+      },
+      {
+        "order": 77,
+        "path": "_reversa_sdd/automacao-e-scripts/instalacao-e-validacao/design.md",
+        "unit": "automacao-e-scripts/instalacao-e-validacao",
+        "kind": "canonical",
+        "status": "pending"
+      },
+      {
+        "order": 78,
+        "path": "_reversa_sdd/automacao-e-scripts/instalacao-e-validacao/tasks.md",
+        "unit": "automacao-e-scripts/instalacao-e-validacao",
+        "kind": "canonical",
+        "status": "pending"
+      }
+    ],
     "completed_files": [
       "_reversa_sdd/entrada-cli/requirements.md",
       "_reversa_sdd/entrada-cli/design.md",
@@ -43,15 +592,38 @@
       "_reversa_sdd/nucleo/tracking-e-telemetria/design.md",
       "_reversa_sdd/nucleo/tracking-e-telemetria/tasks.md"
     ],
-    "last_completed_file": "_reversa_sdd/nucleo/tracking-e-telemetria/tasks.md",
-    "next_file": null,
+    "last_completed_file": "_reversa_sdd/integracoes-de-agentes/protocolo-de-hooks-e-permissoes/tasks.md",
+    "next_file": "_reversa_sdd/analiticos/requirements.md",
+    "auto_advance": {
+      "enabled": false,
+      "scope": null,
+      "unit": null
+    },
     "active_batch": [
-      { "path": "_reversa_sdd/nucleo/pipeline-de-filtros-toml/requirements.md", "status": "completed" },
-      { "path": "_reversa_sdd/nucleo/pipeline-de-filtros-toml/design.md", "status": "completed" },
-      { "path": "_reversa_sdd/nucleo/pipeline-de-filtros-toml/tasks.md", "status": "completed" },
-      { "path": "_reversa_sdd/nucleo/tracking-e-telemetria/requirements.md", "status": "completed" },
-      { "path": "_reversa_sdd/nucleo/tracking-e-telemetria/design.md", "status": "completed" },
-      { "path": "_reversa_sdd/nucleo/tracking-e-telemetria/tasks.md", "status": "completed" }
+      {
+        "path": "_reversa_sdd/nucleo/pipeline-de-filtros-toml/requirements.md",
+        "status": "completed"
+      },
+      {
+        "path": "_reversa_sdd/nucleo/pipeline-de-filtros-toml/design.md",
+        "status": "completed"
+      },
+      {
+        "path": "_reversa_sdd/nucleo/pipeline-de-filtros-toml/tasks.md",
+        "status": "completed"
+      },
+      {
+        "path": "_reversa_sdd/nucleo/tracking-e-telemetria/requirements.md",
+        "status": "completed"
+      },
+      {
+        "path": "_reversa_sdd/nucleo/tracking-e-telemetria/design.md",
+        "status": "completed"
+      },
+      {
+        "path": "_reversa_sdd/nucleo/tracking-e-telemetria/tasks.md",
+        "status": "completed"
+      }
     ],
     "updated_at": "2026-07-15T02:10:49Z"
   },
