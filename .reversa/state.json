@@ -299,7 +299,7 @@
         "root_unit": "analiticos",
         "parent_unit": null,
         "kind": "canonical",
-        "status": "pending"
+        "status": "completed"
       },
       {
         "order": 32,
@@ -308,7 +308,7 @@
         "root_unit": "analiticos",
         "parent_unit": null,
         "kind": "canonical",
-        "status": "pending"
+        "status": "completed"
       },
       {
         "order": 33,
@@ -317,7 +317,7 @@
         "root_unit": "analiticos",
         "parent_unit": null,
         "kind": "canonical",
-        "status": "pending"
+        "status": "completed"
       },
       {
         "order": 34,
@@ -326,7 +326,7 @@
         "root_unit": "analiticos",
         "parent_unit": "analiticos",
         "kind": "canonical",
-        "status": "pending"
+        "status": "completed"
       },
       {
         "order": 35,
@@ -335,7 +335,7 @@
         "root_unit": "analiticos",
         "parent_unit": "analiticos",
         "kind": "canonical",
-        "status": "pending"
+        "status": "completed"
       },
       {
         "order": 36,
@@ -344,7 +344,7 @@
         "root_unit": "analiticos",
         "parent_unit": "analiticos",
         "kind": "canonical",
-        "status": "pending"
+        "status": "completed"
       },
       {
         "order": 37,
@@ -353,7 +353,7 @@
         "root_unit": "analiticos",
         "parent_unit": "analiticos",
         "kind": "canonical",
-        "status": "pending"
+        "status": "completed"
       },
       {
         "order": 38,
@@ -362,7 +362,7 @@
         "root_unit": "analiticos",
         "parent_unit": "analiticos",
         "kind": "canonical",
-        "status": "pending"
+        "status": "completed"
       },
       {
         "order": 39,
@@ -371,7 +371,7 @@
         "root_unit": "analiticos",
         "parent_unit": "analiticos",
         "kind": "canonical",
-        "status": "pending"
+        "status": "completed"
       },
       {
         "order": 40,
@@ -748,8 +748,8 @@
       "_reversa_sdd/nucleo/tracking-e-telemetria/design.md",
       "_reversa_sdd/nucleo/tracking-e-telemetria/tasks.md"
     ],
-    "last_completed_file": "_reversa_sdd/integracoes-de-agentes/protocolo-de-hooks-e-permissoes/tasks.md",
-    "next_file": "_reversa_sdd/analiticos/requirements.md",
+    "last_completed_file": "_reversa_sdd/analiticos/adocao-por-sessao/tasks.md",
+    "next_file": "_reversa_sdd/descoberta/requirements.md",
     "auto_advance": {
       "enabled": false,
       "mode": null,
@@ -757,8 +757,8 @@
       "root_unit": null,
       "target_orders": [],
       "max_iterations": 0,
-      "completed_iterations": 0,
-      "last_progress_order": null
+      "completed_iterations": 9,
+      "last_progress_order": 39
     },
     "active_batch": [
       {
@@ -786,7 +786,7 @@
         "status": "completed"
       }
     ],
-    "updated_at": "2026-07-16T02:35:55Z"
+    "updated_at": "2026-07-16T02:55:17Z"
   },
   "checkpoints": {
     "scout": {
@@ -916,6 +916,30 @@
           "plugin OpenClaw sem testes e com tipos manuais",
           "compatibilidade runtime externa nao validada"
         ]
+      }
+    },
+    "writer": {
+      "last_completed_at": "2026-07-16T02:55:17Z",
+      "root_unit_completed": "analiticos",
+      "files": [
+        "_reversa_sdd/analiticos/requirements.md",
+        "_reversa_sdd/analiticos/design.md",
+        "_reversa_sdd/analiticos/tasks.md",
+        "_reversa_sdd/analiticos/relatorios-de-economia/requirements.md",
+        "_reversa_sdd/analiticos/relatorios-de-economia/design.md",
+        "_reversa_sdd/analiticos/relatorios-de-economia/tasks.md",
+        "_reversa_sdd/analiticos/adocao-por-sessao/requirements.md",
+        "_reversa_sdd/analiticos/adocao-por-sessao/design.md",
+        "_reversa_sdd/analiticos/adocao-por-sessao/tasks.md"
+      ],
+      "summary": {
+        "units_completed": [
+          "analiticos",
+          "analiticos/relatorios-de-economia",
+          "analiticos/adocao-por-sessao"
+        ],
+        "files_processed": 9,
+        "next_file": "_reversa_sdd/descoberta/requirements.md"
       }
     }
   },

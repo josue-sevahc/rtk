@@ -60,6 +60,11 @@
 - ✅ `nucleo/` — unit do módulo `core` (3 arquivos canônicos)
 - ✅ `nucleo/pipeline-de-filtros-toml/` — registry trust-gated, compilação e aplicação da DSL (3 arquivos canônicos).
 - ✅ `nucleo/tracking-e-telemetria/` — tracking SQLite, agregações, retenção e ping opt-in (3 arquivos canônicos).
+- ✅ `integracoes-de-agentes/` — unit do módulo `hooks` (3 arquivos canônicos).
+- ✅ `integracoes-de-agentes/protocolo-de-hooks-e-permissoes/` — contrato de instalação, integridade e permissões de hooks (3 arquivos canônicos).
+- ✅ `analiticos/` — unit do módulo `analytics` (3 arquivos canônicos).
+- ✅ `analiticos/relatorios-de-economia/` — correlação read-only entre tracking RTK e custos Claude Code (3 arquivos canônicos).
+- ✅ `analiticos/adocao-por-sessao/` — medição de cobertura RTK em sessões Claude Code (3 arquivos canônicos).
 
 > Não criar `nucleo/execucao-compartilhada/`: sua superfície operacional já está coberta por `wrappers-comandos/execucao-filtrada/`, que rastreia `core::runner`, `core::stream`, `core::guard`, `core::tee` e `core::tracking`. Duplicá-la reduziria a qualidade da rastreabilidade. 🟢
 
